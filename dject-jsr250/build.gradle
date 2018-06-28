@@ -1,0 +1,4 @@
+dependencies {
+    compile project(':dject-core')
+    compile "com.google.guava:guava:25.1-jre"
+}
