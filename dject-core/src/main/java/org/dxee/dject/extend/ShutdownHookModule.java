@@ -22,12 +22,7 @@ public final class ShutdownHookModule extends AbstractModule {
     public static class SystemShutdownHook extends Thread {
         @Inject
         public SystemShutdownHook(final LifecycleShutdownSignal shutdown) {
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                @Override
-                public void run() {
-                    shutdown.signal();
-                }
-            });
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown.signal()));
         }
     }
     

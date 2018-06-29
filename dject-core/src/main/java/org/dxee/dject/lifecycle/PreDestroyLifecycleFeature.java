@@ -1,12 +1,5 @@
 package org.dxee.dject.lifecycle;
 
-import org.dxee.dject.lifecycle.impl.AbstractTypeVisitor;
-import org.dxee.dject.lifecycle.impl.OneAnnotationLifecycleFeature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.annotation.Annotation;
-
 /**
  * Each LifecycleFeature provides support for specific predestory or AutoCloseable
  * processing of an injected object.

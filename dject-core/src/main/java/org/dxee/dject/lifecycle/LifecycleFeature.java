@@ -1,6 +1,5 @@
 package org.dxee.dject.lifecycle;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 
 /**

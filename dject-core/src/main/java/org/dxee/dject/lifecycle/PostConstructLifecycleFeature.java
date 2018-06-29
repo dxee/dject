@@ -1,10 +1,5 @@
 package org.dxee.dject.lifecycle;
 
-import org.dxee.dject.lifecycle.impl.AbstractTypeVisitor;
-import org.dxee.dject.lifecycle.impl.OneAnnotationLifecycleFeature;
-
-import java.lang.annotation.Annotation;
-
 /**
  * Each LifecycleFeature provides support for specific post constructor
  * processing of an injected object.
