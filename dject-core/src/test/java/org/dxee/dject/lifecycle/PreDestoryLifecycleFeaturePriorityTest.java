@@ -5,7 +5,10 @@ import com.google.inject.multibindings.Multibinder;
 import org.dxee.dject.InjectorBuilder;
 import org.dxee.dject.lifecycle.impl.AbstractTypeVisitor;
 import org.dxee.dject.lifecycle.impl.OneAnnotationLifecycleFeature;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -168,4 +171,14 @@ public class PreDestoryLifecycleFeaturePriorityTest {
                     .append(" with priority ").append(priority()).toString();
         }
     }
+
+    @Before
+    public void printTestHeader() {
+        System.out.println("\n=======================================================");
+        System.out.println("  Running Test : " + name.getMethodName());
+        System.out.println("=======================================================\n");
+    }
+
+    @Rule
+    public final TestName name = new TestName();
 }

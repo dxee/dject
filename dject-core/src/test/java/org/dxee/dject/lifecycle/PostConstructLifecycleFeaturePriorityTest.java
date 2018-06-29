@@ -7,7 +7,10 @@ import org.dxee.dject.InjectorBuilder;
 import org.dxee.dject.lifecycle.impl.AbstractTypeVisitor;
 import org.dxee.dject.lifecycle.impl.OneAnnotationLifecycleFeature;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 import java.lang.annotation.Annotation;
 
@@ -145,4 +148,14 @@ public class PostConstructLifecycleFeaturePriorityTest {
             }
         }
     }
+
+    @Before
+    public void printTestHeader() {
+        System.out.println("\n=======================================================");
+        System.out.println("  Running Test : " + name.getMethodName());
+        System.out.println("=======================================================\n");
+    }
+
+    @Rule
+    public final TestName name = new TestName();
 }

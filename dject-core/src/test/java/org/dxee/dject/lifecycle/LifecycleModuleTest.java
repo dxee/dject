@@ -14,6 +14,7 @@ import javax.inject.Provider;
 import org.dxee.dject.InjectorBuilder;
 import org.dxee.dject.TestSupport;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -44,9 +45,6 @@ public class LifecycleModuleTest {
     private enum Events {
         Injected, Started, Stopped, Error
     }
-
-    @Rule
-    public final TestName name = new TestName();
 
     static class TrackingLifecycleListener implements LifecycleListener {
         final List<Events> events = new ArrayList<>();
@@ -276,4 +274,13 @@ public class LifecycleModuleTest {
         Assert.assertTrue(listener2.wasStopped);
     }
 
+    @Before
+    public void printTestHeader() {
+        System.out.println("\n=======================================================");
+        System.out.println("  Running Test : " + name.getMethodName());
+        System.out.println("=======================================================\n");
+    }
+
+    @Rule
+    public final TestName name = new TestName();
 }
