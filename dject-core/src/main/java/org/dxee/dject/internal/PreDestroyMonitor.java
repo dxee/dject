@@ -36,12 +36,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Monitors managed instances and invokes cleanup actions when they become unreferenced
- * 
- * @author tcellucci
  *
+ * @author tcellucci
  */
 public class PreDestroyMonitor implements AutoCloseable {
     private static Logger LOGGER = LoggerFactory.getLogger(PreDestroyMonitor.class);
+
     private static class ScopeCleanupMarker {
         static final Key<ScopeCleanupMarker> MARKER_KEY = Key.get(ScopeCleanupMarker.class);
         // simple id uses identity equality
@@ -108,7 +108,6 @@ public class PreDestroyMonitor implements AutoCloseable {
 
         /**
          * Processes unreferenced markers from the referenceQueue, until the 'running' flag is false or interrupted
-         * 
          */
         final class ScopedCleanupWorker implements Runnable {
             public void run() {
@@ -157,9 +156,8 @@ public class PreDestroyMonitor implements AutoCloseable {
 
     /**
      * allows late-binding of scopes to PreDestroyMonitor, useful if more than one Injector contributes scope bindings
-     * 
-     * @param bindings
-     *            additional annotation-to-scope bindings to add
+     *
+     * @param bindings additional annotation-to-scope bindings to add
      */
     public void addScopeBindings(Map<Class<? extends Annotation>, Scope> bindings) {
         if (scopeCleaner.isRunning()) {
@@ -181,8 +179,7 @@ public class PreDestroyMonitor implements AutoCloseable {
             cleanupActions.clear();
             scopeBindings.clear();
             scopeBindings = Collections.emptyMap();
-        }
-        else {
+        } else {
             LOGGER.warn("PreDestroyMonitor.close() invoked but instance is not running");
         }
     }
@@ -191,7 +188,6 @@ public class PreDestroyMonitor implements AutoCloseable {
      * visits bindingScope of managed instance to set up an appropriate strategy for cleanup, adding actions to either
      * the scopedCleanupActions map or cleanupActions list. Returns true if cleanup actions were added, false if no
      * cleanup strategy was selected.
-     * 
      */
     private final class ManagedInstanceScopingVisitor implements BindingScopingVisitor<Boolean> {
         private final Object injectee;
@@ -199,7 +195,7 @@ public class PreDestroyMonitor implements AutoCloseable {
         private final Iterable<LifecycleAction> lifecycleActions;
 
         private ManagedInstanceScopingVisitor(Object injectee, Object context,
-                Iterable<LifecycleAction> lifecycleActions) {
+                                              Iterable<LifecycleAction> lifecycleActions) {
             this.injectee = injectee;
             this.context = context;
             this.lifecycleActions = lifecycleActions;
@@ -207,25 +203,25 @@ public class PreDestroyMonitor implements AutoCloseable {
 
         /*
          * handle eager singletons same as singletons for cleanup purposes.
-         * 
+         *
          */
         @Override
-        public Boolean visitEagerSingleton() {                    
+        public Boolean visitEagerSingleton() {
             return visitScope(Scopes.SINGLETON);
         }
 
         /*
          * use ScopeCleanupMarker dereferencing strategy to detect scope closure, add new entry to scopedCleanupActions
          * map
-         * 
+         *
          */
         @Override
         public Boolean visitScope(Scope scope) {
             final Provider<ScopeCleanupMarker> scopedMarkerProvider;
-            if (scope.equals(Scopes.SINGLETON) || (scope instanceof AbstractScope && ((AbstractScope)scope).isSingletonScope())) {
+            if (scope.equals(Scopes.SINGLETON) || (scope instanceof AbstractScope && ((AbstractScope) scope).isSingletonScope())) {
                 scopedMarkerProvider = Providers.of(scopeCleaner.singletonMarker);
             } else {
-                scopedMarkerProvider = scope.scope(ScopeCleanupMarker.MARKER_KEY, scopeCleaner);                
+                scopedMarkerProvider = scope.scope(ScopeCleanupMarker.MARKER_KEY, scopeCleaner);
             }
             ScopeCleanupMarker marker = scopedMarkerProvider.get();
             marker.getCleanupAction().add(scopedMarkerProvider, new ManagedInstanceAction(injectee, lifecycleActions));
@@ -234,7 +230,7 @@ public class PreDestroyMonitor implements AutoCloseable {
 
         /*
          * lookup Scope by annotation, then delegate to visitScope()
-         * 
+         *
          */
         @Override
         public Boolean visitScopeAnnotation(final Class<? extends Annotation> scopeAnnotation) {
@@ -242,8 +238,7 @@ public class PreDestroyMonitor implements AutoCloseable {
             boolean rv;
             if (scope != null) {
                 rv = visitScope(scope);
-            }
-            else {
+            } else {
                 LOGGER.warn("no scope binding found for annotation " + scopeAnnotation.getName());
                 rv = false;
             }
@@ -253,7 +248,7 @@ public class PreDestroyMonitor implements AutoCloseable {
         /*
          * add a soft-reference ManagedInstanceAction to cleanupActions deque. Cleanup triggered only at injector
          * shutdown if referent has not yet been collected.
-         * 
+         *
          */
         @Override
         public Boolean visitNoScoping() {
@@ -287,7 +282,7 @@ public class PreDestroyMonitor implements AutoCloseable {
 
         public void add(Provider<ScopeCleanupMarker> scopeProvider, Callable<Void> action) {
             if (!complete.get()) {
-                delegates.addFirst(new Object[] { action, scopeProvider }); // add first
+                delegates.addFirst(new Object[]{action, scopeProvider}); // add first
             }
         }
 
