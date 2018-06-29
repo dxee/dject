@@ -1,4 +1,4 @@
-package org.dxee.dject.metrics;
+package org.dxee.dject.debug;
 
 import com.google.inject.AbstractModule;
 

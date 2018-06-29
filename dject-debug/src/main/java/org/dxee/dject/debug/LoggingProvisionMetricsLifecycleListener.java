@@ -1,10 +1,12 @@
-package org.dxee.dject.metrics;
+package org.dxee.dject.debug;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.dxee.dject.lifecycle.impl.AbstractLifecycleListener;
 import org.dxee.dject.lifecycle.LifecycleManager;
+import org.dxee.dject.metrics.LoggingProvisionMetricsVisitor;
+import org.dxee.dject.metrics.ProvisionMetrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.dxee.dject.event.guava.GuavaApplicationEventModule;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +20,7 @@ public class NullableBindingTest {
     
     @Before
     public void setup() {
-        injector = InjectorBuilder.fromModules(new GuavaApplicationEventModule(), new AbstractModule() {
+        injector = InjectorBuilder.fromModules(new AbstractModule() {
             @Override
             protected void configure() {
                 bind(InnerDependency.class).toProvider(Providers.<InnerDependency>of(null));               

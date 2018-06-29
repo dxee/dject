@@ -1,9 +1,9 @@
 package org.dxee.dject.metrics;
 
-import java.util.concurrent.TimeUnit;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.TimeUnit;
 
 public class LoggingProvisionMetricsVisitor implements ProvisionMetrics.Visitor {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoggingProvisionMetricsVisitor.class);

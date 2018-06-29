@@ -1,19 +1,16 @@
 package org.dxee.dject.event;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.dxee.dject.event.guava.GuavaApplicationEventModule;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.CreationException;
 import com.google.inject.Injector;
 import org.dxee.dject.InjectorBuilder;
+import org.dxee.dject.event.guava.GuavaApplicationEventModule;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.Assert.*;
 
 public class ApplicationEventModuleTest {
 
