@@ -1,6 +1,6 @@
 package org.dxee.dject.providers;
 
-import org.dxee.dject.extend.SingletonProvider;
+import org.dxee.dject.SingletonProvider;
 import org.junit.Assert;
 import org.junit.Test;
 

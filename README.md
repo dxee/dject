@@ -1,2 +1,2 @@
 # dject
-Guice extensions come from `governator`, but keep it as small as it can.
+Guice extensions, original come from governator. Purpose to keep it as small as it can , as easy scalable as it can.

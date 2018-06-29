@@ -1,4 +1,4 @@
-package org.dxee.dject.extend;
+package org.dxee.dject;
 
 import javax.inject.Provider;
 

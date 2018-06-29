@@ -8,7 +8,6 @@ import com.google.inject.spi.Element;
 import com.google.inject.spi.ElementVisitor;
 import com.google.inject.spi.Elements;
 import com.google.inject.util.Modules;
-import org.dxee.dject.extend.ModuleTransformer;
 import org.dxee.dject.lifecycle.LifecycleInjector;
 import org.dxee.dject.lifecycle.LifecycleInjectorCreator;
 import org.dxee.dject.visitors.IsNotStaticInjectionVisitor;

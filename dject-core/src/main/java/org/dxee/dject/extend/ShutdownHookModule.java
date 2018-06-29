@@ -13,7 +13,7 @@ import org.dxee.dject.lifecycle.LifecycleShutdownSignal;
  * 
  * <pre>
  * {@code
- *    Governator.createInjector(new LifecycleModule(), new ShutdownHookModule());
+ *    InjectorBuilder.fromModule(new ShutdownHookModule());
  * }
  * </pre>
  */
