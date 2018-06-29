@@ -4,6 +4,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
 import org.dxee.dject.InjectorBuilder;
+import org.dxee.dject.lifecycle.impl.AbstractTypeVisitor;
+import org.dxee.dject.lifecycle.impl.OneAnnotationLifecycleFeature;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,7 +38,7 @@ public class PostConstructLifecycleFeaturePriorityTest {
         LifecycleInjector injector = InjectorBuilder.fromModule(new AbstractModule() {
             @Override
             protected void configure() {
-                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature() {
+                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature1() {
                     @Override
                     public Class<? extends Annotation> annotationClazz() {
                         return PostConstruct1.class;
@@ -47,7 +49,7 @@ public class PostConstructLifecycleFeaturePriorityTest {
                         return 1;
                     }
                 });
-                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature() {
+                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature1() {
                     @Override
                     public Class<? extends Annotation> annotationClazz() {
                         return PostConstruct3.class;
@@ -58,7 +60,7 @@ public class PostConstructLifecycleFeaturePriorityTest {
                         return 2;
                     }
                 });
-                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature() {
+                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature1() {
                     @Override
                     public Class<? extends Annotation> annotationClazz() {
                         return PostConstruct2.class;
@@ -83,7 +85,7 @@ public class PostConstructLifecycleFeaturePriorityTest {
         LifecycleInjector injector = InjectorBuilder.fromModule(new AbstractModule() {
             @Override
             protected void configure() {
-                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature() {
+                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature1() {
                     @Override
                     public Class<? extends Annotation> annotationClazz() {
                         return PostConstruct1.class;
@@ -94,7 +96,7 @@ public class PostConstructLifecycleFeaturePriorityTest {
                         return 3;
                     }
                 });
-                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature() {
+                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature1() {
                     @Override
                     public Class<? extends Annotation> annotationClazz() {
                         return PostConstruct3.class;
@@ -105,7 +107,7 @@ public class PostConstructLifecycleFeaturePriorityTest {
                         return 2;
                     }
                 });
-                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature() {
+                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature1() {
                     @Override
                     public Class<? extends Annotation> annotationClazz() {
                         return PostConstruct2.class;
@@ -123,5 +125,24 @@ public class PostConstructLifecycleFeaturePriorityTest {
         TestPriority testPriority = injector.getInstance(TestPriority.class);
 
         Assert.assertTrue(testPriority.p.equals(TestPriority.p3p2p1));
+    }
+
+
+    private static abstract class PostConstructLifecycleFeature1 extends OneAnnotationLifecycleFeature implements PostConstructLifecycleFeature {
+        @Override
+        public TestPostConstructTypeVisitor visitor() {
+            return new TestPostConstructTypeVisitor(this.annotationClazz);
+        }
+
+        private class TestPostConstructTypeVisitor extends AbstractTypeVisitor {
+            public TestPostConstructTypeVisitor(Class<? extends Annotation> annotationClazz) {
+                super(annotationClazz);
+            }
+
+            @Override
+            public void addMethodLifecycleAction(LifecycleAction lifecycleAction) {
+                addLifecycleActionToFirstOne(lifecycleAction);
+            }
+        }
     }
 }

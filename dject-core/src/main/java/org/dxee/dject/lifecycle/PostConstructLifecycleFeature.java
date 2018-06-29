@@ -1,6 +1,7 @@
 package org.dxee.dject.lifecycle;
 
-import org.dxee.dject.internal.AbstractTypeVisitor;
+import org.dxee.dject.lifecycle.impl.AbstractTypeVisitor;
+import org.dxee.dject.lifecycle.impl.OneAnnotationLifecycleFeature;
 
 import java.lang.annotation.Annotation;
 
@@ -19,27 +20,5 @@ import java.lang.annotation.Annotation;
  * @author bing.fan
  * 2018-06-28 15:56
  */
-public abstract class PostConstructLifecycleFeature extends AbstractLifecycleFeature {
-
-    @Override
-    public PostConstructTypeVisitor visitor() {
-        return new PostConstructTypeVisitor(this.annotationClazz);
-    }
-
-    private class PostConstructTypeVisitor extends AbstractTypeVisitor {
-        public PostConstructTypeVisitor(Class<? extends Annotation> annotationClazz) {
-            super(annotationClazz);
-        }
-
-        @Override
-        public void addLifecycleAction(LifecycleAction lifecycleAction) {
-            lifecycleActions.addFirst(lifecycleAction);
-        }
-    }
-
-    @Override
-    public String toString() {
-        return new StringBuilder().append("PostConstruct @").append(this.annotationClazz==null ? "null" : this.annotationClazz.getSimpleName())
-                .append(" with priority ").append(priority()).toString();
-    }
+public interface PostConstructLifecycleFeature extends LifecycleFeature {
 }

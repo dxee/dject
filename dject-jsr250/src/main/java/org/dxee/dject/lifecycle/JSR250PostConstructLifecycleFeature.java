@@ -1,5 +1,8 @@
 package org.dxee.dject.lifecycle;
 
+import org.dxee.dject.lifecycle.impl.AbstractTypeVisitor;
+import org.dxee.dject.lifecycle.impl.OneAnnotationLifecycleFeature;
+
 import javax.annotation.PostConstruct;
 import java.lang.annotation.Annotation;
 
@@ -8,7 +11,24 @@ import java.lang.annotation.Annotation;
  * @author bing.fan
  * 2018-06-07 19:54
  */
-public final class JSR250PostConstructLifecycleFeature extends PostConstructLifecycleFeature {
+public final class JSR250PostConstructLifecycleFeature extends OneAnnotationLifecycleFeature implements PostConstructLifecycleFeature {
+
+    @Override
+    public JSR250PostConstructTypeVisitor visitor() {
+        return new JSR250PostConstructTypeVisitor(this.annotationClazz);
+    }
+
+    private class JSR250PostConstructTypeVisitor extends AbstractTypeVisitor {
+        public JSR250PostConstructTypeVisitor(Class<? extends Annotation> annotationClazz) {
+            super(annotationClazz);
+        }
+
+        @Override
+        public void addMethodLifecycleAction(LifecycleAction lifecycleAction) {
+            addLifecycleActionToFirstOne(lifecycleAction);
+        }
+    }
+
     @Override
     public Class<? extends Annotation> annotationClazz() {
         return PostConstruct.class;
@@ -16,6 +36,12 @@ public final class JSR250PostConstructLifecycleFeature extends PostConstructLife
 
     @Override
     public int priority() {
-        return 1;
+        return 3;
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder().append("PostConstruct @").append(this.annotationClazz==null ? "null" : this.annotationClazz.getSimpleName())
+                .append(" with priority ").append(priority()).toString();
     }
 }

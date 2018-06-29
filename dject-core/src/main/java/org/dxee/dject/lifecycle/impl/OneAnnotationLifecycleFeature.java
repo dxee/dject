@@ -1,18 +1,18 @@
-package org.dxee.dject.lifecycle;
+package org.dxee.dject.lifecycle.impl;
 
-import org.dxee.dject.internal.AbstractTypeVisitor;
-import org.dxee.dject.internal.TypeInspector;
+import org.dxee.dject.lifecycle.LifecycleAction;
+import org.dxee.dject.lifecycle.LifecycleFeature;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * AbstractLifecycleFeature
+ * OneAnnotationLifecycleFeature
  * @author bing.fan
  * 2018-06-08 20:15
  */
-abstract class AbstractLifecycleFeature implements LifecycleFeature {
+public abstract class OneAnnotationLifecycleFeature implements LifecycleFeature {
     protected Class<? extends Annotation> annotationClazz;
 
     @Override
@@ -29,4 +29,10 @@ abstract class AbstractLifecycleFeature implements LifecycleFeature {
     public int priority() {
         return 0;
     }
+
+    /**
+     * Lifecycle feature annotation
+     * @return
+     */
+    abstract public Class<? extends Annotation> annotationClazz();
 }

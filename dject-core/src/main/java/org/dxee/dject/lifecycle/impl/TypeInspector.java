@@ -1,4 +1,4 @@
-package org.dxee.dject.internal;
+package org.dxee.dject.lifecycle.impl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

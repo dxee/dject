@@ -9,7 +9,7 @@ import java.util.List;
  * 
  * @author elandau
  */
-interface LifecycleFeature {
+public interface LifecycleFeature {
     /**
      * Return a list of actions to perform on object of this type as part of
      * lifecycle processing.  Each LifecycleAction will likely be tied to processing
@@ -25,10 +25,4 @@ interface LifecycleFeature {
      * @return
      */
     int priority();
-
-    /**
-     * Lifecycle feature annotation
-     * @return
-     */
-    Class<? extends Annotation> annotationClazz();
 }

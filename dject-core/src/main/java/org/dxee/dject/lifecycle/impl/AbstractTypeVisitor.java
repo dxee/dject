@@ -1,4 +1,4 @@
-package org.dxee.dject.internal;
+package org.dxee.dject.lifecycle.impl;
 
 import org.dxee.dject.lifecycle.LifecycleAction;
 import org.dxee.dject.lifecycle.SimpleLifecycleAction;
@@ -21,7 +21,7 @@ public abstract class AbstractTypeVisitor implements TypeInspector.TypeVisitor, 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTypeVisitor.class);
 
     private Set<String> visitContext;
-    protected LinkedList<LifecycleAction> lifecycleActions;
+    private LinkedList<LifecycleAction> lifecycleActions;
     private Class<? extends Annotation> annotationClazz;
 
     public AbstractTypeVisitor(Class<? extends Annotation> annotationClazz) {
@@ -44,7 +44,7 @@ public abstract class AbstractTypeVisitor implements TypeInspector.TypeVisitor, 
                 try {
                     LifecycleAction lifecycleAction = new SimpleLifecycleAction(annotationClazz, method);
                     LOGGER.debug("adding action {}", lifecycleAction);
-                    addLifecycleAction(lifecycleAction);
+                    addMethodLifecycleAction(lifecycleAction);
                     visitContext.add(methodName);
                 } catch (IllegalArgumentException e) {
                     LOGGER.info("ignoring @{} method {}.{}() - {}", annotationClazz.getSimpleName(), method.getDeclaringClass().getName(),
@@ -58,7 +58,15 @@ public abstract class AbstractTypeVisitor implements TypeInspector.TypeVisitor, 
         return true;
     }
 
-    abstract public void addLifecycleAction(LifecycleAction lifecycleAction);
+    public void addLifecycleActionToFirstOne(LifecycleAction lifecycleAction) {
+        lifecycleActions.addFirst(lifecycleAction);
+    }
+
+    public void addLifecycleActionToLastOne(LifecycleAction lifecycleAction) {
+        lifecycleActions.add(lifecycleAction);
+    }
+
+    abstract public void addMethodLifecycleAction(LifecycleAction lifecycleAction);
 
     @Override
     public boolean visit(Field field) {
