@@ -3,7 +3,7 @@ package org.dxee.dject.metrics;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.dxee.dject.lifecycle.AbstractLifecycleListener;
+import org.dxee.dject.lifecycle.impl.AbstractLifecycleListener;
 import org.dxee.dject.lifecycle.LifecycleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

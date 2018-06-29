@@ -1,4 +1,6 @@
-package org.dxee.dject.lifecycle;
+package org.dxee.dject.lifecycle.impl;
+
+import org.dxee.dject.lifecycle.LifecycleListener;
 
 public abstract class AbstractLifecycleListener implements LifecycleListener {
     @Override

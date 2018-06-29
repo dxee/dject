@@ -1,7 +1,6 @@
 package org.dxee.dject.lifecycle.impl;
 
 import org.dxee.dject.lifecycle.LifecycleAction;
-import org.dxee.dject.lifecycle.SimpleLifecycleAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

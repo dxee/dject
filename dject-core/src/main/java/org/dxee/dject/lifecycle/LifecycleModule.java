@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import com.google.common.collect.Ordering;
+import org.dxee.dject.lifecycle.impl.AbstractLifecycleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

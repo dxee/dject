@@ -1,8 +1,9 @@
-package org.dxee.dject.lifecycle;
+package org.dxee.dject.lifecycle.impl;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
+import org.dxee.dject.lifecycle.LifecycleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,7 @@ import com.google.common.base.Preconditions;
  * 1.  Logging of events as INFO
  * 2.  Swallow any event handler exceptions during shutdown
  */
-final class SafeLifecycleListener extends WeakReference<LifecycleListener> implements LifecycleListener {
+public final class SafeLifecycleListener extends WeakReference<LifecycleListener> implements LifecycleListener {
     private static final Logger LOGGER = LoggerFactory.getLogger(SafeLifecycleListener.class);
     private final int delegateHash;
     private final String asString;

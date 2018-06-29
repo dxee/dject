@@ -1,4 +1,7 @@
-package org.dxee.dject.lifecycle;
+package org.dxee.dject.lifecycle.impl;
+
+import org.dxee.dject.lifecycle.LifecycleManager;
+import org.dxee.dject.lifecycle.LifecycleShutdownSignal;
 
 public abstract class AbstractLifecycleShutdownSignal implements LifecycleShutdownSignal {
 

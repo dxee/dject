@@ -1,4 +1,6 @@
-package org.dxee.dject.lifecycle;
+package org.dxee.dject.lifecycle.impl;
+
+import org.dxee.dject.lifecycle.LifecycleManager;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -1,12 +1,12 @@
-package org.dxee.dject.lifecycle;
+package org.dxee.dject.lifecycle.impl;
 
+import org.dxee.dject.lifecycle.LifecycleAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -17,7 +17,7 @@ import java.lang.reflect.Modifier;
  * 2018-06-08 20:55
  */
 public class SimpleLifecycleAction implements LifecycleAction {
-    private static final Lookup METHOD_HANDLE_LOOKUP = MethodHandles.lookup();
+    private static final MethodHandles.Lookup METHOD_HANDLE_LOOKUP = MethodHandles.lookup();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleLifecycleAction.class);
     private final Method method;

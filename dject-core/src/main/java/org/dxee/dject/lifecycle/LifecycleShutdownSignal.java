@@ -1,6 +1,7 @@
 package org.dxee.dject.lifecycle;
 
 import com.google.inject.ImplementedBy;
+import org.dxee.dject.lifecycle.impl.DefaultLifecycleShutdownSignal;
 
 /**
  * Shutdown signal for the lifecycle manager.  Code can either block on the signal

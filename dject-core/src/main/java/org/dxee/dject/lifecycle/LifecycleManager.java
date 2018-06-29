@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.inject.Singleton;
 
 import org.dxee.dject.annotations.SuppressLifecycleUninitialized;
+import org.dxee.dject.lifecycle.impl.SafeLifecycleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
