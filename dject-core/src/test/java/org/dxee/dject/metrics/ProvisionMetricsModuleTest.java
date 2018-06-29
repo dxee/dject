@@ -4,16 +4,11 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import org.dxee.dject.InjectorBuilder;
 import org.dxee.dject.lifecycle.LifecycleInjector;
-import org.dxee.dject.visitors.ProvisionListenerTracingVisitor;
-
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
+import java.util.concurrent.TimeUnit;
 
 public class ProvisionMetricsModuleTest {
     @Test

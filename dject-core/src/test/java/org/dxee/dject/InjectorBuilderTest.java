@@ -8,7 +8,6 @@ import org.dxee.dject.visitors.BindingTracingVisitor;
 import org.dxee.dject.visitors.KeyTracingVisitor;
 import org.dxee.dject.visitors.ModuleSourceTracingVisitor;
 import org.dxee.dject.visitors.WarnOfToInstanceInjectionVisitor;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -17,11 +16,10 @@ import org.junit.rules.TestName;
 import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
-
-import javax.inject.Inject;
 
 public class InjectorBuilderTest {
  
