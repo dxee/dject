@@ -1,5 +1,6 @@
-package org.dxee.dject.metrics;
+package org.dxee.dject.debug;
 
+import org.dxee.dject.metrics.ProvisionMetrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -23,7 +23,7 @@ public class ProvisionMetricsModuleTest {
                 .createInjector()) {
 
             ProvisionMetrics metrics = injector.getInstance(ProvisionMetrics.class);
-            LoggingProvisionMetricsVisitor visitor = new LoggingProvisionMetricsVisitor();
+            TestProvisionMetricsVisitor visitor = new TestProvisionMetricsVisitor();
             metrics.accept(visitor);
             Assert.assertTrue(visitor.getElementCount() == 0);
         }
@@ -47,7 +47,7 @@ public class ProvisionMetricsModuleTest {
                 .createInjector()) {
 
             ProvisionMetrics metrics = injector.getInstance(ProvisionMetrics.class);
-            LoggingProvisionMetricsVisitor visitor = new LoggingProvisionMetricsVisitor();
+            TestProvisionMetricsVisitor visitor = new TestProvisionMetricsVisitor();
             metrics.accept(visitor);
             Assert.assertTrue(visitor.getElementCount() != 0);
         }

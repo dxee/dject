@@ -1,0 +1,6 @@
+dependencies {
+    compile project(':dject-core')
+
+    compile "com.google.inject.extensions:guice-grapher:4.2.0"
+}
+
