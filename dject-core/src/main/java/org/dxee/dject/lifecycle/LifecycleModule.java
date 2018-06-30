@@ -20,7 +20,6 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.spi.ProvisionListener;
 import org.dxee.dject.annotations.SuppressLifecycleUninitialized;
-import org.dxee.dject.internal.BinaryConstant;
 import org.dxee.dject.internal.PreDestroyMonitor;
 
 /**
@@ -54,7 +53,7 @@ public final class LifecycleModule extends AbstractModule {
     @Singleton
     @SuppressLifecycleUninitialized
     static class LifecycleProvisionListener extends AbstractLifecycleListener implements ProvisionListener {
-        private final ConcurrentMap<Class<?>, TypeLifecycleActions> cache = new ConcurrentHashMap<>(BinaryConstant.I12_4096);
+        private final ConcurrentMap<Class<?>, TypeLifecycleActions> cache = new ConcurrentHashMap<>(4096);
         private List<PostConstructLifecycleFeature> postConstructLifecycleFeatures;
         private List<PreDestroyLifecycleFeature> preDestoryLifecycleFeatures;
         private final AtomicBoolean isShutdown = new AtomicBoolean();

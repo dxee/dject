@@ -62,7 +62,7 @@ public class PreDestroyMonitor implements AutoCloseable {
     }
 
     static final class ScopeCleaner implements Provider<ScopeCleanupMarker> {
-        ConcurrentMap<Object, ScopeCleanupAction> scopedCleanupActions = new ConcurrentHashMap<>(BinaryConstant.I14_16384);
+        ConcurrentMap<Object, ScopeCleanupAction> scopedCleanupActions = new ConcurrentHashMap<>(16384);
         ReferenceQueue<ScopeCleanupMarker> markerReferenceQueue = new ReferenceQueue<>();
         final ExecutorService reqQueueExecutor = Executors.newSingleThreadExecutor(
                 new ThreadFactoryBuilder().setDaemon(true).setNameFormat("predestroy-monitor-%d").build());
