@@ -4,8 +4,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.Stage;
 import org.dxee.dject.lifecycle.JSR250Module;
-import org.dxee.dject.lifecycle.LifecycleInjector;
-import org.dxee.dject.lifecycle.LifecycleInjectorCreator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,12 +38,12 @@ public class TestSupport {
         return new InstancesModule(instances);
     }
 
-    public static LifecycleInjector inject(final Object... instances) {
-        return InjectorBuilder.fromModule(new InstancesModule(instances)).createInjector();
+    public static Djector inject(final Object... instances) {
+        return DjectBuilder.fromModule(new InstancesModule(instances)).createInjector();
     }
 
-    public static InjectorBuilder fromModules(Module... module) {
-        return InjectorBuilder.fromModules(module).combineWith(new JSR250Module());
+    public static DjectBuilder fromModules(Module... module) {
+        return DjectBuilder.fromModules(module).combineWith(new JSR250Module());
     }
     
     public TestSupport withSingleton(final Object... instances) {
@@ -53,8 +51,8 @@ public class TestSupport {
         return this;       
     }
     
-    public LifecycleInjector inject() {
-        return new LifecycleInjectorCreator().createInjector(Stage.PRODUCTION, module);
+    public Djector inject() {
+        return Djector.createInjector(Stage.PRODUCTION, module);
     }
 
 }

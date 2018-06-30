@@ -7,7 +7,7 @@ import com.google.inject.spi.InstanceBinding;
 
 /*
  * Specialized {@link DefaultElementVisitor} that formats a warning for any toInstance() binding.  
- * Use this with {@link InjectorBuilder#forEachElement} to identify situations where toInstance() bindings 
+ * Use this with {@link DjectBuilder#forEachElement} to identify situations where toInstance() bindings
  * are used.  The assertion here is that toInstance bindings are an indicator of provisioning being
  * done outside of Guice and could involve static initialization that violates ordering guarantees
  * of a DI framework.  The recommendation is to replace toInstance() bindings with @Provides methods.

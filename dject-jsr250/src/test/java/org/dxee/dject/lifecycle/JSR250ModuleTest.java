@@ -2,6 +2,7 @@ package org.dxee.dject.lifecycle;
 
 import com.google.inject.CreationException;
 import com.google.inject.Injector;
+import org.dxee.dject.Djector;
 import org.dxee.dject.TestSupport;
 import org.junit.Assert;
 import org.junit.Before;
@@ -97,7 +98,7 @@ public class JSR250ModuleTest {
             }
         };
 
-        try (LifecycleInjector injector = TestSupport.inject(listener)) {
+        try (Djector injector = TestSupport.inject(listener)) {
             fail("expected rt exception starting injector");
         } catch (CreationException e) {
             // expected
@@ -119,7 +120,7 @@ public class JSR250ModuleTest {
             }
         };
 
-        try (LifecycleInjector injector = TestSupport.inject(listener)) {
+        try (Djector injector = TestSupport.inject(listener)) {
 
         } finally {
             assertThat(listener.events, equalTo(Arrays.asList(Events.Injected, Events.Initialized, Events.Started, Events.Stopped, Events.Destroyed)));
@@ -137,7 +138,7 @@ public class JSR250ModuleTest {
                 fail("postconstruct exception");
             }
         };
-        try (LifecycleInjector injector = TestSupport.inject(listener)) {
+        try (Djector injector = TestSupport.inject(listener)) {
             fail("expected error creating injector");
         } catch (Exception e) {
             fail("expected AssertionError destroying injector but got " + e);

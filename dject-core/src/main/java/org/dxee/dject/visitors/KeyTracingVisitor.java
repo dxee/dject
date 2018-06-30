@@ -2,15 +2,15 @@ package org.dxee.dject.visitors;
 
 import com.google.inject.Binding;
 import com.google.inject.spi.DefaultElementVisitor;
-import org.dxee.dject.InjectorBuilder;
+import org.dxee.dject.DjectBuilder;
 
 /**
  * Visitor for logging only the Key for each {@code Element} binding
  * 
- * To use with {@link InjectorBuilder}
+ * To use with {@link DjectBuilder}
  * 
  * <code>
- * InjectorBuilder
+ * DjectBuilder
  *      .fromModule(new MyApplicationModule)
  *      .forEachElement(new BindingTracingVisitor())
  *      .createInjector();

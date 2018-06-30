@@ -1,8 +1,8 @@
 package org.dxee.dject.debug;
 
 import com.google.inject.AbstractModule;
-import org.dxee.dject.InjectorBuilder;
-import org.dxee.dject.lifecycle.LifecycleInjector;
+import org.dxee.dject.DjectBuilder;
+import org.dxee.dject.Djector;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class ProvisionDebugModuleTest {
     @Test
     public void confirmListenerExists() {
-        try (LifecycleInjector injector = InjectorBuilder.fromModule(
+        try (Djector injector = DjectBuilder.fromModule(
                 new AbstractModule() {
                     @Override
                     protected void configure() {

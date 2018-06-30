@@ -3,7 +3,7 @@ package org.dxee.dject.event;
 import com.google.inject.AbstractModule;
 import com.google.inject.CreationException;
 import com.google.inject.Injector;
-import org.dxee.dject.InjectorBuilder;
+import org.dxee.dject.DjectBuilder;
 import org.dxee.dject.event.guava.GuavaApplicationEventModule;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +18,7 @@ public class ApplicationEventModuleTest {
 
     @Before
     public void setup() {
-        injector = InjectorBuilder.fromModules(new GuavaApplicationEventModule(), new AbstractModule() {
+        injector = DjectBuilder.fromModules(new GuavaApplicationEventModule(), new AbstractModule() {
             @Override
             protected void configure() {
                 bind(TestAnnotatedListener.class).toInstance(new TestAnnotatedListener());
@@ -136,7 +136,7 @@ public class ApplicationEventModuleTest {
     
     @Test(expected=CreationException.class)
     public void testEventListenerWithInvalidArgumentsFailsFast() {
-        injector = InjectorBuilder.fromModules(new GuavaApplicationEventModule(), new AbstractModule() {
+        injector = DjectBuilder.fromModules(new GuavaApplicationEventModule(), new AbstractModule() {
             @Override
             protected void configure() {
                 bind(TestFailFastEventListener.class).toInstance(new TestFailFastEventListener());

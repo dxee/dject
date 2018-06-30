@@ -1,30 +1,30 @@
 package org.dxee.dject.lifecycle;
 
 import com.google.inject.ImplementedBy;
-import org.dxee.dject.lifecycle.impl.DefaultLifecycleShutdownSignal;
+import org.dxee.dject.lifecycle.impl.SimpleLifecycleShutdown;
 
 /**
- * Shutdown signal for the lifecycle manager.  Code can either block on the signal
+ * Shutdown shutdown for the lifecycle manager.  Code can either block on the shutdown
  * being fired or trigger it from a shutdown mechanism, such as a shutdown PID or
  * shutdown socket.  Each container is likely to have it's own implementation of
- * shutdown signal.
+ * shutdown shutdown.
  * 
  * @author elandau
  *
  */
-@ImplementedBy(DefaultLifecycleShutdownSignal.class)
-public interface LifecycleShutdownSignal {
+@ImplementedBy(SimpleLifecycleShutdown.class)
+public interface LifecycleShutdown {
     /**
      * Signal shutdown
      */
-    void signal();
+    void shutdown();
     
     /**
      * Wait for shutdown to be signalled.  This could be either the result of 
-     * calling signal() or an internal shutdown mechanism for the container.
+     * calling shutdown() or an internal shutdown mechanism for the container.
      * 
      * @throws InterruptedException
      */
-    void await() throws InterruptedException;
+    void awaitTermination() throws InterruptedException;
 
 }

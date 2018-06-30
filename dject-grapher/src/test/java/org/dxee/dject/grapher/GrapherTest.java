@@ -2,8 +2,8 @@ package org.dxee.dject.grapher;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Stage;
-import org.dxee.dject.InjectorBuilder;
-import org.dxee.dject.lifecycle.LifecycleInjector;
+import org.dxee.dject.DjectBuilder;
+import org.dxee.dject.Djector;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class GrapherTest {
         final AtomicBoolean injectCalled = new AtomicBoolean(false);
         final AtomicBoolean afterInjectorCalled = new AtomicBoolean(false);
 
-        try(LifecycleInjector injector = InjectorBuilder
+        try(Djector injector = DjectBuilder
                 .fromModules(new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -45,7 +45,7 @@ public class GrapherTest {
         final AtomicBoolean injectCalled = new AtomicBoolean(false);
         final AtomicBoolean afterInjectorCalled = new AtomicBoolean(false);
 
-        try(LifecycleInjector injector = InjectorBuilder
+        try(Djector injector = DjectBuilder
                 .fromModules(new AbstractModule() {
                     @Override
                     protected void configure() {

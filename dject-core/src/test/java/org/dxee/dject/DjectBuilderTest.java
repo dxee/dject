@@ -2,8 +2,6 @@ package org.dxee.dject;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.spi.Element;
-import org.dxee.dject.lifecycle.LifecycleInjector;
-import org.dxee.dject.lifecycle.LifecycleInjectorCreator;
 import org.dxee.dject.visitors.BindingTracingVisitor;
 import org.dxee.dject.visitors.KeyTracingVisitor;
 import org.dxee.dject.visitors.ModuleSourceTracingVisitor;
@@ -21,50 +19,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-public class InjectorBuilderTest {
- 
-    
-    @Test
-    public void testLifecycleInjectorEvents() {
-        final AtomicBoolean injectCalled = new AtomicBoolean(false);
-        final AtomicBoolean afterInjectorCalled = new AtomicBoolean(false);
-        
-        InjectorBuilder
-            .fromModule(new AbstractModule() {
-                @Override
-                protected void configure() {
-                }
-            })
-            .createInjector(new LifecycleInjectorCreator() {
-                @Inject
-                public void initialize() {
-                    injectCalled.set(true);
-                }
-                
-                @Override
-                protected void onCompletedInjectorCreate() {
-                    afterInjectorCalled.set(true);
-                }
-            })
-            .close();
-        
-        Assert.assertTrue(injectCalled.get());
-        Assert.assertTrue(afterInjectorCalled.get());
-    }
-    
-    @Before
-    public void printTestHeader() {
-        System.out.println("\n=======================================================");
-        System.out.println("  Running Test : " + name.getMethodName());
-        System.out.println("=======================================================\n");
-    }
-    
-    @Rule
-    public TestName name = new TestName();
-    
+public class DjectBuilderTest {
     @Test
     public void testBindingTracing() {
-        InjectorBuilder
+        DjectBuilder
             .fromModule(new AbstractModule() {
                 @Override
                 protected void configure() {
@@ -78,7 +36,7 @@ public class InjectorBuilderTest {
     @Test
     public void testForEachBinding() {
         Consumer<String> consumer = Mockito.mock(Consumer.class);
-        InjectorBuilder
+        DjectBuilder
             .fromModule(new AbstractModule() {
                 @Override
                 protected void configure() {
@@ -93,7 +51,7 @@ public class InjectorBuilderTest {
     
     @Test
     public void testKeyTracing() {
-        try (LifecycleInjector li = InjectorBuilder
+        try (Djector li = DjectBuilder
             .fromModule(new AbstractModule() {
                 @Override
                 protected void configure() {
@@ -106,7 +64,7 @@ public class InjectorBuilderTest {
     
     @Test
     public void testWarnOnStaticInjection() {
-        List<Element> elements = InjectorBuilder
+        List<Element> elements = DjectBuilder
             .fromModule(new AbstractModule() {
                 @Override
                 protected void configure() {
@@ -121,7 +79,7 @@ public class InjectorBuilderTest {
     
     @Test
     public void testStripStaticInjection() {
-        List<Element> elements = InjectorBuilder
+        List<Element> elements = DjectBuilder
             .fromModule(new AbstractModule() {
                 @Override
                 protected void configure() {
@@ -169,9 +127,19 @@ public class InjectorBuilderTest {
     
     @Test
     public void testTraceModules() {
-        InjectorBuilder
+        DjectBuilder
             .fromModule(new ModuleA())
             .forEachElement(new ModuleSourceTracingVisitor(), message -> LoggerFactory.getLogger(this.getClass()).debug(message))
             .createInjector();
     }
+
+    @Before
+    public void printTestHeader() {
+        System.out.println("\n=======================================================");
+        System.out.println("  Running Test : " + name.getMethodName());
+        System.out.println("=======================================================\n");
+    }
+
+    @Rule
+    public TestName name = new TestName();
 }

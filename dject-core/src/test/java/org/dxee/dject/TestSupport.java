@@ -7,8 +7,6 @@ import java.util.List;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.Stage;
-import org.dxee.dject.lifecycle.LifecycleInjector;
-import org.dxee.dject.lifecycle.LifecycleInjectorCreator;
 
 public class TestSupport {
     private static final class InstancesModule extends AbstractModule {
@@ -38,8 +36,8 @@ public class TestSupport {
         return new InstancesModule(instances);
     }
 
-    public static LifecycleInjector inject(final Object... instances) {
-        return InjectorBuilder.fromModule(new InstancesModule(instances)).createInjector();
+    public static Djector inject(final Object... instances) {
+        return DjectBuilder.fromModule(new InstancesModule(instances)).createInjector();
     }
     
     public TestSupport withSingleton(final Object... instances) {
@@ -47,8 +45,8 @@ public class TestSupport {
         return this;       
     }
     
-    public LifecycleInjector inject() {
-        return new LifecycleInjectorCreator().createInjector(Stage.PRODUCTION, module);
+    public Djector inject() {
+        return Djector.createInjector(Stage.PRODUCTION, module);
     }
 
 }

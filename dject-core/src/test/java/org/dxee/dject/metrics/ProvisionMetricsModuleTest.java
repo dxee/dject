@@ -2,8 +2,8 @@ package org.dxee.dject.metrics;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
-import org.dxee.dject.InjectorBuilder;
-import org.dxee.dject.lifecycle.LifecycleInjector;
+import org.dxee.dject.Djector;
+import org.dxee.dject.DjectBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class ProvisionMetricsModuleTest {
     @Test
     public void disableMetrics() {
-        try (LifecycleInjector injector = InjectorBuilder.fromModule(
+        try (Djector injector = DjectBuilder.fromModule(
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -31,7 +31,7 @@ public class ProvisionMetricsModuleTest {
 
     @Test
     public void confirmDedupWorksWithOverride() {
-        try (LifecycleInjector injector = InjectorBuilder.fromModule(
+        try (Djector injector = DjectBuilder.fromModule(
                 new AbstractModule() {
                     @Override
                     protected void configure() {

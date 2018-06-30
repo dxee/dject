@@ -24,23 +24,19 @@ import org.dxee.dject.internal.BinaryConstant;
 import org.dxee.dject.internal.PreDestroyMonitor;
 
 /**
- * Adds support for standard lifecycle annotations @PostConstruct and @PreDestroy to Guice.
+ * eg. Adds support for standard lifecycle annotations @PostConstruct and @PreDestroy to Guice.
  *
  * <code>
  * public class MyService {
- * {@literal @}PostConstruct
- * public void init() {
- * }
+ *      {@literal @}PostConstruct
+ *      public void init() {
+ *      }
  * <p>
- * {@literal @}PreDestroy
- * public void shutdown() {
- * }
+ *      {@literal @}PreDestroy
+*       public void shutdown() {
+ *      }
  * }
  * </code>
- * <p>
- * To use simply add LifecycleModule to guice when creating the injector
- * <p>
- * See {@link LifecycleInjector} for different scenarios for shutting down the LifecycleManager.
  */
 public final class LifecycleModule extends AbstractModule {
     private static final Logger LOGGER = LoggerFactory.getLogger(LifecycleModule.class);
@@ -71,6 +67,7 @@ public final class LifecycleModule extends AbstractModule {
                 LifecycleProvisionListener provisionListener,
                 Set<PostConstructLifecycleFeature> postConstructLifecycleFeatures,
                 Set<PreDestroyLifecycleFeature> preDestoryLifecycleFeatures) {
+            // Order by feature priority
             Ordering<LifecycleFeature> lifecycleFeatureOrdering = Ordering.from(
                     Comparator.comparingInt(LifecycleFeature::priority)
             );
@@ -80,7 +77,7 @@ public final class LifecycleModule extends AbstractModule {
             LOGGER.debug("LifecycleProvisionListener initialized with postConstructLifecycleFeatures {}", postConstructLifecycleFeatures);
         }
 
-        public TypeLifecycleActions getOrCreateActions(Class<?> type) {
+        public TypeLifecycleActions createActions(Class<?> type) {
             TypeLifecycleActions actions = cache.get(type);
             if (actions == null) {
                 actions = new TypeLifecycleActions();
@@ -142,7 +139,7 @@ public final class LifecycleModule extends AbstractModule {
                 return;
             }
 
-            final TypeLifecycleActions actions = getOrCreateActions(injectee.getClass());
+            final TypeLifecycleActions actions = createActions(injectee.getClass());
 
             // Call all postConstructActions for this injectee
             if (!actions.postConstructActions.isEmpty()) {

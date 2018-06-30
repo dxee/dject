@@ -4,7 +4,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import com.google.inject.AbstractModule;
-import org.dxee.dject.lifecycle.LifecycleShutdownSignal;
+import org.dxee.dject.lifecycle.LifecycleShutdown;
 
 /**
  * When installed ShutdownHookModule will link a JVM shutdown hook to
@@ -13,7 +13,7 @@ import org.dxee.dject.lifecycle.LifecycleShutdownSignal;
  * 
  * <pre>
  * {@code
- *    InjectorBuilder.fromModule(new ShutdownHookModule());
+ *    DjectBuilder.fromModule(new ShutdownHookModule());
  * }
  * </pre>
  */
@@ -21,8 +21,8 @@ public final class ShutdownHookModule extends AbstractModule {
     @Singleton
     public static class SystemShutdownHook extends Thread {
         @Inject
-        public SystemShutdownHook(final LifecycleShutdownSignal shutdown) {
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown.signal()));
+        public SystemShutdownHook(final LifecycleShutdown shutdown) {
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown.shutdown()));
         }
     }
     

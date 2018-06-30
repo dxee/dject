@@ -11,7 +11,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import org.dxee.dject.InjectorBuilder;
+import org.dxee.dject.DjectBuilder;
+import org.dxee.dject.Djector;
 import org.dxee.dject.TestSupport;
 import org.junit.Assert;
 import org.junit.Before;
@@ -100,7 +101,7 @@ public class LifecycleModuleTest {
             }
         };
 
-        try (LifecycleInjector injector = TestSupport.inject(listener)) {
+        try (Djector injector = TestSupport.inject(listener)) {
             fail("expected exception injecting instance");
         } catch (CreationException e) {
             // expected
@@ -121,7 +122,7 @@ public class LifecycleModuleTest {
             }
         };
 
-        try (LifecycleInjector injector = TestSupport.inject(listener)) {
+        try (Djector injector = TestSupport.inject(listener)) {
             fail("expected rt exception starting injector");
         } catch (TestRuntimeException e) {
             // expected
@@ -142,7 +143,7 @@ public class LifecycleModuleTest {
             }
         };
 
-        try (LifecycleInjector injector = TestSupport.inject(listener)) {
+        try (Djector injector = TestSupport.inject(listener)) {
         } finally {
             assertThat(listener.events, equalTo(Arrays.asList(Events.Injected, Events.Started, Events.Stopped)));
         }
@@ -159,7 +160,7 @@ public class LifecycleModuleTest {
                 fail("injected exception");
             }
         };
-        try (LifecycleInjector injector = TestSupport.inject(listener)) {
+        try (Djector injector = TestSupport.inject(listener)) {
             fail("expected error provisioning injector");
         } catch (Exception e) {
             fail("expected AssertionError provisioning injector but got " + e);
@@ -179,7 +180,7 @@ public class LifecycleModuleTest {
                 fail("onStarted exception");
             }
         };
-        try (LifecycleInjector injector = TestSupport.inject(listener)) {
+        try (Djector injector = TestSupport.inject(listener)) {
             fail("expected AssertionError starting injector");
         } catch (Exception e) {
             fail("expected AssertionError starting injector but got " + e);
@@ -201,7 +202,7 @@ public class LifecycleModuleTest {
                 fail("onstopped exception");
             }
         };
-        try (LifecycleInjector injector = TestSupport.inject(listener)) {
+        try (Djector injector = TestSupport.inject(listener)) {
             fail("expected AssertionError stopping injector");
         } catch (Exception e) {
             fail("expected AssertionError stopping injector but got " + e);
@@ -256,7 +257,7 @@ public class LifecycleModuleTest {
     public void testNestedLifecycleListeners() {
         Listener1 listener1;
         Listener2 listener2;
-        try (LifecycleInjector injector = InjectorBuilder.fromModule(new AbstractModule() {
+        try (Djector injector = DjectBuilder.fromModule(new AbstractModule() {
             
             @Override
             protected void configure() {

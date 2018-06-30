@@ -218,7 +218,7 @@ public class PreDestroyMonitor implements AutoCloseable {
         @Override
         public Boolean visitScope(Scope scope) {
             final Provider<ScopeCleanupMarker> scopedMarkerProvider;
-            if (scope.equals(Scopes.SINGLETON) || (scope instanceof AbstractScope && ((AbstractScope) scope).isSingletonScope())) {
+            if (scope.equals(Scopes.SINGLETON)) {
                 scopedMarkerProvider = Providers.of(scopeCleaner.singletonMarker);
             } else {
                 scopedMarkerProvider = scope.scope(ScopeCleanupMarker.MARKER_KEY, scopeCleaner);
