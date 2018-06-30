@@ -8,4 +8,4 @@ Keep the core small and scalable, and provide rich extensions arround the core.
 PR is very welcome.
 
 ## Attention
-Still in exploration
+Still in exploration, use `governator` as the start point.
