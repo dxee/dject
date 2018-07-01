@@ -11,7 +11,8 @@ import java.lang.annotation.Annotation;
  * @author bing.fan
  * 2018-06-07 19:54
  */
-public final class JSR250PostConstructLifecycleFeature extends OneAnnotationLifecycleFeature implements PostConstructLifecycleFeature {
+public final class JSR250PostConstructLifecycleFeature
+        extends OneAnnotationLifecycleFeature implements PostConstructLifecycleFeature {
 
     @Override
     public JSR250PostConstructTypeVisitor visitor() {
@@ -41,7 +42,8 @@ public final class JSR250PostConstructLifecycleFeature extends OneAnnotationLife
 
     @Override
     public String toString() {
-        return new StringBuilder().append("PostConstruct @").append(this.annotationClazz==null ? "null" : this.annotationClazz.getSimpleName())
+        return new StringBuilder().append("PostConstruct @")
+                .append(this.annotationClazz == null ? "null" : this.annotationClazz.getSimpleName())
                 .append(" with priority ").append(priority()).toString();
     }
 }

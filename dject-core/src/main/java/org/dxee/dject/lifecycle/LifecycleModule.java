@@ -70,10 +70,13 @@ public final class LifecycleModule extends AbstractModule {
             Ordering<LifecycleFeature> lifecycleFeatureOrdering = Ordering.from(
                     Comparator.comparingInt(LifecycleFeature::priority)
             );
-            provisionListener.postConstructLifecycleFeatures = lifecycleFeatureOrdering.sortedCopy(postConstructLifecycleFeatures);
-            provisionListener.preDestoryLifecycleFeatures = lifecycleFeatureOrdering.sortedCopy(preDestoryLifecycleFeatures);
+            provisionListener.postConstructLifecycleFeatures = lifecycleFeatureOrdering
+                    .sortedCopy(postConstructLifecycleFeatures);
+            provisionListener.preDestoryLifecycleFeatures = lifecycleFeatureOrdering
+                    .sortedCopy(preDestoryLifecycleFeatures);
             provisionListener.preDestroyMonitor = new PreDestroyMonitor(injector.getScopeBindings());
-            LOGGER.debug("LifecycleProvisionListener initialized with postConstructLifecycleFeatures {}", postConstructLifecycleFeatures);
+            LOGGER.debug("LifecycleProvisionListener initialized with postConstructLifecycleFeatures {}",
+                    postConstructLifecycleFeatures);
         }
 
         public TypeLifecycleActions createActions(Class<?> type) {
@@ -154,7 +157,10 @@ public final class LifecycleModule extends AbstractModule {
                 if (isShutdown.get() == false) {
                     preDestroyMonitor.register(injectee, provision.getBinding(), actions.preDestroyActions);
                 } else {
-                    LOGGER.warn("Already shutting down.  Shutdown methods {} on {} will not be invoked", actions.preDestroyActions, injectee.getClass().getName());
+                    LOGGER.warn("Already shutting down.  Shutdown methods {} on {} will not be invoked",
+                            actions.preDestroyActions,
+                            injectee.getClass().getName()
+                    );
                 }
             }
         }

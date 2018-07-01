@@ -4,19 +4,17 @@
  * This is a general purpose Gradle build.
  * Learn how to create Gradle builds at https://guides.gradle.org/creating-new-gradle-builds/
  */
+group 'org.dxee.dject'
+version '1.0.0-alpha1'
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'checkstyle'
 
     repositories {
         mavenLocal()
         jcenter()
     }
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-    
-    group = "org.dxee.dject"
 
     dependencies {
         compile "org.slf4j:slf4j-api:1.7.25"
@@ -29,6 +27,10 @@ subprojects {
     }
 
     tasks.withType(Javadoc) {
-      options.addStringOption('Xdoclint:none', '-quiet')
+        options.addStringOption('Xdoclint:none', '-quiet')
+    }
+
+    checkstyle {
+        toolVersion = '8.11'
     }
 }

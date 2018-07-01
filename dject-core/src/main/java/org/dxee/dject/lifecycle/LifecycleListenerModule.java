@@ -60,7 +60,7 @@ public final class LifecycleListenerModule extends AbstractModule {
 
     @Override
     public boolean equals(Object obj) {
-        return getClass()==obj.getClass();
+        return getClass() == obj.getClass();
     }
 
     @Override

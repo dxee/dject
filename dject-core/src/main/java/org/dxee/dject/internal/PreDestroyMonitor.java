@@ -264,7 +264,7 @@ public class PreDestroyMonitor implements AutoCloseable {
      */
     private static final class ScopeCleanupAction extends WeakReference<ScopeCleanupMarker>
             implements Callable<Void>, Comparable<ScopeCleanupAction> {
-        private volatile static long instanceCounter = 0;
+        private static volatile long instanceCounter = 0;
         private final Object id;
         private final long ordinal;
         private Deque<Object[]> delegates = new ConcurrentLinkedDeque<>();

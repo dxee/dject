@@ -11,7 +11,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * annotation for binding instances bound to ThreadLocalScope
- *
  */
-@Target({ TYPE, METHOD }) @Retention(RUNTIME) @ScopeAnnotation
-public @interface ThreadLocalScoped {}
+@Target({TYPE, METHOD})
+@Retention(RUNTIME)
+@ScopeAnnotation
+public @interface ThreadLocalScoped {
+}

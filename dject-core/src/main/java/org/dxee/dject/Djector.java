@@ -16,7 +16,7 @@ import javax.inject.Singleton;
  * Wrapper for Guice's Injector with extended methods.
  */
 @Singleton
-final public class Djector extends DelegatingInjector implements AutoCloseable {
+public final class Djector extends DelegatingInjector implements AutoCloseable {
     private static final Logger LOGGER = LoggerFactory.getLogger(Djector.class);
     private final LifecycleManager manager;
     private final LifecycleShutdown lifecycleShutdown;
@@ -68,7 +68,10 @@ final public class Djector extends DelegatingInjector implements AutoCloseable {
             LOGGER.info("Injector created successfully ");
             return djector;
         } catch (Exception e) {
-            LOGGER.error("Failed to create injector - {}@{}", e.getClass().getSimpleName(), System.identityHashCode(e), e);
+            LOGGER.error("Failed to create injector - {}@{}",
+                    e.getClass().getSimpleName(),
+                    System.identityHashCode(e),
+                    e);
             try {
                 manager.notifyStartFailed(e);
             } catch (Exception e2) {

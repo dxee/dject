@@ -56,7 +56,12 @@ public final class LifecycleManager {
     private final AtomicReference<State> state;
     private final ReferenceQueue<LifecycleListener> unreferencedListenersQueue = new ReferenceQueue<>();
     private volatile Throwable failureReason;
-    private final ExecutorService reqQueueExecutor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setDaemon(true).setNameFormat("lifecycle-listener-monitor-%d").build());
+    private final ExecutorService reqQueueExecutor = Executors.newSingleThreadExecutor(
+            new ThreadFactoryBuilder()
+                    .setDaemon(true)
+                    .setNameFormat("lifecycle-listener-monitor-%d")
+                    .build()
+    );
     private final AtomicBoolean running = new AtomicBoolean(true);
 
     public enum State {
@@ -82,7 +87,7 @@ public final class LifecycleManager {
         if (!listeners.contains(safeListener) && listeners.add(safeListener)) {
             LOGGER.info("Adding listener '{}'", safeListener);
             switch (state.get()) {
-                case Started:
+              case Started:
                     safeListener.onStarted();
                     break;
                 case Stopped:
@@ -105,7 +110,7 @@ public final class LifecycleManager {
     }
 
     public synchronized void notifyStartFailed(final Throwable t) {
-        // State.Started added here to allow for failure  when LifecycleListener.onStarted() is called, post-injector creation
+        // State.Started added here to allow for failure  when LifecycleListener.onStarted() is called
         if (state.compareAndSet(State.Starting, State.Stopped) || state.compareAndSet(State.Started, State.Stopped)) {
             LOGGER.info("Failed start of '{}'", this);
             if (running.compareAndSet(true, false)) {
