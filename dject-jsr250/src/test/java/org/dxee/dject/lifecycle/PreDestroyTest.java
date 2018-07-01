@@ -415,11 +415,11 @@ public class PreDestroyTest {
         final ThreadLocalScope threadLocalScope = new ThreadLocalScope();
 
         DjectBuilder builder = TestSupport.fromModules(new AbstractModule() {
-                                                                  @Override
-                                                                  protected void configure() {
-                                                                      binder().bind(Key.get(AnnotatedFoo.class));
-                                                                  }
-                                                              },
+                                                           @Override
+                                                           protected void configure() {
+                                                               binder().bind(Key.get(AnnotatedFoo.class));
+                                                           }
+                                                       },
                 new AbstractModule() {
                     @Override
                     protected void configure() {
