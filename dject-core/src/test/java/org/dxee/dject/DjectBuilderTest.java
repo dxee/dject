@@ -14,9 +14,7 @@ import org.junit.rules.TestName;
 import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class DjectBuilderTest {

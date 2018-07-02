@@ -120,8 +120,7 @@ public final class DjectBuilder {
      * @param visitor visitor
      */
     public <T> DjectBuilder forEachElement(ElementVisitor<T> visitor) {
-        Elements
-                .getElements(module)
+        Elements.getElements(module)
                 .forEach(element -> element.acceptVisitor(visitor));
         return this;
     }
