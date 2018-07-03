@@ -1,17 +1,15 @@
 package org.dxee.dject;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.spi.DefaultElementVisitor;
 import com.google.inject.spi.Element;
-import org.dxee.dject.visitors.WarnOfToInstanceInjectionVisitor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.mockito.Mockito;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class DjectBuilderTest {
     @Test
@@ -24,23 +22,10 @@ public class DjectBuilderTest {
                     }
                 })
                 .traceEachBinding()
-                .createInjector();
-    }
+                .forEachElement(new DefaultElementVisitor<String>() {
 
-    @Test
-    public void testForEachBinding() {
-        Consumer<String> consumer = Mockito.mock(Consumer.class);
-        DjectBuilder
-                .fromModule(new AbstractModule() {
-                    @Override
-                    protected void configure() {
-                        bind(String.class).toInstance("Hello world");
-                    }
                 })
-                .forEachElement(new WarnOfToInstanceInjectionVisitor(), consumer)
                 .createInjector();
-
-        Mockito.verify(consumer, Mockito.times(1)).accept(Mockito.anyString());
     }
 
     @Test
@@ -52,6 +37,7 @@ public class DjectBuilderTest {
                         bind(String.class).toInstance("Hello world");
                     }
                 })
+                .warnOfToInstanceInjections()
                 .traceEachKey()
                 .createInjector()) {
         }

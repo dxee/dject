@@ -106,7 +106,7 @@ public final class DjectBuilder {
      *
      * @param visitor visitor
      */
-    public <T> DjectBuilder forEachElement(ElementVisitor<T> visitor, Consumer<T> consumer) {
+    private <T> DjectBuilder forEachElement(ElementVisitor<T> visitor, Consumer<T> consumer) {
         Elements.getElements(module).forEach(
                 element -> Optional.ofNullable(element.acceptVisitor(visitor)).ifPresent(consumer)
         );
