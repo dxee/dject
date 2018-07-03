@@ -210,7 +210,7 @@ public class PreDestroyTest {
     public void testEagerSingletonShutdown() {
         EagerBean eagerBean;
         SingletonBean singletonBean;
-        try (Djector injector = TestSupport.fromModules(new AbstractModule() {
+        try (Dject injector = TestSupport.fromModules(new AbstractModule() {
             @Override
             protected void configure() {
                 bind(EagerBean.class).asEagerSingleton();
@@ -232,7 +232,7 @@ public class PreDestroyTest {
         final PreDestroyChild1 preDestroyChild = Mockito.spy(new PreDestroyChild1());
         InOrder inOrder = Mockito.inOrder(preDestroyChild);
 
-        try (Djector injector = TestSupport.inject(preDestroyChild)) {
+        try (Dject injector = TestSupport.inject(preDestroyChild)) {
             Assert.assertNotNull(injector.getInstance(preDestroyChild.getClass()));
             Mockito.verify(preDestroyChild, Mockito.never()).shutdown();
         }
@@ -245,7 +245,7 @@ public class PreDestroyTest {
         final PreDestroyChild2 preDestroyChild = Mockito.spy(new PreDestroyChild2());
         InOrder inOrder = Mockito.inOrder(preDestroyChild);
 
-        try (Djector injector = TestSupport.inject(preDestroyChild)) {
+        try (Dject injector = TestSupport.inject(preDestroyChild)) {
             Assert.assertNotNull(injector.getInstance(preDestroyChild.getClass()));
             Mockito.verify(preDestroyChild, Mockito.never()).shutdown();
         }
@@ -259,7 +259,7 @@ public class PreDestroyTest {
         final PreDestroyChild3 preDestroyChild = Mockito.spy(new PreDestroyChild3());
         InOrder inOrder = Mockito.inOrder(preDestroyChild);
 
-        try (Djector injector = TestSupport.inject(preDestroyChild)) {
+        try (Dject injector = TestSupport.inject(preDestroyChild)) {
             Assert.assertNotNull(injector.getInstance(preDestroyChild.getClass()));
             Mockito.verify(preDestroyChild, Mockito.never()).shutdown();
         }
@@ -271,7 +271,7 @@ public class PreDestroyTest {
     public void testLifecycleMultipleAnnotations() {
         final MultipleDestroys multipleDestroys = Mockito.spy(new MultipleDestroys());
 
-        try (Djector injector = new TestSupport()
+        try (Dject injector = new TestSupport()
                 .withSingleton(multipleDestroys)
                 .inject()) {
             Assert.assertNotNull(injector.getInstance(multipleDestroys.getClass()));
@@ -288,7 +288,7 @@ public class PreDestroyTest {
         final RunnableType runnableInstance = Mockito.mock(RunnableType.class);
         InOrder inOrder = Mockito.inOrder(runnableInstance);
 
-        try (Djector injector = TestSupport.inject(runnableInstance)) {
+        try (Dject injector = TestSupport.inject(runnableInstance)) {
             Assert.assertNotNull(injector.getInstance(RunnableType.class));
             Mockito.verify(runnableInstance, Mockito.never()).run();
         }
@@ -300,7 +300,7 @@ public class PreDestroyTest {
         final PreDestroyImpl impl = Mockito.mock(PreDestroyImpl.class);
         InOrder inOrder = Mockito.inOrder(impl);
 
-        try (Djector injector = TestSupport.inject(impl)) {
+        try (Dject injector = TestSupport.inject(impl)) {
             Assert.assertNotNull(injector.getInstance(RunnableType.class));
             Mockito.verify(impl, Mockito.never()).destroy();
         }
@@ -311,7 +311,7 @@ public class PreDestroyTest {
     public void testLifecycleShutdownWithInvalidPreDestroys() {
         final InvalidPreDestroys ipd = Mockito.mock(InvalidPreDestroys.class);
 
-        try (Djector injector = new TestSupport()
+        try (Dject injector = new TestSupport()
                 .withSingleton(ipd)
                 .inject()) {
             Assert.assertNotNull(injector.getInstance(InvalidPreDestroys.class));
@@ -331,7 +331,7 @@ public class PreDestroyTest {
             // ignore, mock only
         }
 
-        try (Djector injector = TestSupport.inject(closeableType)) {
+        try (Dject injector = TestSupport.inject(closeableType)) {
             Assert.assertNotNull(injector.getInstance(closeableType.getClass()));
             try {
                 Mockito.verify(closeableType, Mockito.never()).close();
@@ -354,7 +354,7 @@ public class PreDestroyTest {
     @Test
     public void testLifecycleShutdown() {
         final Foo foo = Mockito.mock(Foo.class);
-        try (Djector injector = TestSupport.inject(foo)) {
+        try (Dject injector = TestSupport.inject(foo)) {
             Assert.assertNotNull(injector.getInstance(foo.getClass()));
             Mockito.verify(foo, Mockito.never()).shutdown();
         }
@@ -376,7 +376,7 @@ public class PreDestroyTest {
         });
 
         Foo managedFoo = null;
-        try (Djector injector = builder.createInjector()) {
+        try (Dject injector = builder.createInjector()) {
             managedFoo = injector.getInstance(Foo.class);
             Assert.assertNotNull(managedFoo);
             Assert.assertFalse(managedFoo.isShutdown());
@@ -397,7 +397,7 @@ public class PreDestroyTest {
         });
 
         Foo managedFoo = null;
-        try (Djector injector = builder.createInjector()) {
+        try (Dject injector = builder.createInjector()) {
             threadLocalScope.enter();
             managedFoo = injector.getInstance(Foo.class);
             Assert.assertNotNull(managedFoo);
@@ -428,7 +428,7 @@ public class PreDestroyTest {
                 });
 
         AnnotatedFoo managedFoo = null;
-        try (Djector injector = builder.createInjector()) {
+        try (Dject injector = builder.createInjector()) {
             threadLocalScope.enter();
             managedFoo = injector.getInstance(AnnotatedFoo.class);
             Assert.assertNotNull(managedFoo);
@@ -470,7 +470,7 @@ public class PreDestroyTest {
 
         AnnotatedFoo managedFoo1 = null;
         AnnotatedFoo managedFoo2 = null;
-        try (Djector injector = builder.createInjector()) {
+        try (Dject injector = builder.createInjector()) {
             scope.enter();
             managedFoo1 = injector.getInstance(Key.get(AnnotatedFoo.class, Names.named("afoo1")));
             Assert.assertNotNull(managedFoo1);
@@ -500,7 +500,7 @@ public class PreDestroyTest {
         });
 
         Foo managedFoo = null;
-        try (Djector injector = builder.createInjector()) {
+        try (Dject injector = builder.createInjector()) {
             managedFoo = injector.getInstance(Foo.class);
             Assert.assertNotNull(managedFoo);
             Assert.assertFalse(managedFoo.isShutdown());

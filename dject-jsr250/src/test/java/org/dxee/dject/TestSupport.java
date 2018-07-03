@@ -35,7 +35,7 @@ public class TestSupport {
         return this;       
     }
     
-    public Djector inject() {
+    public Dject inject() {
         return DjectBuilder.fromModule(module).createInjector(Stage.PRODUCTION, module);
     }
 
@@ -47,7 +47,7 @@ public class TestSupport {
         return new InstancesModule(instances);
     }
 
-    public static Djector inject(final Object... instances) {
+    public static Dject inject(final Object... instances) {
         return DjectBuilder.fromModule(new InstancesModule(instances)).createInjector();
     }
 

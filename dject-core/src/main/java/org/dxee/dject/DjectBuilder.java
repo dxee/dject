@@ -28,7 +28,7 @@ import java.util.function.Consumer;
  * of operations and transformations of Guice modules.  Operations are tracked using a
  * single module and are additive such that each operation executes on top of the entire
  * current binding state.  Once all bindings have been defined the injector can be created
- * using an {@link Djector} strategy.
+ * using an {@link Dject} strategy.
  *
  * <code>
  * DjectBuilder
@@ -181,7 +181,7 @@ public final class DjectBuilder {
      * @param stage The stage of injector
      * @return
      */
-    public Djector createInjector(Stage stage) {
+    public Dject createInjector(Stage stage) {
         return createInjector(stage, module);
     }
 
@@ -191,11 +191,11 @@ public final class DjectBuilder {
      *
      * @return
      */
-    public Djector createInjector() {
+    public Dject createInjector() {
         return createInjector(Stage.DEVELOPMENT);
     }
 
-    public Djector createInjector(Stage stage, Module module) {
+    public Dject createInjector(Stage stage, Module module) {
         final LifecycleManager manager = new LifecycleManager();
         // Construct the injector using our override structure
         try {
@@ -209,16 +209,16 @@ public final class DjectBuilder {
                     new AbstractModule() {
                         @Override
                         protected void configure() {
-                            bind(Djector.class);
+                            bind(Dject.class);
                             bind(LifecycleManager.class).toInstance(manager);
                         }
                     },
                     module
             );
             manager.notifyStarted();
-            Djector djector = injector.getExistingBinding(Key.get(Djector.class)).getProvider().get();
+            Dject dject = injector.getExistingBinding(Key.get(Dject.class)).getProvider().get();
             LOGGER.info("Injector created successfully ");
-            return djector;
+            return dject;
         } catch (Exception e) {
             LOGGER.error("Failed to create injector - {}@{}",
                     e.getClass().getSimpleName(),

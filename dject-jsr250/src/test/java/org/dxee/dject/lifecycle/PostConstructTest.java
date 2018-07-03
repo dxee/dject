@@ -3,7 +3,7 @@ package org.dxee.dject.lifecycle;
 import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 
-import org.dxee.dject.Djector;
+import org.dxee.dject.Dject;
 import org.dxee.dject.DjectBuilder;
 import org.dxee.dject.TestSupport;
 import org.junit.Assert;
@@ -103,7 +103,7 @@ public class PostConstructTest {
         final PostConstructChild1 postConstructChild = Mockito.mock(PostConstructChild1.class);
         InOrder inOrder = Mockito.inOrder(postConstructChild);
 
-        try (Djector injector = TestSupport.inject(postConstructChild)) {
+        try (Dject injector = TestSupport.inject(postConstructChild)) {
             Assert.assertNotNull(injector.getInstance(postConstructChild.getClass()));
             // not twice
             inOrder.verify(postConstructChild, Mockito.times(1)).init();
@@ -115,7 +115,7 @@ public class PostConstructTest {
         final PostConstructChild2 postConstructChild = Mockito.mock(PostConstructChild2.class);
         InOrder inOrder = Mockito.inOrder(postConstructChild);
 
-        try (Djector injector = TestSupport.inject(postConstructChild)) {
+        try (Dject injector = TestSupport.inject(postConstructChild)) {
             Assert.assertNotNull(injector.getInstance(postConstructChild.getClass()));
             // parent postConstruct before child postConstruct
             inOrder.verify(postConstructChild, Mockito.times(1)).anotherInit();
@@ -129,7 +129,7 @@ public class PostConstructTest {
         final PostConstructChild3 postConstructChild = Mockito.spy(new PostConstructChild3());
         InOrder inOrder = Mockito.inOrder(postConstructChild);
 
-        try (Djector injector = TestSupport.inject(postConstructChild)) {
+        try (Dject injector = TestSupport.inject(postConstructChild)) {
             Assert.assertNotNull(injector.getInstance(postConstructChild.getClass()));
             Mockito.verify(postConstructChild, Mockito.never()).init();
         }
@@ -141,7 +141,7 @@ public class PostConstructTest {
     @Test
     public void testLifecycleMultipleAnnotations() {
         final MultiplePostConstructs multiplePostConstructs = Mockito.spy(new MultiplePostConstructs());
-        try (Djector injector = new TestSupport()
+        try (Dject injector = new TestSupport()
                 .withSingleton(multiplePostConstructs)
                 .inject()) {
             Assert.assertNotNull(injector.getInstance(multiplePostConstructs.getClass()));
@@ -157,7 +157,7 @@ public class PostConstructTest {
     @Test
     public void testLifecycleInitWithInvalidPostConstructs() {
         InvalidPostConstructs mockInstance = Mockito.mock(InvalidPostConstructs.class);
-        try (Djector injector = new TestSupport()
+        try (Dject injector = new TestSupport()
                 .withSingleton(mockInstance)
                 .inject()) {
             Assert.assertNotNull(injector.getInstance(InvalidPostConstructs.class));
@@ -169,7 +169,7 @@ public class PostConstructTest {
     @Test
     public void testLifecycleInitWithPostConstructException() {
         InvalidPostConstructs mockInstance = Mockito.mock(InvalidPostConstructs.class);
-        try (Djector injector = new TestSupport()
+        try (Dject injector = new TestSupport()
                 .withSingleton(mockInstance)
                 .inject()) {
             Assert.assertNotNull(injector.getInstance(InvalidPostConstructs.class));
@@ -181,7 +181,7 @@ public class PostConstructTest {
     @Test
     public void testLifecycleInit() {
         SimplePostConstruct mockInstance = Mockito.mock(SimplePostConstruct.class);
-        try (Djector injector = TestSupport.inject(mockInstance)) {
+        try (Dject injector = TestSupport.inject(mockInstance)) {
             Assert.assertNotNull(injector.getInstance(SimplePostConstruct.class));
             Mockito.verify(mockInstance, Mockito.times(1)).init();
         }
@@ -202,7 +202,7 @@ public class PostConstructTest {
                 return simplePostConstruct;
             }
         });
-        try (Djector injector = builder.createInjector()) {
+        try (Dject injector = builder.createInjector()) {
             Mockito.verify(injector.getInstance(SimplePostConstruct.class), Mockito.times(1)).init();
         }
     }

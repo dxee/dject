@@ -49,7 +49,7 @@ public class DjectBuilderTest {
     
     @Test
     public void testKeyTracing() {
-        try (Djector li = DjectBuilder
+        try (Dject li = DjectBuilder
             .fromModule(new AbstractModule() {
                 @Override
                 protected void configure() {

@@ -4,7 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
 import org.dxee.dject.DjectBuilder;
-import org.dxee.dject.Djector;
+import org.dxee.dject.Dject;
 import org.dxee.dject.lifecycle.impl.AbstractTypeVisitor;
 import org.dxee.dject.lifecycle.impl.OneAnnotationLifecycleFeature;
 import org.junit.Assert;
@@ -39,7 +39,7 @@ public class PostConstructLifecycleFeaturePriorityTest {
 
     @Test
     public void confirmPostConstructOrder() {
-        Djector injector = DjectBuilder.fromModule(new AbstractModule() {
+        Dject injector = DjectBuilder.fromModule(new AbstractModule() {
             @Override
             protected void configure() {
                 Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature1() {
@@ -86,7 +86,7 @@ public class PostConstructLifecycleFeaturePriorityTest {
 
     @Test
     public void confirmPostConstructOrder1() {
-        Djector injector = DjectBuilder.fromModule(new AbstractModule() {
+        Dject injector = DjectBuilder.fromModule(new AbstractModule() {
             @Override
             protected void configure() {
                 Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature1() {

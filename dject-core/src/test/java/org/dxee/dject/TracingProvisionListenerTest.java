@@ -9,7 +9,7 @@ import org.junit.Test;
 public class TracingProvisionListenerTest {
     @Test
     public void testDefault() {
-        Djector injector = DjectBuilder
+        Dject injector = DjectBuilder
             .fromModules(
                 new AbstractModule() {
                     @Override
