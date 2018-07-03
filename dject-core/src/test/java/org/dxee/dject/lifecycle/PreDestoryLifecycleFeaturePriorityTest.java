@@ -1,11 +1,13 @@
 package org.dxee.dject.lifecycle;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
 import org.dxee.dject.DjectBuilder;
 import org.dxee.dject.Dject;
 import org.dxee.dject.lifecycle.impl.AbstractTypeVisitor;
 import org.dxee.dject.lifecycle.impl.OneAnnotationLifecycleFeature;
+import org.dxee.dject.trace.TracingProvisionListener;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -79,6 +81,7 @@ public class PreDestoryLifecycleFeaturePriorityTest {
                     }
                 });
                 bind(TestPriority.class).toInstance(testPriority1);
+                bindListener(Matchers.any(), TracingProvisionListener.createDefault());
             }
         }).createInjector()) {
             testPriority = injector.getInstance(TestPriority.class);
