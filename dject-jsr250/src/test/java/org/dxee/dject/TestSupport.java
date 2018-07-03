@@ -30,6 +30,15 @@ public class TestSupport {
 
     private InstancesModule module = new InstancesModule();
     
+    public TestSupport withSingleton(final Object... instances) {
+        module.instances.addAll(Arrays.asList(instances));
+        return this;       
+    }
+    
+    public Djector inject() {
+        return DjectBuilder.fromModule(module).createInjector(Stage.PRODUCTION, module);
+    }
+
     public static Module asModule(final Object o) {
         return asModule(o);
     }
@@ -45,14 +54,4 @@ public class TestSupport {
     public static DjectBuilder fromModules(Module... module) {
         return DjectBuilder.fromModules(module).combineWith(new JSR250Module());
     }
-    
-    public TestSupport withSingleton(final Object... instances) {
-        module.instances.addAll(Arrays.asList(instances));
-        return this;       
-    }
-    
-    public Djector inject() {
-        return Djector.createInjector(Stage.PRODUCTION, module);
-    }
-
 }

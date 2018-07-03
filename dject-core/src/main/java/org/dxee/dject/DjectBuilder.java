@@ -1,11 +1,14 @@
 package org.dxee.dject;
 
-import com.google.inject.Module;
-import com.google.inject.Stage;
+import com.google.inject.*;
 import com.google.inject.spi.Element;
 import com.google.inject.spi.ElementVisitor;
 import com.google.inject.spi.Elements;
 import com.google.inject.util.Modules;
+import org.dxee.dject.lifecycle.LifecycleListenerModule;
+import org.dxee.dject.lifecycle.LifecycleManager;
+import org.dxee.dject.lifecycle.LifecycleModule;
+import org.dxee.dject.metrics.ProvisionMetricsModule;
 import org.dxee.dject.visitors.IsNotStaticInjectionVisitor;
 import org.dxee.dject.visitors.KeyTracingVisitor;
 import org.dxee.dject.visitors.WarnOfStaticInjectionVisitor;
@@ -179,7 +182,7 @@ public final class DjectBuilder {
      * @return
      */
     public Djector createInjector(Stage stage) {
-        return Djector.createInjector(stage, module);
+        return createInjector(stage, module);
     }
 
 
@@ -190,5 +193,43 @@ public final class DjectBuilder {
      */
     public Djector createInjector() {
         return createInjector(Stage.DEVELOPMENT);
+    }
+
+    public Djector createInjector(Stage stage, Module module) {
+        final LifecycleManager manager = new LifecycleManager();
+        // Construct the injector using our override structure
+        try {
+            Injector injector = Guice.createInjector(
+                    stage,
+                    // This has to be first to make sure @PostConstruct support is added as early
+                    // as possible
+                    new ProvisionMetricsModule(),
+                    new LifecycleModule(),
+                    new LifecycleListenerModule(),
+                    new AbstractModule() {
+                        @Override
+                        protected void configure() {
+                            bind(Djector.class);
+                            bind(LifecycleManager.class).toInstance(manager);
+                        }
+                    },
+                    module
+            );
+            manager.notifyStarted();
+            Djector djector = injector.getExistingBinding(Key.get(Djector.class)).getProvider().get();
+            LOGGER.info("Injector created successfully ");
+            return djector;
+        } catch (Exception e) {
+            LOGGER.error("Failed to create injector - {}@{}",
+                    e.getClass().getSimpleName(),
+                    System.identityHashCode(e),
+                    e);
+            try {
+                manager.notifyStartFailed(e);
+            } catch (Exception e2) {
+                LOGGER.error("Failed to notify injector creation failure", e2);
+            }
+            throw e;
+        }
     }
 }

@@ -9,7 +9,7 @@ version '1.0.0-alpha1'
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'checkstyle'
+//    apply plugin: 'checkstyle'
 
     repositories {
         mavenLocal()
@@ -30,7 +30,7 @@ subprojects {
         options.addStringOption('Xdoclint:none', '-quiet')
     }
 
-    checkstyle {
-        toolVersion = '8.11'
-    }
+//    checkstyle {
+//        toolVersion = '8.11'
+//    }
 }
