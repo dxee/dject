@@ -1,4 +1,4 @@
-package org.dxee.dject.debug;
+package org.dxee.dject.metrics.impl;
 
 import com.google.inject.AbstractModule;
 
@@ -7,7 +7,7 @@ import javax.inject.Inject;
 /**
  * Install this module to log a Provision report after the Injector is created.
  */
-public final class ProvisionDebugModule extends AbstractModule {
+public final class LoggingProvisionModule extends AbstractModule {
     @Inject
     private static void initialize(LoggingProvisionMetricsLifecycleListener listener) {
     }
@@ -16,7 +16,7 @@ public final class ProvisionDebugModule extends AbstractModule {
     protected void configure() {
         // We do a static injection here to make sure the listener gets registered early.  Otherwise,
         // if the injector fails before it's instantiated no logging will be done
-        binder().requestStaticInjection(ProvisionDebugModule.class);
+        binder().requestStaticInjection(LoggingProvisionModule.class);
     }
     
     @Override
@@ -31,7 +31,7 @@ public final class ProvisionDebugModule extends AbstractModule {
 
     @Override
     public String toString() {
-        return "ProvisionDebugModule[]";
+        return "LoggingProvisionModule[]";
     }
 
 }

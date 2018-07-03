@@ -1,4 +1,4 @@
-package org.dxee.dject.debug;
+package org.dxee.dject.metrics.impl;
 
 import org.dxee.dject.lifecycle.LifecycleManager;
 import org.dxee.dject.lifecycle.impl.AbstractLifecycleListener;
