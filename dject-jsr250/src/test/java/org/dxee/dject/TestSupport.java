@@ -36,7 +36,7 @@ public class TestSupport {
     }
     
     public Dject inject() {
-        return DjectBuilder.fromModule(module).createInjector(Stage.PRODUCTION, module);
+        return DjectBuilder.fromModule(module).createInjector(Stage.PRODUCTION);
     }
 
     public static Module asModule(final Object o) {

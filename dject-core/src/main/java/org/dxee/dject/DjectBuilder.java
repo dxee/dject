@@ -221,7 +221,13 @@ public final class DjectBuilder {
         return createInjector(Stage.DEVELOPMENT);
     }
 
-    public Dject createInjector(Stage stage, Module module) {
+    /**
+     * Create the injector
+     * @param stage Guice stage
+     * @param module Custom module
+     * @return Inject
+     */
+    private Dject createInjector(Stage stage, Module module) {
         final LifecycleManager manager = new LifecycleManager();
         // Construct the injector using our override structure
         try {
