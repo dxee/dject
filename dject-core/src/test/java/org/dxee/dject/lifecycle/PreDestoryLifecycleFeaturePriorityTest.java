@@ -3,8 +3,8 @@ package org.dxee.dject.lifecycle;
 import com.google.inject.AbstractModule;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.multibindings.Multibinder;
-import org.dxee.dject.DjectBuilder;
 import org.dxee.dject.Dject;
+import org.dxee.dject.DjectBuilder;
 import org.dxee.dject.lifecycle.impl.AbstractTypeVisitor;
 import org.dxee.dject.lifecycle.impl.OneAnnotationLifecycleFeature;
 import org.dxee.dject.trace.TracingProvisionListener;
@@ -14,8 +14,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 
@@ -157,8 +155,6 @@ public class PreDestoryLifecycleFeaturePriorityTest {
         }
 
         private class PreDestroyTypeVisitor extends AbstractTypeVisitor {
-            private final Logger LOGGER = LoggerFactory.getLogger(PreDestroyTypeVisitor.class);
-
             public PreDestroyTypeVisitor(Class<? extends Annotation> annotationClazz) {
                 super(annotationClazz);
             }
