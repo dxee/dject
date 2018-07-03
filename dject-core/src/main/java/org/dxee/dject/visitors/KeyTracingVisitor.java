@@ -12,7 +12,7 @@ import org.dxee.dject.DjectBuilder;
  * <code>
  * DjectBuilder
  *      .fromModule(new MyApplicationModule)
- *      .forEachElement(new BindingTracingVisitor())
+ *      .forEachElement(new KeyTracingVisitor())
  *      .createInjector();
  * </code>
  */

@@ -9,9 +9,7 @@ import org.dxee.dject.lifecycle.LifecycleListenerModule;
 import org.dxee.dject.lifecycle.LifecycleManager;
 import org.dxee.dject.lifecycle.LifecycleModule;
 import org.dxee.dject.metrics.ProvisionMetricsModule;
-import org.dxee.dject.visitors.IsNotStaticInjectionVisitor;
-import org.dxee.dject.visitors.KeyTracingVisitor;
-import org.dxee.dject.visitors.WarnOfStaticInjectionVisitor;
+import org.dxee.dject.visitors.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,11 +135,39 @@ public final class DjectBuilder {
     }
 
     /**
+     * Log each binding
+     */
+    public DjectBuilder traceEachBinding() {
+        return forEachElement(new BindingTracingVisitor(), message -> LOGGER.debug(message));
+    }
+
+    /**
+     * Log  each modulesource
+     */
+    public DjectBuilder traceEachModuleSource() {
+        return forEachElement(new ModuleSourceTracingVisitor(), message -> LOGGER.debug(message));
+    }
+
+    /**
+     * Log each provision listener
+     */
+    public DjectBuilder traceEachProvisionListener() {
+        return forEachElement(new ProvisionListenerTracingVisitor(), message -> LOGGER.debug(message));
+    }
+
+    /**
      * Log a warning that static injection is being used.  Static injection is considered a 'hack'
      * to alllow for backwards compatibility with non DI'd static code.
      */
     public DjectBuilder warnOfStaticInjections() {
         return forEachElement(new WarnOfStaticInjectionVisitor(), message -> LOGGER.debug(message));
+    }
+
+    /**
+     * Log a warning that instance injection is being used.
+     */
+    public DjectBuilder warnOfToInstanceInjections() {
+        return forEachElement(new WarnOfToInstanceInjectionVisitor(), message -> LOGGER.debug(message));
     }
 
     /**

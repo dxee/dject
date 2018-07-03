@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import org.dxee.dject.Dject;
 import org.dxee.dject.DjectBuilder;
+import org.dxee.dject.metrics.impl.LoggingProvisionModule;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -77,6 +78,28 @@ public class ProvisionMetricsModuleTest {
 
         ProvisionMetrics.Element getElement() {
             return element;
+        }
+    }
+
+    @Test
+    public void confirmMetricsIncludePostConstruct() {
+        try (Dject injector = DjectBuilder.fromModules(
+                new LoggingProvisionModule(),
+                new AbstractModule() {
+                    @Override
+                    protected void configure() {
+                        bind(Foo.class).asEagerSingleton();
+                    }
+                })
+                .traceEachProvisionListener()
+                .createInjector()) {
+
+            ProvisionMetrics metrics = injector.getInstance(ProvisionMetrics.class);
+            KeyTrackingVisitor keyTracker = new KeyTrackingVisitor(Key.get(Foo.class));
+            metrics.accept(keyTracker);
+
+            Assert.assertNotNull(keyTracker.getElement());
+            Assert.assertTrue(keyTracker.getElement().getTotalDuration(TimeUnit.MILLISECONDS) >= 200);
         }
     }
 }
