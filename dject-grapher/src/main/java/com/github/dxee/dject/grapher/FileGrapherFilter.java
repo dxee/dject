@@ -32,7 +32,6 @@ public class FileGrapherFilter implements GrapherFilter {
      * Write string to file
      *
      * @param dot dot string for write
-     * @return
      */
     public void toFile(String dot) {
         PrintWriter out = null;

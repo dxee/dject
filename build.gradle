@@ -4,16 +4,29 @@
  * This is a general purpose Gradle build.
  * Learn how to create Gradle builds at https://guides.gradle.org/creating-new-gradle-builds/
  */
-group 'org.dxee.dject'
-version '1.0.0-alpha1'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.4.0'
+    }
+}
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: "com.vanniktech.maven.publish"
+
 //    apply plugin: 'checkstyle'
 
     repositories {
         mavenLocal()
         jcenter()
+    }
+
+    mavenPublish {
+        String releaseRepositoryUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        String snapshotRepositoryUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
     }
 
     dependencies {
@@ -26,9 +39,9 @@ subprojects {
         testCompile "org.mockito:mockito-core:2.19.0"
     }
 
-    tasks.withType(Javadoc) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-    }
+//    tasks.withType(Javadoc) {
+//        options.addStringOption('Xdoclint:none', '-quiet')
+//    }
 
 //    checkstyle {
 //        toolVersion = '8.11'

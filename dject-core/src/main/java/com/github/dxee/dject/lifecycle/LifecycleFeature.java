@@ -15,13 +15,13 @@ public interface LifecycleFeature {
      * of a specific field or method.
      *
      * @param type
-     * @return
+     * @return Actions list
      */
     List<LifecycleAction> getActionsForType(Class<?> type);
 
     /**
-     * The priority in a LifecycleFeature List, smaller first.
-     * @return
+     * The priority in the LifecycleFeature List.
+     * @return priority level, smaller first.
      */
     int priority();
 }

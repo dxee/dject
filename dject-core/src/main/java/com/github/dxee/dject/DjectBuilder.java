@@ -45,7 +45,7 @@ public final class DjectBuilder {
      * Start the builder using the specified module.
      *
      * @param module Custom modules
-     * @return
+     * @return DjectBuilder
      */
     public static DjectBuilder fromModule(Module module) {
         return new DjectBuilder(module);
@@ -205,7 +205,7 @@ public final class DjectBuilder {
      * Create an injector by stage
      *
      * @param stage The stage of injector
-     * @return
+     * @return Dject
      */
     public Dject createInjector(Stage stage) {
         return createInjector(stage, module);
@@ -215,7 +215,7 @@ public final class DjectBuilder {
     /**
      * Create an DEVELOPMENT stage injector
      *
-     * @return
+     * @return Dject
      */
     public Dject createInjector() {
         return createInjector(Stage.DEVELOPMENT);

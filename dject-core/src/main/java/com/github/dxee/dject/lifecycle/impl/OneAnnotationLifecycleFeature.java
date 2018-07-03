@@ -32,7 +32,7 @@ public abstract class OneAnnotationLifecycleFeature implements LifecycleFeature 
 
     /**
      * Lifecycle feature annotation
-     * @return
+     * @return the annotation class
      */
     abstract public Class<? extends Annotation> annotationClazz();
 }
