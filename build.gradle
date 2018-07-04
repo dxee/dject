@@ -16,8 +16,7 @@ buildscript {
 subprojects {
     apply plugin: 'java'
     apply plugin: "com.vanniktech.maven.publish"
-
-//    apply plugin: 'checkstyle'
+    apply from: rootProject.file('gradle/checkstyle.gradle')
 
     repositories {
         mavenLocal()
@@ -39,11 +38,7 @@ subprojects {
         testCompile "org.mockito:mockito-core:2.19.0"
     }
 
-//    tasks.withType(Javadoc) {
-//        options.addStringOption('Xdoclint:none', '-quiet')
-//    }
-
-//    checkstyle {
-//        toolVersion = '8.11'
-//    }
+    tasks.withType(Javadoc) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+    }
 }
