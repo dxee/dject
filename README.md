@@ -6,6 +6,3 @@ Keep the core small and scalable, and provide rich extensions arround the core.
 
 ## Contribution
 PR is very welcome.
-
-## Attention
-Still in exploration, use `governator` as the start point.
