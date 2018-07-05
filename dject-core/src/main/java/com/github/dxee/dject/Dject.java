@@ -23,11 +23,10 @@ import java.util.function.Consumer;
 public final class Dject extends DelegatingInjector implements AutoCloseable {
     private static final Logger LOGGER = LoggerFactory.getLogger(Dject.class);
     private final LifecycleManager manager = new LifecycleManager();
-    //
     private final Stage stage;
     private final Module module;
 
-    // Frome guice
+    // From guice
     @Inject
     private LifecycleShutdown lifecycleShutdown;
 
@@ -53,7 +52,6 @@ public final class Dject extends DelegatingInjector implements AutoCloseable {
      * @return Inject
      */
     private Injector createInjector(Stage stage, Module module) {
-        final LifecycleManager manager = new LifecycleManager();
         // Construct the injector using our override structure
         try {
             Injector injector = Guice.createInjector(
