@@ -8,7 +8,8 @@ package com.github.dxee.dject.lifecycle;
  *
  * <pre>
  * {@code
- * Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class).addBinding().to(MyPreDestroyLifecycleFeature.class);
+ * Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class).
+ * addBinding().to(MyPreDestroyLifecycleFeature.class);
  * }
  * </pre>
  *

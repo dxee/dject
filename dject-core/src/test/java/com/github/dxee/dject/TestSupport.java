@@ -25,7 +25,7 @@ public class TestSupport {
     }
 
     public static Dject inject(final Object... instances) {
-        return DjectBuilder.fromModule(new InstancesModule(instances)).createInjector();
+        return Dject.builder().withModule(new InstancesModule(instances)).build();
     }
 
 }

@@ -8,7 +8,8 @@ package com.github.dxee.dject.lifecycle;
  *
  * <pre>
  * {@code
- * Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().to(JSR250PostConstructLifecycleFeature.class);
+ * Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class)
+ * .addBinding().to(JSR250PostConstructLifecycleFeature.class);
  * }
  * </pre>
  *

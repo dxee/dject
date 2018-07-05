@@ -6,6 +6,7 @@ import java.util.List;
 
 @ImplementedBy(FileGrapherFilter.class)
 public interface GrapherFilter {
-    List<String> packages();
     void dispatch(String dot);
+
+    List<String> packages();
 }

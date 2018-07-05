@@ -4,8 +4,8 @@ import java.lang.ref.Reference;
 import java.util.concurrent.Callable;
 
 /**
- * Runnable that applies one or more LifecycleActions to a managed instance T or Reference<T>.
- * For Reference<T> the action is invoked on a best-effort basis, if the referent is non-null
+ * Runnable that applies one or more LifecycleActions to a managed instance T or Reference&lt;T&gt;.
+ * For Reference&lt;T&gt; the action is invoked on a best-effort basis, if the referent is non-null
  * at time run() is invoked
  */
 public final class ManagedInstanceAction implements Callable<Void> {
@@ -14,7 +14,8 @@ public final class ManagedInstanceAction implements Callable<Void> {
     private final Iterable<LifecycleAction> actions; // set of actions that will be applied to target
 
     public ManagedInstanceAction(Object target, Iterable<LifecycleAction> actions) {
-        this.target = target; // keep hard reference to target
+        // keep hard reference to target
+        this.target = target;
         this.targetReference = null;
         this.actions = actions;
     }

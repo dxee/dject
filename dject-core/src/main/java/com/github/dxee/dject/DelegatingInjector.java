@@ -9,11 +9,8 @@ import com.google.inject.*;
 import com.google.inject.spi.TypeConverterBinding;
 
 abstract class DelegatingInjector implements Injector {
-    private Injector injector;
+    protected Injector injector;
 
-    public DelegatingInjector(Injector injector) {
-        this.injector = injector;
-    }
 
     @Override
     public void injectMembers(Object instance) {

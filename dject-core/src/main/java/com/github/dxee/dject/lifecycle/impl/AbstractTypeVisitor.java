@@ -31,8 +31,13 @@ public abstract class AbstractTypeVisitor implements TypeInspector.TypeVisitor, 
     }
 
     @Override
-    public boolean visit(final Class<?> clazz) {
-        return !clazz.isInterface();
+    public List<LifecycleAction> get() {
+        return Collections.unmodifiableList(lifecycleActions);
+    }
+
+    @Override
+    public boolean visit(Field field) {
+        return true;
     }
 
     @Override
@@ -46,15 +51,22 @@ public abstract class AbstractTypeVisitor implements TypeInspector.TypeVisitor, 
                     addMethodLifecycleAction(lifecycleAction);
                     visitContext.add(methodName);
                 } catch (IllegalArgumentException e) {
-                    LOGGER.info("ignoring @{} method {}.{}() - {}", annotationClazz.getSimpleName(), method.getDeclaringClass().getName(),
+                    LOGGER.info("ignoring @{} method {}.{}() - {}",
+                            annotationClazz.getSimpleName(), method.getDeclaringClass().getName(),
                             methodName, e.getMessage());
                 }
             }
-        } else if (method.getReturnType() == Void.TYPE && method.getParameterTypes().length == 0 && !Modifier.isFinal(method.getModifiers())) {
+        } else if (method.getReturnType() == Void.TYPE && method.getParameterTypes().length == 0
+                && !Modifier.isFinal(method.getModifiers())) {
             // method potentially overrides superclass method and annotations
             visitContext.add(methodName);
         }
         return true;
+    }
+
+    @Override
+    public boolean visit(final Class<?> clazz) {
+        return !clazz.isInterface();
     }
 
     public void addLifecycleActionToFirstOne(LifecycleAction lifecycleAction) {
@@ -65,15 +77,5 @@ public abstract class AbstractTypeVisitor implements TypeInspector.TypeVisitor, 
         lifecycleActions.add(lifecycleAction);
     }
 
-    abstract public void addMethodLifecycleAction(LifecycleAction lifecycleAction);
-
-    @Override
-    public boolean visit(Field field) {
-        return true;
-    }
-
-    @Override
-    public List<LifecycleAction> get() {
-        return Collections.unmodifiableList(lifecycleActions);
-    }
+    public abstract void addMethodLifecycleAction(LifecycleAction lifecycleAction);
 }

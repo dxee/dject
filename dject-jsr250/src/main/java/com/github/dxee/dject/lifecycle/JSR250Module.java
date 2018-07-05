@@ -11,7 +11,11 @@ import com.google.inject.multibindings.Multibinder;
 public class JSR250Module extends AbstractModule {
     @Override
     protected void configure() {
-        Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().to(JSR250PostConstructLifecycleFeature.class);
-        Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class).addBinding().to(JSR250PreDestroyLifecycleFeature.class);
+        Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class)
+                .addBinding()
+                .to(JSR250PostConstructLifecycleFeature.class);
+        Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class)
+                .addBinding()
+                .to(JSR250PreDestroyLifecycleFeature.class);
     }
 }

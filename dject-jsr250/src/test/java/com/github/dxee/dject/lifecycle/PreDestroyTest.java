@@ -216,7 +216,7 @@ public class PreDestroyTest {
                 bind(EagerBean.class).asEagerSingleton();
                 bind(SingletonBean.class).in(Scopes.SINGLETON);
             }
-        }).createInjector()) {
+        }).build()) {
             eagerBean = injector.getInstance(EagerBean.class);
             singletonBean = injector.getInstance(SingletonBean.class);
             Assert.assertFalse(eagerBean.shutdown);
@@ -363,7 +363,7 @@ public class PreDestroyTest {
 
     @Test
     public void testLifecycleShutdownWithAtProvides() {
-        DjectBuilder builder = DjectBuilder.fromModule(new AbstractModule() {
+        Dject.Builder builder = Dject.builder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
             }
@@ -376,7 +376,7 @@ public class PreDestroyTest {
         });
 
         Foo managedFoo = null;
-        try (Dject injector = builder.createInjector()) {
+        try (Dject injector = builder.build()) {
             managedFoo = injector.getInstance(Foo.class);
             Assert.assertNotNull(managedFoo);
             Assert.assertFalse(managedFoo.isShutdown());
@@ -389,7 +389,7 @@ public class PreDestroyTest {
     public void testLifecycleShutdownWithExplicitScope() throws Exception {
         final ThreadLocalScope threadLocalScope = new ThreadLocalScope();
 
-        DjectBuilder builder = TestSupport.fromModules(new AbstractModule() {
+        Dject.Builder builder = TestSupport.fromModules(new AbstractModule() {
             @Override
             protected void configure() {
                 binder().bind(Foo.class).in(threadLocalScope);
@@ -397,7 +397,7 @@ public class PreDestroyTest {
         });
 
         Foo managedFoo = null;
-        try (Dject injector = builder.createInjector()) {
+        try (Dject injector = builder.build()) {
             threadLocalScope.enter();
             managedFoo = injector.getInstance(Foo.class);
             Assert.assertNotNull(managedFoo);
@@ -414,7 +414,7 @@ public class PreDestroyTest {
     public void testLifecycleShutdownWithAnnotatedExplicitScope() throws Exception {
         final ThreadLocalScope threadLocalScope = new ThreadLocalScope();
 
-        DjectBuilder builder = TestSupport.fromModules(new AbstractModule() {
+        Dject.Builder builder = TestSupport.fromModules(new AbstractModule() {
                                                            @Override
                                                            protected void configure() {
                                                                binder().bind(Key.get(AnnotatedFoo.class));
@@ -428,7 +428,7 @@ public class PreDestroyTest {
                 });
 
         AnnotatedFoo managedFoo = null;
-        try (Dject injector = builder.createInjector()) {
+        try (Dject injector = builder.build()) {
             threadLocalScope.enter();
             managedFoo = injector.getInstance(AnnotatedFoo.class);
             Assert.assertNotNull(managedFoo);
@@ -447,7 +447,7 @@ public class PreDestroyTest {
     @Test
     public void testLifecycleShutdownWithMultipleInScope() throws Exception {
         final ThreadLocalScope scope = new ThreadLocalScope();
-        DjectBuilder builder = TestSupport.fromModules(new AbstractModule() {
+        Dject.Builder builder = TestSupport.fromModules(new AbstractModule() {
             @Override
             protected void configure() {
                 binder().bindScope(ThreadLocalScoped.class, scope);
@@ -470,7 +470,7 @@ public class PreDestroyTest {
 
         AnnotatedFoo managedFoo1 = null;
         AnnotatedFoo managedFoo2 = null;
-        try (Dject injector = builder.createInjector()) {
+        try (Dject injector = builder.build()) {
             scope.enter();
             managedFoo1 = injector.getInstance(Key.get(AnnotatedFoo.class, Names.named("afoo1")));
             Assert.assertNotNull(managedFoo1);
@@ -492,7 +492,7 @@ public class PreDestroyTest {
 
     @Test
     public void testLifecycleShutdownWithSingletonScope() throws Exception {
-        DjectBuilder builder = TestSupport.fromModules(new AbstractModule() {
+        Dject.Builder builder = TestSupport.fromModules(new AbstractModule() {
             @Override
             protected void configure() {
                 binder().bind(Foo.class).in(Scopes.SINGLETON);
@@ -500,7 +500,7 @@ public class PreDestroyTest {
         });
 
         Foo managedFoo = null;
-        try (Dject injector = builder.createInjector()) {
+        try (Dject injector = builder.build()) {
             managedFoo = injector.getInstance(Foo.class);
             Assert.assertNotNull(managedFoo);
             Assert.assertFalse(managedFoo.isShutdown());

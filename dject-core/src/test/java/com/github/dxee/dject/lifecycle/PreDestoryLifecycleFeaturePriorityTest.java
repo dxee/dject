@@ -1,7 +1,6 @@
 package com.github.dxee.dject.lifecycle;
 
 import com.github.dxee.dject.Dject;
-import com.github.dxee.dject.DjectBuilder;
 import com.github.dxee.dject.lifecycle.impl.AbstractTypeVisitor;
 import com.github.dxee.dject.lifecycle.impl.OneAnnotationLifecycleFeature;
 import com.github.dxee.dject.trace.TracingProvisionListener;
@@ -46,7 +45,7 @@ public class PreDestoryLifecycleFeaturePriorityTest {
         InOrder inOrder = Mockito.inOrder(testPriority1);
 
         TestPriority testPriority = null;
-        try(Dject injector = DjectBuilder.fromModule(new AbstractModule() {
+        try(Dject injector = Dject.builder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
                 Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class).addBinding().toInstance(new PreDestroyLifecycleFeature1() {
@@ -81,7 +80,7 @@ public class PreDestoryLifecycleFeaturePriorityTest {
                 bind(TestPriority.class).toInstance(testPriority1);
                 bindListener(Matchers.any(), TracingProvisionListener.createDefault());
             }
-        }).createInjector()) {
+        }).build()) {
             testPriority = injector.getInstance(TestPriority.class);
 
             Mockito.verify(testPriority, Mockito.never()).p3();
@@ -100,7 +99,7 @@ public class PreDestoryLifecycleFeaturePriorityTest {
         InOrder inOrder = Mockito.inOrder(testPriorityChild1);
 
         TestPriorityChild testPriorityChild = null;
-        try (Dject injector = DjectBuilder.fromModule(new AbstractModule() {
+        try (Dject injector = Dject.builder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
                 Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class).addBinding().toInstance(new PreDestroyLifecycleFeature1() {
@@ -138,7 +137,7 @@ public class PreDestoryLifecycleFeaturePriorityTest {
                 });
                 bind(TestPriorityChild.class).toInstance(testPriorityChild1);
             }
-        }).createInjector()) {
+        }).build()) {
             testPriorityChild = injector.getInstance(TestPriorityChild.class);
             Mockito.verify(testPriorityChild, Mockito.never()).p3();
         }

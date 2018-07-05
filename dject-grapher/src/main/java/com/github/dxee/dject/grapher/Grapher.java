@@ -39,7 +39,7 @@ public class Grapher extends AbstractLifecycleListener {
         this.grapherFilter = grapherFilter;
 
         List<String> packages = grapherFilter.packages();
-        if(null != packages && !packages.isEmpty()) {
+        if (null != packages && !packages.isEmpty()) {
             this.roots = Sets.newHashSetWithExpectedSize(packages.size());
             for (Key<?> k : injector.getAllBindings().keySet()) {
                 Package classPackage = k.getTypeLiteral().getRawType().getPackage();
@@ -68,8 +68,7 @@ public class Grapher extends AbstractLifecycleListener {
         PrintWriter out = new PrintWriter(file, "UTF-8");
         try {
             out.write(graph());
-        }
-        finally {
+        } finally {
             Closeables.close(out, true);
         }
     }

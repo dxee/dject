@@ -21,25 +21,29 @@ final class GuavaApplicationEventDispatcher implements ApplicationEventDispatche
     public GuavaApplicationEventDispatcher(EventBus eventBus) {
         this.eventBus = eventBus;
         try {
-            this.eventListenerMethod = ApplicationEventListener.class.getDeclaredMethod("onEvent", ApplicationEvent.class);
+            this.eventListenerMethod = ApplicationEventListener.class
+                    .getDeclaredMethod("onEvent", ApplicationEvent.class);
         } catch (Exception e) {
             throw new RuntimeException("Failed to cache ApplicationEventListener method", e);
         }
     }
 
-    public ApplicationEventRegistration registerListener(Object instance, Method method, Class<? extends ApplicationEvent> eventType) {
+    public ApplicationEventRegistration registerListener(Object instance, Method method,
+                                                         Class<? extends ApplicationEvent> eventType) {
         GuavaSubscriberProxy proxy = new GuavaSubscriberProxy(instance, method, eventType);
         eventBus.register(proxy);
         return new GuavaEventRegistration(eventBus, proxy);
     }
 
-    public <T extends ApplicationEvent> ApplicationEventRegistration registerListener(Class<T> eventType, ApplicationEventListener<T> eventListener) {
+    public <T extends ApplicationEvent> ApplicationEventRegistration registerListener(
+            Class<T> eventType, ApplicationEventListener<T> eventListener) {
         GuavaSubscriberProxy proxy = new GuavaSubscriberProxy(eventListener, eventListenerMethod, eventType);
         eventBus.register(proxy);
         return new GuavaEventRegistration(eventBus, proxy);
     }
 
-    public ApplicationEventRegistration registerListener(ApplicationEventListener<? extends ApplicationEvent> eventListener) {
+    public ApplicationEventRegistration registerListener(
+            ApplicationEventListener<? extends ApplicationEvent> eventListener) {
         Type[] genericInterfaces = eventListener.getClass().getGenericInterfaces();
         for (Type type : genericInterfaces) {
             if (ApplicationEventListener.class.isAssignableFrom(TypeToken.of(type).getRawType())) {

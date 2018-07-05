@@ -1,7 +1,6 @@
 package com.github.dxee.dject.lifecycle;
 
 import com.github.dxee.dject.Dject;
-import com.github.dxee.dject.DjectBuilder;
 import com.github.dxee.dject.lifecycle.impl.AbstractTypeVisitor;
 import com.github.dxee.dject.lifecycle.impl.OneAnnotationLifecycleFeature;
 import com.google.inject.AbstractModule;
@@ -39,7 +38,7 @@ public class PostConstructLifecycleFeaturePriorityTest {
 
     @Test
     public void confirmPostConstructOrder() {
-        Dject injector = DjectBuilder.fromModule(new AbstractModule() {
+        Dject injector = Dject.builder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
                 Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature1() {
@@ -77,7 +76,7 @@ public class PostConstructLifecycleFeaturePriorityTest {
                 });
                 bind(TestPriority.class).in(Scopes.SINGLETON);
             }
-        }).createInjector();
+        }).build();
 
         TestPriority testPriority = injector.getInstance(TestPriority.class);
 
@@ -86,7 +85,7 @@ public class PostConstructLifecycleFeaturePriorityTest {
 
     @Test
     public void confirmPostConstructOrder1() {
-        Dject injector = DjectBuilder.fromModule(new AbstractModule() {
+        Dject injector = Dject.builder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
                 Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature1() {
@@ -124,7 +123,7 @@ public class PostConstructLifecycleFeaturePriorityTest {
                 });
                 bind(TestPriority.class).in(Scopes.SINGLETON);
             }
-        }).createInjector();
+        }).build();
 
         TestPriority testPriority = injector.getInstance(TestPriority.class);
 

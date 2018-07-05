@@ -20,12 +20,12 @@ public class NullableBindingTest {
     
     @Before
     public void setup() {
-        injector = DjectBuilder.fromModules(new AbstractModule() {
+        injector = Dject.builder().withModules(new AbstractModule() {
             @Override
             protected void configure() {
                 bind(InnerDependency.class).toProvider(Providers.<InnerDependency>of(null));               
             }
-        }).createInjector();
+        }).build();
     }
     
     @Test

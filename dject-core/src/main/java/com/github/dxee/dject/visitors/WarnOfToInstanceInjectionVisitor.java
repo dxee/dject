@@ -16,9 +16,8 @@ public final class WarnOfToInstanceInjectionVisitor extends DefaultElementVisito
     public <T> String visit(Binding<T> binding) {
         return binding.acceptTargetVisitor(new DefaultBindingTargetVisitor<T, String>() {
             public String visit(InstanceBinding<? extends T> instanceBinding) {
-                return String.format("toInstance() at %s can force undesireable static initialization.  " +
-                        "Consider replacing with an @Provides method instead.",
-                        instanceBinding.getSource());
+                return String.format("toInstance() at %s can force undesireable static initialization. "
+                                + "Consider replacing with an @Provides method instead.", instanceBinding.getSource());
             }
         });
     }

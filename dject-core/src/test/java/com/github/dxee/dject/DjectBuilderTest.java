@@ -14,45 +14,42 @@ import java.util.List;
 public class DjectBuilderTest {
     @Test
     public void testBindingTracing() {
-        DjectBuilder
-                .fromModule(new AbstractModule() {
+        Dject.builder().withModule(new AbstractModule() {
                     @Override
                     protected void configure() {
                         bind(String.class).toInstance("Hello world");
                     }
                 })
-                .traceEachBinding()
-                .forEachElement(new DefaultElementVisitor<String>() {
+                .withTraceEachBinding()
+                .withEachElementVister(new DefaultElementVisitor<String>() {
 
                 })
-                .createInjector();
+                .build();
     }
 
     @Test
     public void testKeyTracing() {
-        try (Dject li = DjectBuilder
-                .fromModule(new AbstractModule() {
+        try (Dject li = Dject.builder().withModule(new AbstractModule() {
                     @Override
                     protected void configure() {
                         bind(String.class).toInstance("Hello world");
                     }
                 })
-                .warnOfToInstanceInjections()
-                .traceEachKey()
-                .createInjector()) {
+                .withWarnOfToInstanceInjections()
+                .withTraceEachKey()
+                .build()) {
         }
     }
 
     @Test
     public void testWarnOnStaticInjection() {
-        List<Element> elements = DjectBuilder
-                .fromModule(new AbstractModule() {
+        List<Element> elements = Dject.builder().withModule(new AbstractModule() {
                     @Override
                     protected void configure() {
                         this.requestStaticInjection(String.class);
                     }
                 })
-                .warnOfStaticInjections()
+                .withWarnOfStaticInjections()
                 .getElements();
 
         Assert.assertEquals(1, elements.size());
@@ -60,15 +57,14 @@ public class DjectBuilderTest {
 
     @Test
     public void testStripStaticInjection() {
-        List<Element> elements = DjectBuilder
-                .fromModule(new AbstractModule() {
+        List<Element> elements = Dject.builder().withModule(new AbstractModule() {
                     @Override
                     protected void configure() {
                         this.requestStaticInjection(String.class);
                     }
                 })
-                .stripStaticInjections()
-                .warnOfStaticInjections()
+                .withStripStaticInjections()
+                .withWarnOfStaticInjections()
                 .getElements();
 
         Assert.assertEquals(0, elements.size());
@@ -108,10 +104,9 @@ public class DjectBuilderTest {
 
     @Test
     public void testTraceModules() {
-        DjectBuilder
-                .fromModule(new ModuleA())
-                .traceEachModuleSource()
-                .createInjector();
+        Dject.builder().withModule(new ModuleA())
+                .withTraceEachModuleSource()
+                .build();
     }
 
     @Before

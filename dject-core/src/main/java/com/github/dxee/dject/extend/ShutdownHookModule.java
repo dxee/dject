@@ -13,7 +13,7 @@ import com.google.inject.AbstractModule;
  * 
  * <pre>
  * {@code
- *    DjectBuilder.fromModule(new ShutdownHookModule());
+ *    Dject.builder().withModule(new ShutdownHookModule());
  * }
  * </pre>
  */

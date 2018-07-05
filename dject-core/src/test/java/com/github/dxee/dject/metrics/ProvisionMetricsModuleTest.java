@@ -1,7 +1,6 @@
 package com.github.dxee.dject.metrics;
 
 import com.github.dxee.dject.Dject;
-import com.github.dxee.dject.DjectBuilder;
 import com.github.dxee.dject.metrics.impl.LoggingProvisionModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
@@ -14,14 +13,14 @@ import java.util.concurrent.TimeUnit;
 public class ProvisionMetricsModuleTest {
     @Test
     public void disableMetrics() {
-        try (Dject injector = DjectBuilder.fromModule(
+        try (Dject injector = Dject.builder().withModule(
                 new AbstractModule() {
                     @Override
                     protected void configure() {
                         bind(ProvisionMetrics.class).to(NullProvisionMetrics.class);
                     }
                 })
-                .createInjector()) {
+                .build()) {
 
             ProvisionMetrics metrics = injector.getInstance(ProvisionMetrics.class);
             TestProvisionMetricsVisitor visitor = new TestProvisionMetricsVisitor();
@@ -32,7 +31,7 @@ public class ProvisionMetricsModuleTest {
 
     @Test
     public void confirmDedupWorksWithOverride() {
-        try (Dject injector = DjectBuilder.fromModule(
+        try (Dject injector = Dject.builder().withModule(
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -40,12 +39,12 @@ public class ProvisionMetricsModuleTest {
                     }
                 })
                 // Confirm that installing ProvisionMetricsModule twice isn't broken with overrides
-                .overrideWith(new AbstractModule() {
+                .withOverrideModules(new AbstractModule() {
                     @Override
                     protected void configure() {
                     }
                 })
-                .createInjector()) {
+                .build()) {
 
             ProvisionMetrics metrics = injector.getInstance(ProvisionMetrics.class);
             TestProvisionMetricsVisitor visitor = new TestProvisionMetricsVisitor();
@@ -83,7 +82,7 @@ public class ProvisionMetricsModuleTest {
 
     @Test
     public void confirmMetricsIncludePostConstruct() {
-        try (Dject injector = DjectBuilder.fromModules(
+        try (Dject injector = Dject.builder().withModules(
                 new LoggingProvisionModule(),
                 new AbstractModule() {
                     @Override
@@ -91,8 +90,8 @@ public class ProvisionMetricsModuleTest {
                         bind(Foo.class).asEagerSingleton();
                     }
                 })
-                .traceEachProvisionListener()
-                .createInjector()) {
+                .withTraceEachProvisionListener()
+                .build()) {
 
             ProvisionMetrics metrics = injector.getInstance(ProvisionMetrics.class);
             KeyTrackingVisitor keyTracker = new KeyTrackingVisitor(Key.get(Foo.class));

@@ -1,6 +1,6 @@
 package com.github.dxee.dject.event;
 
-import com.github.dxee.dject.DjectBuilder;
+import com.github.dxee.dject.Dject;
 import com.github.dxee.dject.event.guava.GuavaApplicationEventModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.CreationException;
@@ -18,13 +18,13 @@ public class ApplicationEventModuleTest {
 
     @Before
     public void setup() {
-        injector = DjectBuilder.fromModules(new GuavaApplicationEventModule(), new AbstractModule() {
+        injector = Dject.builder().withModules(new GuavaApplicationEventModule(), new AbstractModule() {
             @Override
             protected void configure() {
                 bind(TestAnnotatedListener.class).toInstance(new TestAnnotatedListener());
                 bind(TestListenerInterface.class).toInstance(new TestListenerInterface());
             }
-        }).createInjector();
+        }).build();
     }
 
     @Test
@@ -136,12 +136,12 @@ public class ApplicationEventModuleTest {
     
     @Test(expected=CreationException.class)
     public void testEventListenerWithInvalidArgumentsFailsFast() {
-        injector = DjectBuilder.fromModules(new GuavaApplicationEventModule(), new AbstractModule() {
+        injector = Dject.builder().withModules(new GuavaApplicationEventModule(), new AbstractModule() {
             @Override
             protected void configure() {
                 bind(TestFailFastEventListener.class).toInstance(new TestFailFastEventListener());
             }
-        }).createInjector();
+        }).build();
     }
 
     private class TestAnnotatedListener {

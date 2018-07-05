@@ -1,7 +1,6 @@
 package com.github.dxee.dject.grapher;
 
 import com.github.dxee.dject.Dject;
-import com.github.dxee.dject.DjectBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Stage;
 import org.junit.Assert;
@@ -20,8 +19,7 @@ public class GrapherTest {
         final AtomicBoolean injectCalled = new AtomicBoolean(false);
         final AtomicBoolean afterInjectorCalled = new AtomicBoolean(false);
 
-        try(Dject injector = DjectBuilder
-                .fromModules(new AbstractModule() {
+        try(Dject injector = Dject.builder().withModules(new AbstractModule() {
                     @Override
                     protected void configure() {
                         bind(F1.class);
@@ -32,7 +30,7 @@ public class GrapherTest {
                             }
                         });
                     }
-                }, new GrapherModule()).createInjector(Stage.PRODUCTION)) {
+                }, new GrapherModule()).withStage(Stage.PRODUCTION).build()) {
             File f = new File("digraph.dot");
             Assert.assertTrue(f.exists());
             f.delete();
@@ -45,8 +43,7 @@ public class GrapherTest {
         final AtomicBoolean injectCalled = new AtomicBoolean(false);
         final AtomicBoolean afterInjectorCalled = new AtomicBoolean(false);
 
-        try(Dject injector = DjectBuilder
-                .fromModules(new AbstractModule() {
+        try(Dject injector = Dject.builder().withModules(new AbstractModule() {
                     @Override
                     protected void configure() {
                         bind(F1.class);
@@ -70,7 +67,7 @@ public class GrapherTest {
                             }
                         });
                     }
-                }, new GrapherModule()).createInjector(Stage.PRODUCTION)) {
+                }, new GrapherModule()).withStage(Stage.PRODUCTION).build()) {
             File f = new File("/tmp/digraph.dot");
             Assert.assertTrue(f.exists());
             f.delete();

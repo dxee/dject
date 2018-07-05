@@ -23,14 +23,14 @@ public class LoggingProvisionMetricsLifecycleListener extends AbstractLifecycleL
     
     @Override
     public void onStarted() {
-        LOGGER.info("Injection metrics report as follows:" );
+        LOGGER.info("Injection metrics report as follows:");
         metrics.accept(new LoggingProvisionMetricsVisitor());
     }
     
     @Override
     public void onStopped(Throwable t) {
         if (t != null) {
-            LOGGER.info("Injection metrics report for failed start : \n" );
+            LOGGER.info("Injection metrics report for failed start : \n");
             metrics.accept(new LoggingProvisionMetricsVisitor());
         }
     }

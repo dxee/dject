@@ -36,7 +36,7 @@ public class TestSupport {
     }
     
     public Dject inject() {
-        return DjectBuilder.fromModule(module).createInjector(Stage.PRODUCTION);
+        return Dject.builder().withModule(module).withStage(Stage.PRODUCTION).build();
     }
 
     public static Module asModule(final Object o) {
@@ -48,10 +48,10 @@ public class TestSupport {
     }
 
     public static Dject inject(final Object... instances) {
-        return DjectBuilder.fromModule(new InstancesModule(instances)).createInjector();
+        return Dject.builder().withModule(new InstancesModule(instances)).build();
     }
 
-    public static DjectBuilder fromModules(Module... module) {
-        return DjectBuilder.fromModules(module).combineWith(new JSR250Module());
+    public static Dject.Builder fromModules(Module... module) {
+        return Dject.builder().withModules(module).withCombineModules(new JSR250Module());
     }
 }

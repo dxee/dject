@@ -17,13 +17,13 @@ public abstract class OneAnnotationLifecycleFeature implements LifecycleFeature 
 
     @Override
     public List<LifecycleAction> getActionsForType(final Class<?> type) {
-        if(null == annotationClazz) {
+        if (null == annotationClazz) {
             annotationClazz = annotationClazz();
         }
         return TypeInspector.accept(type, visitor());
     }
 
-    abstract public <V extends Supplier<List<LifecycleAction>> & TypeInspector.TypeVisitor> V visitor();
+    public abstract <V extends Supplier<List<LifecycleAction>> & TypeInspector.TypeVisitor> V visitor();
 
     @Override
     public int priority() {
@@ -34,5 +34,5 @@ public abstract class OneAnnotationLifecycleFeature implements LifecycleFeature 
      * Lifecycle feature annotation
      * @return the annotation class
      */
-    abstract public Class<? extends Annotation> annotationClazz();
+    public abstract Class<? extends Annotation> annotationClazz();
 }

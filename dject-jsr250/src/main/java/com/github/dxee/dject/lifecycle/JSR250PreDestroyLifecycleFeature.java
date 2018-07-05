@@ -14,7 +14,9 @@ import java.lang.annotation.Annotation;
  * @author bing.fan
  * 2018-06-08 20:03
  */
-public final class JSR250PreDestroyLifecycleFeature extends OneAnnotationLifecycleFeature implements PreDestroyLifecycleFeature {
+public final class JSR250PreDestroyLifecycleFeature extends OneAnnotationLifecycleFeature
+        implements PreDestroyLifecycleFeature {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JSR250PreDestroyLifecycleFeature.class);
 
     @Override
     public PreDestroyTypeVisitor visitor() {
@@ -22,8 +24,6 @@ public final class JSR250PreDestroyLifecycleFeature extends OneAnnotationLifecyc
     }
 
     private class PreDestroyTypeVisitor extends AbstractTypeVisitor {
-        private final Logger LOGGER = LoggerFactory.getLogger(PreDestroyTypeVisitor.class);
-
         public PreDestroyTypeVisitor(Class<? extends Annotation> annotationClazz) {
             super(annotationClazz);
         }
@@ -60,7 +60,8 @@ public final class JSR250PreDestroyLifecycleFeature extends OneAnnotationLifecyc
 
     @Override
     public String toString() {
-        return new StringBuilder().append("Predestroy @").append(this.annotationClazz==null ? "null" : this.annotationClazz.getSimpleName())
+        return new StringBuilder().append("Predestroy @")
+                .append(this.annotationClazz == null ? "null" : this.annotationClazz.getSimpleName())
                 .append(" with priority ").append(priority()).toString();
     }
 }

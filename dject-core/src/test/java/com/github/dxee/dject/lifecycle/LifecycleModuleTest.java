@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import com.github.dxee.dject.Dject;
-import com.github.dxee.dject.DjectBuilder;
 import com.github.dxee.dject.TestSupport;
 import org.junit.Assert;
 import org.junit.Before;
@@ -257,14 +256,14 @@ public class LifecycleModuleTest {
     public void testNestedLifecycleListeners() {
         Listener1 listener1;
         Listener2 listener2;
-        try (Dject injector = DjectBuilder.fromModule(new AbstractModule() {
+        try (Dject injector = Dject.builder().withModule(new AbstractModule() {
             
             @Override
             protected void configure() {
                 bind(Listener1.class).asEagerSingleton();
                 bind(Listener2.class).in(Scopes.SINGLETON);                
             }
-        }).createInjector()) {
+        }).build()) {
             listener1 = injector.getInstance(Listener1.class);
             listener2 = listener1.nestedListener.get();
             Assert.assertNotNull(listener2);

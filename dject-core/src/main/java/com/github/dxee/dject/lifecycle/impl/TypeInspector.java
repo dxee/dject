@@ -20,7 +20,9 @@ public class TypeInspector {
         if (doAccept(type, visitor)) {
             // check these only once at the top level 
             for (Class<?> iface : type.getInterfaces()) {
-                if (!doAccept(iface, visitor)) break;
+                if (!doAccept(iface, visitor)) {
+                    break;
+                }
             }
         }
     }
@@ -34,13 +36,17 @@ public class TypeInspector {
         if (continueVisit) {            
             for (final Field field : type.getDeclaredFields()) {
                 continueVisit = visitor.visit(field);
-                if (!continueVisit) break;
+                if (!continueVisit) {
+                    break;
+                }
             }
     
             if (continueVisit) {
                 for (final Method method : type.getDeclaredMethods()) {
                     continueVisit = visitor.visit(method);
-                    if (!continueVisit) break;
+                    if (!continueVisit) {
+                        break;
+                    }
                 }
         
                 if (continueVisit) {

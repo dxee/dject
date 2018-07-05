@@ -4,7 +4,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 
 import com.github.dxee.dject.Dject;
-import com.github.dxee.dject.DjectBuilder;
 import com.github.dxee.dject.TestSupport;
 import org.junit.Assert;
 import org.junit.Before;
@@ -191,7 +190,7 @@ public class PostConstructTest {
     public void testLifecycleInitWithAtProvides() {
         final SimplePostConstruct simplePostConstruct = Mockito.mock(SimplePostConstruct.class);
 
-        DjectBuilder builder = TestSupport.fromModules(new AbstractModule() {
+        Dject.Builder builder = TestSupport.fromModules(new AbstractModule() {
             @Override
             protected void configure() {
             }
@@ -202,7 +201,7 @@ public class PostConstructTest {
                 return simplePostConstruct;
             }
         });
-        try (Dject injector = builder.createInjector()) {
+        try (Dject injector = builder.build()) {
             Mockito.verify(injector.getInstance(SimplePostConstruct.class), Mockito.times(1)).init();
         }
     }

@@ -32,7 +32,8 @@ public final class ProvisionMetricsModule extends AbstractModule {
             final Key<?> key = provision.getBinding().getKey();
 
             if (metrics == null) {
-                LOGGER.debug("LifecycleProvisionListener not initialized yet : {} source={}", key, provision.getBinding().getSource());
+                LOGGER.debug("LifecycleProvisionListener not initialized yet : {} source={}",
+                        key, provision.getBinding().getSource());
                 return;
             }
 

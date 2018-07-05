@@ -14,8 +14,12 @@ public class AutoCloseableLifecycleAction implements LifecycleAction {
     private final String description;
 
     public AutoCloseableLifecycleAction(Class<? extends AutoCloseable> clazz) {
-        this.description = new StringBuilder().append("AutoCloseable@").append(System.identityHashCode(this)).append("[").append(clazz.getName()).append(".")
-                .append("close()").append("]").toString();
+        this.description = new StringBuilder().append("AutoCloseable@")
+                .append(System.identityHashCode(this))
+                .append("[")
+                .append(clazz.getName()).append(".")
+                .append("close()")
+                .append("]").toString();
     }
 
     @Override

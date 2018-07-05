@@ -23,18 +23,18 @@ public final class SafeLifecycleListener extends WeakReference<LifecycleListener
         Preconditions.checkNotNull(listener, "listener argument must be non-null");
         return new SafeLifecycleListener(listener, null);
     }
-    
+
     public static SafeLifecycleListener wrap(LifecycleListener listener, ReferenceQueue<LifecycleListener> refQueue) {
         Preconditions.checkNotNull(listener, "listener argument must be non-null");
         return new SafeLifecycleListener(listener, refQueue);
     }
-        
+
     private SafeLifecycleListener(LifecycleListener delegate, ReferenceQueue<LifecycleListener> refQueue) {
         super(delegate, refQueue);
         this.delegateHash = delegate.hashCode();
         this.asString = "SafeLifecycleListener@" + System.identityHashCode(this) + " [" + delegate.toString() + "]";
     }
-    
+
     @Override
     public void onStarted() {
         LifecycleListener delegate = get();
@@ -49,15 +49,15 @@ public final class SafeLifecycleListener extends WeakReference<LifecycleListener
         LifecycleListener delegate = get();
         if (delegate != null) {
             if (t != null) {
-                LOGGER.info("Stopping '{}' due to '{}@{}'", delegate, t.getClass().getSimpleName(), System.identityHashCode(t));
-            }
-            else {
+                LOGGER.info("Stopping '{}' due to '{}@{}'", delegate,
+                        t.getClass().getSimpleName(),
+                        System.identityHashCode(t));
+            } else {
                 LOGGER.info("Stopping '{}'", delegate);
             }
             try {
                 delegate.onStopped(t);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 LOGGER.info("onStopped failed for {}", delegate, e);
             }
         }
@@ -75,18 +75,20 @@ public final class SafeLifecycleListener extends WeakReference<LifecycleListener
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         LifecycleListener delegate = get();
         if (delegate != null) {
-            LifecycleListener otherDelegate = ((SafeLifecycleListener)obj).get();    
+            LifecycleListener otherDelegate = ((SafeLifecycleListener) obj).get();
             return delegate == otherDelegate || delegate.equals(otherDelegate);
-        }
-        else {
+        } else {
             return false;
         }
     }

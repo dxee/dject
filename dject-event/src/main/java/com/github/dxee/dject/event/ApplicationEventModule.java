@@ -54,7 +54,8 @@ public final class ApplicationEventModule extends AbstractModule {
                                 && ApplicationEvent.class.isAssignableFrom(handlerMethod.getParameterTypes()[0])) {
                             handlerMethods.add(handlerMethod);
                         } else {
-                            throw new IllegalArgumentException("@EventListener " + clazz.getName() + "." + handlerMethod.getName()
+                            throw new IllegalArgumentException(
+                                    "@EventListener " + clazz.getName() + "." + handlerMethod.getName()
                                     + "skipped. Methods must be public, void, and accept exactly"
                                     + " one argument extending ApplicationEvent.");
                         }
@@ -85,7 +86,8 @@ public final class ApplicationEventModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        com.google.inject.Provider<ApplicationEventDispatcher> dispatcherProvider = binder().getProvider(ApplicationEventDispatcher.class);
+        com.google.inject.Provider<ApplicationEventDispatcher> dispatcherProvider =
+                binder().getProvider(ApplicationEventDispatcher.class);
         bindListener(Matchers.any(), new ApplicationEventSubscribingTypeListener(dispatcherProvider));
         bindListener(Matchers.any(), new ApplicationEventSubscribingProvisionListener(dispatcherProvider));
     }

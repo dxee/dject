@@ -94,7 +94,8 @@ public class SimpleLifecycleAction implements LifecycleAction {
                 }
                 throw ite;
             } catch (Throwable e) {
-                // extremely unlikely, as constructor sets the method to 'accessible' and validates that it takes no parameters
+                // extremely unlikely, as constructor sets the method to 'accessible'
+                // and validates that it takes no parameters
                 throw new RuntimeException("unexpected exception in method invocation", e);
             }
         }
