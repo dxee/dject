@@ -1,4 +1,4 @@
-# dject
+# Dject
 Guice extensions, help to improve the developer experience of guice. 
 
 ## Design Principles
