@@ -163,14 +163,13 @@ public class LifecycleModuleTest {
             fail("expected error provisioning injector");
         } catch (Exception e) {
             fail("expected AssertionError provisioning injector but got " + e);
-        }
-        finally {
+        } finally {
             assertThat(listener.events, equalTo(
                 Arrays.asList(Events.Injected, Events.Stopped, Events.Error)));
         }
     }
     
-    @Test(expected=AssertionError.class)
+    @Test(expected = AssertionError.class)
     public void assertionErrorInOnStarted() {
         TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName()) {
             @Override
@@ -192,7 +191,7 @@ public class LifecycleModuleTest {
 
     
     
-    @Test(expected=AssertionError.class)
+    @Test(expected = AssertionError.class)
     public void assertionErrorInOnStopped() {
         TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName()) {
             @Override

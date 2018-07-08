@@ -2,8 +2,11 @@ package com.github.dxee.dject;
 
 import com.github.dxee.dject.lifecycle.*;
 import com.github.dxee.dject.metrics.ProvisionMetricsModule;
+import com.github.dxee.dject.metrics.impl.LoggingProvisionModule;
+import com.github.dxee.dject.trace.TracingProvisionListener;
 import com.github.dxee.dject.visitors.*;
 import com.google.inject.*;
+import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.Element;
 import com.google.inject.spi.ElementVisitor;
 import com.google.inject.spi.Elements;
@@ -36,7 +39,7 @@ public final class Dject extends DelegatingInjector implements AutoCloseable {
         this.module = builder.module;
 
         // create guice injector here
-        this.injector = createInjector(stage, module);
+        this.injector = createInjector();
         this.injector.injectMembers(this);
     }
 
@@ -47,11 +50,9 @@ public final class Dject extends DelegatingInjector implements AutoCloseable {
 
     /**
      * Create the injector
-     * @param stage Guice stage
-     * @param module Custom module
-     * @return Inject
+     * @return Injector
      */
-    private Injector createInjector(Stage stage, Module module) {
+    private Injector createInjector() {
         // Construct the injector using our override structure
         try {
             Injector injector = Guice.createInjector(
@@ -102,6 +103,7 @@ public final class Dject extends DelegatingInjector implements AutoCloseable {
     public static class Builder {
         private Stage stage = Stage.DEVELOPMENT;
         private Module module;
+        private TracingProvisionListener tracingProvisionListener;
 
         public Builder withStage(Stage stage) {
             this.stage = stage;
@@ -143,6 +145,27 @@ public final class Dject extends DelegatingInjector implements AutoCloseable {
             m.add(module);
             m.addAll(Arrays.asList(modules));
             this.module = Modules.combine(m);
+            return this;
+        }
+
+        /**
+         * For debug purpose, See {@link LoggingProvisionModule}
+         */
+        public Builder withLoggingProvision() {
+            withCombineModules(new LoggingProvisionModule());
+            return this;
+        }
+
+        /**
+         * For debug purpose, See {@link TracingProvisionListener}
+         */
+        public Builder withTracingProvisionListener() {
+            withCombineModules(new AbstractModule() {
+                @Override
+                protected void configure() {
+                    bindListener(Matchers.any(), TracingProvisionListener.createDefault());
+                }
+            });
             return this;
         }
 

@@ -11,7 +11,7 @@ import org.junit.rules.TestName;
 
 import java.util.List;
 
-public class DjectBuilderTest {
+public class DjectTest {
     @Test
     public void testBindingTracing() {
         Dject.builder().withModule(new AbstractModule() {

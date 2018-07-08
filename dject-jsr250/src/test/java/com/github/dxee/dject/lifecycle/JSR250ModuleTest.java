@@ -40,7 +40,7 @@ public class JSR250ModuleTest {
 
     }
 
-    private static enum Events {
+    private enum Events {
         Injected, Initialized, Destroyed, Started, Stopped, Error
     }
 

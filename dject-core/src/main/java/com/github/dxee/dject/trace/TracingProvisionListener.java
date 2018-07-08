@@ -138,10 +138,10 @@ public class TracingProvisionListener implements ProvisionListener {
     }
 
     public static TracingProvisionListener createDefault() {
-        return new TracingProvisionListener(newBuilder());
+        return new TracingProvisionListener(builder());
     }
 
-    public static Builder newBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
 

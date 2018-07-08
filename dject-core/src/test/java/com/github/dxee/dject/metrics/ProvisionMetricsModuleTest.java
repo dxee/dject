@@ -1,7 +1,6 @@
 package com.github.dxee.dject.metrics;
 
 import com.github.dxee.dject.Dject;
-import com.github.dxee.dject.metrics.impl.LoggingProvisionModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import org.junit.Assert;
@@ -83,7 +82,6 @@ public class ProvisionMetricsModuleTest {
     @Test
     public void confirmMetricsIncludePostConstruct() {
         try (Dject injector = Dject.builder().withModules(
-                new LoggingProvisionModule(),
                 new AbstractModule() {
                     @Override
                     protected void configure() {

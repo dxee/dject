@@ -60,7 +60,7 @@ public class TypeInspector {
     /**
      * visitor interface for introspection processing
      */
-    public static interface TypeVisitor {
+    public interface TypeVisitor {
 
         boolean visit(Field field);
 
