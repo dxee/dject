@@ -110,7 +110,7 @@ public class DjectTest {
     }
 
     @Test
-    public void testTraceProvisionListener() {
+    public void testTracingProvision() {
         Dject.builder().withModule(new ModuleA())
                 .withTracingProvision()
                 .build();

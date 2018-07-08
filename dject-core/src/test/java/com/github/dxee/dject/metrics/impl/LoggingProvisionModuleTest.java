@@ -14,8 +14,7 @@ public class LoggingProvisionModuleTest {
     @Test
     public void confirmListenerExists() {
         try (Dject injector = Dject.builder()
-                .withModule(
-                new AbstractModule() {
+                .withModule(new AbstractModule() {
                     @Override
                     protected void configure() {
                     }
