@@ -103,7 +103,6 @@ public final class Dject extends DelegatingInjector implements AutoCloseable {
     public static class Builder {
         private Stage stage = Stage.DEVELOPMENT;
         private Module module;
-        private TracingProvisionListener tracingProvisionListener;
 
         public Builder withStage(Stage stage) {
             this.stage = stage;
@@ -159,7 +158,7 @@ public final class Dject extends DelegatingInjector implements AutoCloseable {
         /**
          * For debug purpose, See {@link TracingProvisionListener}
          */
-        public Builder withTracingProvisionListener() {
+        public Builder withTracingProvision() {
             withCombineModules(new AbstractModule() {
                 @Override
                 protected void configure() {

@@ -109,6 +109,13 @@ public class DjectTest {
                 .build();
     }
 
+    @Test
+    public void testTraceProvisionListener() {
+        Dject.builder().withModule(new ModuleA())
+                .withTracingProvision()
+                .build();
+    }
+
     @Before
     public void printTestHeader() {
         System.out.println("\n=======================================================");
