@@ -323,35 +323,6 @@ public class PreDestroyTest {
     }
 
     @Test
-    public void testLifecycleCloseable() {
-        final CloseableType closeableType = Mockito.mock(CloseableType.class);
-        try {
-            Mockito.doThrow(new IOException("boom")).when(closeableType).close();
-        } catch (IOException e1) {
-            // ignore, mock only
-        }
-
-        try (Dject injector = TestSupport.inject(closeableType)) {
-            Assert.assertNotNull(injector.getInstance(closeableType.getClass()));
-            try {
-                Mockito.verify(closeableType, Mockito.never()).close();
-            } catch (IOException e) {
-                // close() called before shutdown and failed
-                Assert.fail("close() called before shutdown and  failed");
-            }
-        }
-
-        try {
-            Mockito.verify(closeableType, Mockito.times(1)).close();
-            Mockito.verify(closeableType, Mockito.never()).shutdown();
-        } catch (IOException e) {
-            // close() called before shutdown and failed
-            Assert.fail("close() called after shutdown and  failed");
-        }
-
-    }
-
-    @Test
     public void testLifecycleShutdown() {
         final Foo foo = Mockito.mock(Foo.class);
         try (Dject injector = TestSupport.inject(foo)) {

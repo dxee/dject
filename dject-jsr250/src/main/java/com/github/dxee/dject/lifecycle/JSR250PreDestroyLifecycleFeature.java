@@ -16,34 +16,20 @@ import java.lang.annotation.Annotation;
  */
 public final class JSR250PreDestroyLifecycleFeature extends OneAnnotationLifecycleFeature
         implements PreDestroyLifecycleFeature {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JSR250PreDestroyLifecycleFeature.class);
 
     @Override
-    public PreDestroyTypeVisitor visitor() {
-        return new PreDestroyTypeVisitor(this.annotationClazz);
+    public JSR250PreDestroyTypeVisitor visitor() {
+        return new JSR250PreDestroyTypeVisitor(this.annotationClazz);
     }
 
-    private class PreDestroyTypeVisitor extends AbstractTypeVisitor {
-        public PreDestroyTypeVisitor(Class<? extends Annotation> annotationClazz) {
+    private class JSR250PreDestroyTypeVisitor extends AbstractTypeVisitor {
+        public JSR250PreDestroyTypeVisitor(Class<? extends Annotation> annotationClazz) {
             super(annotationClazz);
         }
 
         @Override
         public void addMethodLifecycleAction(LifecycleAction lifecycleAction) {
             addLifecycleActionToLastOne(lifecycleAction);
-        }
-
-        @Override
-        public boolean visit(final Class<?> clazz) {
-            boolean continueVisit = !clazz.isInterface();
-            if (continueVisit && AutoCloseable.class.isAssignableFrom(clazz)) {
-                AutoCloseableLifecycleAction closeableAction = new AutoCloseableLifecycleAction(
-                        clazz.asSubclass(AutoCloseable.class));
-                LOGGER.debug("adding action {}", closeableAction);
-                addLifecycleActionToLastOne(closeableAction);
-                continueVisit = false;
-            }
-            return continueVisit;
         }
     }
 
