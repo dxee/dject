@@ -43,7 +43,8 @@ public class PreDestoryLifecycleFeaturePriorityTest {
         InOrder inOrder = Mockito.inOrder(testPriority1);
 
         TestPriority testPriority = null;
-        try(Dject injector = Dject.builder().withModule(new AbstractModule() {
+
+        Dject injector = Dject.builder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
                 Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class).addBinding().toInstance(new PreDestroyLifecycleFeature1() {
@@ -56,7 +57,7 @@ public class PreDestoryLifecycleFeaturePriorityTest {
                 Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class).addBinding().toInstance(new PreDestroyLifecycleFeature1() {
                     @Override
                     public Class<? extends Annotation> annotationClazz() {
-                        return  PreDestroy2.class;
+                        return PreDestroy2.class;
                     }
 
                     @Override
@@ -67,7 +68,7 @@ public class PreDestoryLifecycleFeaturePriorityTest {
                 Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class).addBinding().toInstance(new PreDestroyLifecycleFeature1() {
                     @Override
                     public Class<? extends Annotation> annotationClazz() {
-                        return  PreDestroy3.class;
+                        return PreDestroy3.class;
                     }
 
                     @Override
@@ -77,13 +78,14 @@ public class PreDestoryLifecycleFeaturePriorityTest {
                 });
                 bind(TestPriority.class).toInstance(testPriority1);
             }
-        }).build()) {
-            testPriority = injector.getInstance(TestPriority.class);
+        }).build();
+        testPriority = injector.getInstance(TestPriority.class);
 
-            Mockito.verify(testPriority, Mockito.never()).p3();
-            Mockito.verify(testPriority, Mockito.never()).p2();
-            Mockito.verify(testPriority, Mockito.never()).p1();
-        };
+        Mockito.verify(testPriority, Mockito.never()).p3();
+        Mockito.verify(testPriority, Mockito.never()).p2();
+        Mockito.verify(testPriority, Mockito.never()).p1();
+
+        injector.shutdown();
 
         inOrder.verify(testPriority, Mockito.times(1)).p1();
         inOrder.verify(testPriority, Mockito.times(1)).p2();
@@ -96,13 +98,14 @@ public class PreDestoryLifecycleFeaturePriorityTest {
         InOrder inOrder = Mockito.inOrder(testPriorityChild1);
 
         TestPriorityChild testPriorityChild = null;
-        try (Dject injector = Dject.builder().withModule(new AbstractModule() {
+
+        Dject injector = Dject.builder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
                 Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class).addBinding().toInstance(new PreDestroyLifecycleFeature1() {
                     @Override
                     public Class<? extends Annotation> annotationClazz() {
-                        return  PreDestroy1.class;
+                        return PreDestroy1.class;
                     }
 
                     @Override
@@ -134,11 +137,11 @@ public class PreDestoryLifecycleFeaturePriorityTest {
                 });
                 bind(TestPriorityChild.class).toInstance(testPriorityChild1);
             }
-        }).build()) {
-            testPriorityChild = injector.getInstance(TestPriorityChild.class);
-            Mockito.verify(testPriorityChild, Mockito.never()).p3();
-        }
+        }).build();
+        testPriorityChild = injector.getInstance(TestPriorityChild.class);
+        Mockito.verify(testPriorityChild, Mockito.never()).p3();
 
+        injector.shutdown();
         // once not twice
         inOrder.verify(testPriorityChild, Mockito.times(1)).p3();
     }
@@ -163,7 +166,7 @@ public class PreDestoryLifecycleFeaturePriorityTest {
 
         @Override
         public String toString() {
-            return new StringBuilder().append("Predestroy @").append(this.annotationClazz==null ? "null" : this.annotationClazz.getSimpleName())
+            return new StringBuilder().append("Predestroy @").append(this.annotationClazz == null ? "null" : this.annotationClazz.getSimpleName())
                     .append(" with priority ").append(priority()).toString();
         }
     }

@@ -31,7 +31,7 @@ public class SimpleLifecycleShutdown implements LifecycleShutdown {
     }
 
     @Override
-    public void awaitTermination() throws InterruptedException {
+    public void awaitShutdown() throws InterruptedException {
         latch.await();
     }
 }

@@ -98,8 +98,8 @@ public class JSR250ModuleTest {
             }
         };
 
-        try (Dject injector = TestSupport.inject(listener)) {
-            fail("expected rt exception starting injector");
+        try {
+            TestSupport.inject(listener);
         } catch (CreationException e) {
             // expected
         } catch (Exception e) {
@@ -120,11 +120,8 @@ public class JSR250ModuleTest {
             }
         };
 
-        try (Dject injector = TestSupport.inject(listener)) {
-
-        } finally {
-            assertThat(listener.events, equalTo(Arrays.asList(Events.Injected, Events.Initialized, Events.Started, Events.Stopped, Events.Destroyed)));
-        }
+        TestSupport.inject(listener).shutdown();
+        assertThat(listener.events, equalTo(Arrays.asList(Events.Injected, Events.Initialized, Events.Started, Events.Stopped, Events.Destroyed)));
     }
     
     
@@ -138,18 +135,15 @@ public class JSR250ModuleTest {
                 fail("postconstruct exception");
             }
         };
-        try (Dject injector = TestSupport.inject(listener)) {
-            fail("expected error creating injector");
-        } catch (Exception e) {
-            fail("expected AssertionError destroying injector but got " + e);
-        }
-        finally {
+        try {
+            TestSupport.inject(listener);
+        } finally {
             assertThat(listener.events, equalTo(
                 Arrays.asList(Events.Injected, Events.Initialized, Events.Stopped, Events.Error)));
         }
     }
     
-    @Test(expected=AssertionError.class)
+    @Test(expected = AssertionError.class)
     public void assertionErrorInPreDestroy() {
         TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName()) {
             @PreDestroy
@@ -160,12 +154,8 @@ public class JSR250ModuleTest {
             }
         };
         try {
-            TestSupport.inject(listener).close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("expected no exceptions for failed destroy method but got " + e);
-        }
-        finally {
+            TestSupport.inject(listener).shutdown();
+        } finally {
             assertThat(listener.events, equalTo(
                 Arrays.asList(Events.Injected, Events.Initialized, Events.Started, Events.Stopped, Events.Destroyed)));
         }

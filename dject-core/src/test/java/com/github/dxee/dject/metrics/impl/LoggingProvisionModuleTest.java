@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class LoggingProvisionModuleTest {
     @Test
     public void confirmListenerExists() {
-        try (Dject injector = Dject.builder()
+        Dject injector = Dject.builder()
                 .withModule(new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -21,9 +21,9 @@ public class LoggingProvisionModuleTest {
                 })
                 .withLoggingProvision()
                 .withStage(Stage.PRODUCTION)
-                .build()) {
-            LoggingProvisionMetricsLifecycleListener loggingProvisionMetricsLifecycleListener = injector.getInstance(LoggingProvisionMetricsLifecycleListener.class);
-            Assert.assertNotNull(loggingProvisionMetricsLifecycleListener);
-        }
+                .build();
+        LoggingProvisionMetricsLifecycleListener loggingProvisionMetricsLifecycleListener = injector.getInstance(LoggingProvisionMetricsLifecycleListener.class);
+        Assert.assertNotNull(loggingProvisionMetricsLifecycleListener);
+
     }
 }

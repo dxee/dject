@@ -12,25 +12,24 @@ import java.util.concurrent.TimeUnit;
 public class ProvisionMetricsModuleTest {
     @Test
     public void disableMetrics() {
-        try (Dject injector = Dject.builder().withModule(
+        Dject injector = Dject.builder().withModule(
                 new AbstractModule() {
                     @Override
                     protected void configure() {
                         bind(ProvisionMetrics.class).to(NullProvisionMetrics.class);
                     }
                 })
-                .build()) {
+                .build();
 
             ProvisionMetrics metrics = injector.getInstance(ProvisionMetrics.class);
             TestProvisionMetricsVisitor visitor = new TestProvisionMetricsVisitor();
             metrics.accept(visitor);
             Assert.assertTrue(visitor.getElementCount() == 0);
-        }
     }
 
     @Test
     public void confirmDedupWorksWithOverride() {
-        try (Dject injector = Dject.builder().withModule(
+        Dject injector = Dject.builder().withModule(
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -43,13 +42,11 @@ public class ProvisionMetricsModuleTest {
                     protected void configure() {
                     }
                 })
-                .build()) {
-
-            ProvisionMetrics metrics = injector.getInstance(ProvisionMetrics.class);
-            TestProvisionMetricsVisitor visitor = new TestProvisionMetricsVisitor();
-            metrics.accept(visitor);
-            Assert.assertTrue(visitor.getElementCount() != 0);
-        }
+                .build();
+        ProvisionMetrics metrics = injector.getInstance(ProvisionMetrics.class);
+        TestProvisionMetricsVisitor visitor = new TestProvisionMetricsVisitor();
+        metrics.accept(visitor);
+        Assert.assertTrue(visitor.getElementCount() != 0);
     }
 
     @Singleton
@@ -81,7 +78,7 @@ public class ProvisionMetricsModuleTest {
 
     @Test
     public void confirmMetricsIncludePostConstruct() {
-        try (Dject injector = Dject.builder().withModules(
+        Dject injector = Dject.builder().withModules(
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -89,14 +86,13 @@ public class ProvisionMetricsModuleTest {
                     }
                 })
                 .withTraceEachProvisionListener()
-                .build()) {
+                .build();
 
-            ProvisionMetrics metrics = injector.getInstance(ProvisionMetrics.class);
-            KeyTrackingVisitor keyTracker = new KeyTrackingVisitor(Key.get(Foo.class));
-            metrics.accept(keyTracker);
+        ProvisionMetrics metrics = injector.getInstance(ProvisionMetrics.class);
+        KeyTrackingVisitor keyTracker = new KeyTrackingVisitor(Key.get(Foo.class));
+        metrics.accept(keyTracker);
 
-            Assert.assertNotNull(keyTracker.getElement());
-            Assert.assertTrue(keyTracker.getElement().getTotalDuration(TimeUnit.MILLISECONDS) >= 200);
-        }
+        Assert.assertNotNull(keyTracker.getElement());
+        Assert.assertTrue(keyTracker.getElement().getTotalDuration(TimeUnit.MILLISECONDS) >= 200);
     }
 }

@@ -23,7 +23,7 @@ import java.util.function.Consumer;
  * Wrapper for Guice's Injector with extended methods.
  */
 @Singleton
-public final class Dject extends DelegatingInjector implements AutoCloseable {
+public final class Dject extends DelegatingInjector {
     private static final Logger LOGGER = LoggerFactory.getLogger(Dject.class);
     private final LifecycleManager manager = new LifecycleManager();
     private final Stage stage;
@@ -41,11 +41,6 @@ public final class Dject extends DelegatingInjector implements AutoCloseable {
         // create guice injector here
         this.injector = createInjector();
         this.injector.injectMembers(this);
-    }
-
-    @Override
-    public void close() {
-        lifecycleShutdown.shutdown();
     }
 
     /**
@@ -88,12 +83,19 @@ public final class Dject extends DelegatingInjector implements AutoCloseable {
     }
 
     /**
-     * Block until LifecycleManager terminates
+     * Shutdown for the lifecycle manager
+     */
+    public void shutdown() {
+        lifecycleShutdown.shutdown();
+    }
+
+    /**
+     * Block until lifecycle manager shutdown
      *
      * @throws InterruptedException
      */
-    public void awaitTermination() throws InterruptedException {
-        lifecycleShutdown.awaitTermination();
+    public void awaitShutdown() throws InterruptedException {
+        lifecycleShutdown.awaitShutdown();
     }
 
     public static Builder builder() {
@@ -106,11 +108,6 @@ public final class Dject extends DelegatingInjector implements AutoCloseable {
 
         public Builder withStage(Stage stage) {
             this.stage = stage;
-            return this;
-        }
-
-        public Builder withModule() {
-            this.module = module;
             return this;
         }
 

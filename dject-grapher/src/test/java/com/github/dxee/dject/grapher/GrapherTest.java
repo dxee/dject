@@ -19,22 +19,21 @@ public class GrapherTest {
         final AtomicBoolean injectCalled = new AtomicBoolean(false);
         final AtomicBoolean afterInjectorCalled = new AtomicBoolean(false);
 
-        try(Dject injector = Dject.builder().withModules(new AbstractModule() {
+        Dject.builder().withModules(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(F1.class);
+                install(new AbstractModule() {
                     @Override
                     protected void configure() {
-                        bind(F1.class);
-                        install(new AbstractModule() {
-                            @Override
-                            protected void configure() {
-                                bind(F2.class);
-                            }
-                        });
+                        bind(F2.class);
                     }
-                }, new GrapherModule()).withStage(Stage.PRODUCTION).build()) {
-            File f = new File("digraph.dot");
-            Assert.assertTrue(f.exists());
-            f.delete();
-        }
+                });
+            }
+        }, new GrapherModule()).withStage(Stage.PRODUCTION).build();
+        File f = new File("digraph.dot");
+        Assert.assertTrue(f.exists());
+        f.delete();
     }
 
 
@@ -43,35 +42,34 @@ public class GrapherTest {
         final AtomicBoolean injectCalled = new AtomicBoolean(false);
         final AtomicBoolean afterInjectorCalled = new AtomicBoolean(false);
 
-        try(Dject injector = Dject.builder().withModules(new AbstractModule() {
+        Dject injector = Dject.builder().withModules(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(F1.class);
+                install(new AbstractModule() {
                     @Override
                     protected void configure() {
-                        bind(F1.class);
-                        install(new AbstractModule() {
-                            @Override
-                            protected void configure() {
-                                bind(F2.class);
-                            }
-                        });
-                        bind(GrapherFilter.class).toInstance(new FileGrapherFilter() {
-                            @Override
-                            public List<String> packages() {
-                                List<String> packages = new ArrayList<>();
-                                packages.add("org.dxee.dject.grapher");
-                                return packages;
-                            }
-
-                            @Override
-                            public String filePath() {
-                                return "/tmp/digraph.dot";
-                            }
-                        });
+                        bind(F2.class);
                     }
-                }, new GrapherModule()).withStage(Stage.PRODUCTION).build()) {
-            File f = new File("/tmp/digraph.dot");
-            Assert.assertTrue(f.exists());
-            f.delete();
-        }
+                });
+                bind(GrapherFilter.class).toInstance(new FileGrapherFilter() {
+                    @Override
+                    public List<String> packages() {
+                        List<String> packages = new ArrayList<>();
+                        packages.add("org.dxee.dject.grapher");
+                        return packages;
+                    }
+
+                    @Override
+                    public String filePath() {
+                        return "/tmp/digraph.dot";
+                    }
+                });
+            }
+        }, new GrapherModule()).withStage(Stage.PRODUCTION).build();
+        File f = new File("/tmp/digraph.dot");
+        Assert.assertTrue(f.exists());
+        f.delete();
     }
 
     @Singleton

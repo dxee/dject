@@ -55,7 +55,7 @@ public class PostConstructTest {
             System.out.println("child.init");
         }
     }
-    
+
     private static class PostConstructParent2 {
         @PostConstruct
         public void anotherInit() {
@@ -69,7 +69,7 @@ public class PostConstructTest {
             System.out.println("child.init");
         }
     }
-    
+
     private static class PostConstructParent3 {
         @PostConstruct
         public void init() {
@@ -83,30 +83,29 @@ public class PostConstructTest {
         }
     }
 
-    
+
     static class MultiplePostConstructs {
         @PostConstruct
         public void init1() {
             System.out.println("init1");
         }
-        
+
         @PostConstruct
         public void init2() {
             System.out.println("init2");
-        }       
+        }
     }
-    
+
 
     @Test
     public void testLifecycleInitInheritance1() {
         final PostConstructChild1 postConstructChild = Mockito.mock(PostConstructChild1.class);
         InOrder inOrder = Mockito.inOrder(postConstructChild);
 
-        try (Dject injector = TestSupport.inject(postConstructChild)) {
-            Assert.assertNotNull(injector.getInstance(postConstructChild.getClass()));
-            // not twice
-            inOrder.verify(postConstructChild, Mockito.times(1)).init();
-        }
+        Dject injector = TestSupport.inject(postConstructChild);
+        Assert.assertNotNull(injector.getInstance(postConstructChild.getClass()));
+        // not twice
+        inOrder.verify(postConstructChild, Mockito.times(1)).init();
     }
 
     @Test
@@ -114,76 +113,72 @@ public class PostConstructTest {
         final PostConstructChild2 postConstructChild = Mockito.mock(PostConstructChild2.class);
         InOrder inOrder = Mockito.inOrder(postConstructChild);
 
-        try (Dject injector = TestSupport.inject(postConstructChild)) {
-            Assert.assertNotNull(injector.getInstance(postConstructChild.getClass()));
-            // parent postConstruct before child postConstruct
-            inOrder.verify(postConstructChild, Mockito.times(1)).anotherInit();
-            // not twice
-            inOrder.verify(postConstructChild, Mockito.times(1)).init();
-        }
+        Dject injector = TestSupport.inject(postConstructChild);
+        Assert.assertNotNull(injector.getInstance(postConstructChild.getClass()));
+        // parent postConstruct before child postConstruct
+        inOrder.verify(postConstructChild, Mockito.times(1)).anotherInit();
+        // not twice
+        inOrder.verify(postConstructChild, Mockito.times(1)).init();
     }
-    
+
     @Test
     public void testLifecycleShutdownInheritance3() {
         final PostConstructChild3 postConstructChild = Mockito.spy(new PostConstructChild3());
         InOrder inOrder = Mockito.inOrder(postConstructChild);
 
-        try (Dject injector = TestSupport.inject(postConstructChild)) {
-            Assert.assertNotNull(injector.getInstance(postConstructChild.getClass()));
-            Mockito.verify(postConstructChild, Mockito.never()).init();
-        }
+        Dject injector = TestSupport.inject(postConstructChild);
+        Assert.assertNotNull(injector.getInstance(postConstructChild.getClass()));
+        Mockito.verify(postConstructChild, Mockito.never()).init();
+        injector.shutdown();
         // never, child class overrides method without annotation
-        inOrder.verify(postConstructChild, Mockito.never()).init(); 
+        inOrder.verify(postConstructChild, Mockito.never()).init();
     }
-    
+
 
     @Test
     public void testLifecycleMultipleAnnotations() {
         final MultiplePostConstructs multiplePostConstructs = Mockito.spy(new MultiplePostConstructs());
-        try (Dject injector = new TestSupport()
+        Dject injector = new TestSupport()
                 .withSingleton(multiplePostConstructs)
-                .inject()) {
-            Assert.assertNotNull(injector.getInstance(multiplePostConstructs.getClass()));
-            Mockito.verify(multiplePostConstructs, Mockito.never()).init1();
-            Mockito.verify(multiplePostConstructs, Mockito.never()).init2();
-        }
+                .inject();
+        Assert.assertNotNull(injector.getInstance(multiplePostConstructs.getClass()));
+        Mockito.verify(multiplePostConstructs, Mockito.never()).init1();
+        Mockito.verify(multiplePostConstructs, Mockito.never()).init2();
+        injector.shutdown();
         // never, multiple annotations should be ignored
-        Mockito.verify(multiplePostConstructs, Mockito.never()).init1(); 
-        Mockito.verify(multiplePostConstructs, Mockito.never()).init2(); 
-    }    
-    
+        Mockito.verify(multiplePostConstructs, Mockito.never()).init1();
+        Mockito.verify(multiplePostConstructs, Mockito.never()).init2();
+    }
+
 
     @Test
     public void testLifecycleInitWithInvalidPostConstructs() {
         InvalidPostConstructs mockInstance = Mockito.mock(InvalidPostConstructs.class);
-        try (Dject injector = new TestSupport()
+        Dject injector = new TestSupport()
                 .withSingleton(mockInstance)
-                .inject()) {
-            Assert.assertNotNull(injector.getInstance(InvalidPostConstructs.class));
-            Mockito.verify(mockInstance, Mockito.never()).initWithParameters(Mockito.anyString());
-            Mockito.verify(mockInstance, Mockito.never()).initWithReturnValue();
-        }
+                .inject();
+        Assert.assertNotNull(injector.getInstance(InvalidPostConstructs.class));
+        Mockito.verify(mockInstance, Mockito.never()).initWithParameters(Mockito.anyString());
+        Mockito.verify(mockInstance, Mockito.never()).initWithReturnValue();
     }
-    
+
     @Test
     public void testLifecycleInitWithPostConstructException() {
         InvalidPostConstructs mockInstance = Mockito.mock(InvalidPostConstructs.class);
-        try (Dject injector = new TestSupport()
+        Dject injector = new TestSupport()
                 .withSingleton(mockInstance)
-                .inject()) {
-            Assert.assertNotNull(injector.getInstance(InvalidPostConstructs.class));
-            Mockito.verify(mockInstance, Mockito.never()).initWithParameters(Mockito.anyString());
-            Mockito.verify(mockInstance, Mockito.never()).initWithReturnValue();
-        }
+                .inject();
+        Assert.assertNotNull(injector.getInstance(InvalidPostConstructs.class));
+        Mockito.verify(mockInstance, Mockito.never()).initWithParameters(Mockito.anyString());
+        Mockito.verify(mockInstance, Mockito.never()).initWithReturnValue();
     }
 
     @Test
     public void testLifecycleInit() {
         SimplePostConstruct mockInstance = Mockito.mock(SimplePostConstruct.class);
-        try (Dject injector = TestSupport.inject(mockInstance)) {
-            Assert.assertNotNull(injector.getInstance(SimplePostConstruct.class));
-            Mockito.verify(mockInstance, Mockito.times(1)).init();
-        }
+        Dject injector = TestSupport.inject(mockInstance);
+        Assert.assertNotNull(injector.getInstance(SimplePostConstruct.class));
+        Mockito.verify(mockInstance, Mockito.times(1)).init();
     }
 
     @Test
@@ -201,9 +196,8 @@ public class PostConstructTest {
                 return simplePostConstruct;
             }
         });
-        try (Dject injector = builder.build()) {
-            Mockito.verify(injector.getInstance(SimplePostConstruct.class), Mockito.times(1)).init();
-        }
+        Dject injector = builder.build();
+        Mockito.verify(injector.getInstance(SimplePostConstruct.class), Mockito.times(1)).init();
     }
 
     @Before

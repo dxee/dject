@@ -4,7 +4,7 @@ import com.github.dxee.dject.lifecycle.impl.SimpleLifecycleShutdown;
 import com.google.inject.ImplementedBy;
 
 /**
- * Shutdown shutdown for the lifecycle manager.  Code can either block on the shutdown
+ * Shutdown for the lifecycle manager.  Code can either block on the shutdown
  * being fired or trigger it from a shutdown mechanism, such as a shutdown PID or
  * shutdown socket.  Each container is likely to have it's own implementation of
  * shutdown shutdown.
@@ -25,6 +25,6 @@ public interface LifecycleShutdown {
      * 
      * @throws InterruptedException
      */
-    void awaitTermination() throws InterruptedException;
+    void awaitShutdown() throws InterruptedException;
 
 }

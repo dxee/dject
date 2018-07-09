@@ -83,7 +83,7 @@ public class LifecycleModuleTest {
     public void confirmLifecycleListenerEventsForSuccessfulStart() {
         final TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName());
 
-        TestSupport.inject(listener).close();
+        TestSupport.inject(listener).shutdown();
 
         assertThat(listener.events, equalTo(
                 Arrays.asList(Events.Injected, Events.Started, Events.Stopped)));
@@ -100,8 +100,8 @@ public class LifecycleModuleTest {
             }
         };
 
-        try (Dject injector = TestSupport.inject(listener)) {
-            fail("expected exception injecting instance");
+        try {
+            TestSupport.inject(listener);
         } catch (CreationException e) {
             // expected
         } catch (Exception e) {
@@ -121,8 +121,8 @@ public class LifecycleModuleTest {
             }
         };
 
-        try (Dject injector = TestSupport.inject(listener)) {
-            fail("expected rt exception starting injector");
+        try {
+            TestSupport.inject(listener);
         } catch (TestRuntimeException e) {
             // expected
         } catch (Exception e) {
@@ -142,52 +142,53 @@ public class LifecycleModuleTest {
             }
         };
 
-        try (Dject injector = TestSupport.inject(listener)) {
+        try {
+            TestSupport.inject(listener).shutdown();
         } finally {
             assertThat(listener.events, equalTo(Arrays.asList(Events.Injected, Events.Started, Events.Stopped)));
         }
     }
     
 
-    @Test(expected=AssertionError.class)
+    @Test
     public void assertionErrorInInject() {
         TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName()) {
             @Inject
             @Override
             public void injected(Injector injector) {
                 super.injected(injector);
-                fail("injected exception");
+                throw new TestRuntimeException("injected exception");
             }
         };
-        try (Dject injector = TestSupport.inject(listener)) {
-            fail("expected error provisioning injector");
-        } catch (Exception e) {
-            fail("expected AssertionError provisioning injector but got " + e);
+
+        try {
+            TestSupport.inject(listener);
+        } catch (CreationException e) {
+            // expected
         } finally {
-            assertThat(listener.events, equalTo(
-                Arrays.asList(Events.Injected, Events.Stopped, Events.Error)));
+            assertThat(listener.events, equalTo(Arrays.asList(Events.Injected)));
         }
     }
     
-    @Test(expected = AssertionError.class)
+    @Test
     public void assertionErrorInOnStarted() {
         TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName()) {
             @Override
             public void onStarted() {
                 super.onStarted();
-                fail("onStarted exception");
+                throw new TestRuntimeException("onStarted exception");
             }
         };
-        try (Dject injector = TestSupport.inject(listener)) {
-            fail("expected AssertionError starting injector");
-        } catch (Exception e) {
-            fail("expected AssertionError starting injector but got " + e);
-        }
-        finally {
+
+        try {
+            TestSupport.inject(listener);
+        } catch (TestRuntimeException e) {
+          // expected
+        } finally {
             assertThat(listener.events, equalTo(
                 Arrays.asList(Events.Injected, Events.Started, Events.Stopped, Events.Error)));
         }
-    }    
+    }
 
     
     
@@ -200,15 +201,8 @@ public class LifecycleModuleTest {
                 fail("onstopped exception");
             }
         };
-        try (Dject injector = TestSupport.inject(listener)) {
-            fail("expected AssertionError stopping injector");
-        } catch (Exception e) {
-            fail("expected AssertionError stopping injector but got " + e);
-        }
-        finally {
-            assertThat(listener.events, equalTo(
-                Arrays.asList(Events.Injected, Events.Stopped, Events.Error)));
-        }
+
+        TestSupport.inject(listener).shutdown();
     }
     
     public static class Listener1 implements LifecycleListener {
@@ -255,20 +249,22 @@ public class LifecycleModuleTest {
     public void testNestedLifecycleListeners() {
         Listener1 listener1;
         Listener2 listener2;
-        try (Dject injector = Dject.builder().withModule(new AbstractModule() {
-            
+
+        Dject injector = Dject.builder().withModule(new AbstractModule() {
+
             @Override
             protected void configure() {
                 bind(Listener1.class).asEagerSingleton();
-                bind(Listener2.class).in(Scopes.SINGLETON);                
+                bind(Listener2.class).in(Scopes.SINGLETON);
             }
-        }).build()) {
-            listener1 = injector.getInstance(Listener1.class);
-            listener2 = listener1.nestedListener.get();
-            Assert.assertNotNull(listener2);
-            Assert.assertTrue(listener1.wasStarted);
-            Assert.assertTrue(listener2.wasStarted);
-        }
+        }).build();
+        listener1 = injector.getInstance(Listener1.class);
+        listener2 = listener1.nestedListener.get();
+        Assert.assertNotNull(listener2);
+        Assert.assertTrue(listener1.wasStarted);
+        Assert.assertTrue(listener2.wasStarted);
+
+        injector.shutdown();
         Assert.assertTrue(listener1.wasStopped);
         Assert.assertTrue(listener2.wasStopped);
     }

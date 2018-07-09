@@ -14,7 +14,8 @@ import java.util.List;
 public class DjectTest {
     @Test
     public void testBindingTracing() {
-        Dject.builder().withModule(new AbstractModule() {
+        Dject.builder().withModule(
+                new AbstractModule() {
                     @Override
                     protected void configure() {
                         bind(String.class).toInstance("Hello world");
@@ -29,7 +30,8 @@ public class DjectTest {
 
     @Test
     public void testKeyTracing() {
-        try (Dject li = Dject.builder().withModule(new AbstractModule() {
+        Dject li = Dject.builder().withModule(
+                new AbstractModule() {
                     @Override
                     protected void configure() {
                         bind(String.class).toInstance("Hello world");
@@ -37,13 +39,13 @@ public class DjectTest {
                 })
                 .withWarnOfToInstanceInjections()
                 .withTraceEachKey()
-                .build()) {
-        }
+                .build();
     }
 
     @Test
     public void testWarnOnStaticInjection() {
-        List<Element> elements = Dject.builder().withModule(new AbstractModule() {
+        List<Element> elements = Dject.builder().withModule(
+                new AbstractModule() {
                     @Override
                     protected void configure() {
                         this.requestStaticInjection(String.class);
@@ -57,7 +59,8 @@ public class DjectTest {
 
     @Test
     public void testStripStaticInjection() {
-        List<Element> elements = Dject.builder().withModule(new AbstractModule() {
+        List<Element> elements = Dject.builder().withModule(
+                new AbstractModule() {
                     @Override
                     protected void configure() {
                         this.requestStaticInjection(String.class);
