@@ -18,21 +18,21 @@ public class PostConstructLifecycleFeaturePriorityTest {
     static class TestPriority {
         public static final String p1p2p3 = "123";
         public static final String p3p2p1 = "321";
-        private String p = "";
+        private String priority = "";
 
         @PostConstruct1
         public void p1() {
-            p = p + "1";
+            priority = priority + "1";
         }
 
         @PostConstruct3
         public void p2() {
-            p = p + "2";
+            priority = priority + "2";
         }
 
         @PostConstruct2
         public void p3() {
-            p = p + "3";
+            priority = priority + "3";
         }
     }
 
@@ -41,18 +41,21 @@ public class PostConstructLifecycleFeaturePriorityTest {
         Dject injector = Dject.builder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
-                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature1() {
-                    @Override
-                    public Class<? extends Annotation> annotationClazz() {
-                        return PostConstruct1.class;
-                    }
+                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class)
+                        .addBinding().toInstance(
+                        new PostConstructLifecycleFeature1() {
+                            @Override
+                            public Class<? extends Annotation> annotationClazz() {
+                                return PostConstruct1.class;
+                            }
 
-                    @Override
-                    public int priority() {
-                        return 1;
-                    }
-                });
-                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature1() {
+                            @Override
+                            public int priority() {
+                                return 1;
+                            }
+                        });
+                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class)
+                        .addBinding().toInstance(new PostConstructLifecycleFeature1() {
                     @Override
                     public Class<? extends Annotation> annotationClazz() {
                         return PostConstruct3.class;
@@ -63,7 +66,8 @@ public class PostConstructLifecycleFeaturePriorityTest {
                         return 2;
                     }
                 });
-                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature1() {
+                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class)
+                        .addBinding().toInstance(new PostConstructLifecycleFeature1() {
                     @Override
                     public Class<? extends Annotation> annotationClazz() {
                         return PostConstruct2.class;
@@ -80,58 +84,64 @@ public class PostConstructLifecycleFeaturePriorityTest {
 
         TestPriority testPriority = injector.getInstance(TestPriority.class);
 
-        Assert.assertTrue(testPriority.p.equals(TestPriority.p1p2p3));
+        Assert.assertTrue(testPriority.priority.equals(TestPriority.p1p2p3));
     }
 
     @Test
     public void confirmPostConstructOrder1() {
-        Dject injector = Dject.builder().withModule(new AbstractModule() {
-            @Override
-            protected void configure() {
-                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature1() {
+        Dject injector = Dject.builder().withModule(
+                new AbstractModule() {
                     @Override
-                    public Class<? extends Annotation> annotationClazz() {
-                        return PostConstruct1.class;
-                    }
+                    protected void configure() {
+                        Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class)
+                                .addBinding().toInstance(new PostConstructLifecycleFeature1() {
+                            @Override
+                            public Class<? extends Annotation> annotationClazz() {
+                                return PostConstruct1.class;
+                            }
 
-                    @Override
-                    public int priority() {
-                        return 3;
-                    }
-                });
-                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature1() {
-                    @Override
-                    public Class<? extends Annotation> annotationClazz() {
-                        return PostConstruct3.class;
-                    }
+                            @Override
+                            public int priority() {
+                                return 3;
+                            }
+                        });
+                        Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class)
+                                .addBinding().toInstance(new PostConstructLifecycleFeature1() {
+                            @Override
+                            public Class<? extends Annotation> annotationClazz() {
+                                return PostConstruct3.class;
+                            }
 
-                    @Override
-                    public int priority() {
-                        return 2;
-                    }
-                });
-                Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class).addBinding().toInstance(new PostConstructLifecycleFeature1() {
-                    @Override
-                    public Class<? extends Annotation> annotationClazz() {
-                        return PostConstruct2.class;
-                    }
+                            @Override
+                            public int priority() {
+                                return 2;
+                            }
+                        });
+                        Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class)
+                                .addBinding().toInstance(new PostConstructLifecycleFeature1() {
+                            @Override
+                            public Class<? extends Annotation> annotationClazz() {
+                                return PostConstruct2.class;
+                            }
 
-                    @Override
-                    public int priority() {
-                        return 1;
+                            @Override
+                            public int priority() {
+                                return 1;
+                            }
+                        });
+                        bind(TestPriority.class).in(Scopes.SINGLETON);
                     }
-                });
-                bind(TestPriority.class).in(Scopes.SINGLETON);
-            }
-        }).build();
+                }).build();
 
         TestPriority testPriority = injector.getInstance(TestPriority.class);
 
-        Assert.assertTrue(testPriority.p.equals(TestPriority.p3p2p1));
+        Assert.assertTrue(testPriority.priority.equals(TestPriority.p3p2p1));
     }
 
 
-    private static abstract class PostConstructLifecycleFeature1 extends OneAnnotationLifecycleFeature implements PostConstructLifecycleFeature {
+    private abstract static class PostConstructLifecycleFeature1
+            extends OneAnnotationLifecycleFeature
+            implements PostConstructLifecycleFeature {
         @Override
         public TestPostConstructTypeVisitor visitor() {
             return new TestPostConstructTypeVisitor(this.annotationClazz);

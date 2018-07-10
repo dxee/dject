@@ -39,16 +39,16 @@ public class TestSupport {
         return Dject.builder().withModule(module).withStage(Stage.PRODUCTION).build();
     }
 
+    public static Dject inject(final Object... instances) {
+        return Dject.builder().withModule(new InstancesModule(instances)).build();
+    }
+
     public static Module asModule(final Object o) {
         return asModule(o);
     }
 
     public static Module asModule(final Object... instances) {
         return new InstancesModule(instances);
-    }
-
-    public static Dject inject(final Object... instances) {
-        return Dject.builder().withModule(new InstancesModule(instances)).build();
     }
 
     public static Dject.Builder fromModules(Module... module) {

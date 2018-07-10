@@ -51,7 +51,7 @@ public abstract class AbstractTypeVisitor implements TypeInspector.TypeVisitor, 
                     addMethodLifecycleAction(lifecycleAction);
                     visitContext.add(methodName);
                 } catch (IllegalArgumentException e) {
-                    LOGGER.info("ignoring @{} method {}.{}() - {}",
+                    LOGGER.error("ignoring @{} method {}.{}() - {}",
                             annotationClazz.getSimpleName(), method.getDeclaringClass().getName(),
                             methodName, e.getMessage());
                 }

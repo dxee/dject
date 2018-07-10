@@ -105,7 +105,11 @@ public class JSR250ModuleTest {
         } catch (Exception e) {
             fail("expected CreationException starting injector but got " + e);
         } finally {
-            assertThat(listener.events, equalTo(Arrays.asList(Events.Injected, Events.Initialized, Events.Stopped, Events.Error)));
+            assertThat(listener.events,
+                equalTo(
+                    Arrays.asList(Events.Injected, Events.Initialized, Events.Stopped, Events.Error)
+                )
+            );
         }
     }
 
@@ -121,11 +125,15 @@ public class JSR250ModuleTest {
         };
 
         TestSupport.inject(listener).shutdown();
-        assertThat(listener.events, equalTo(Arrays.asList(Events.Injected, Events.Initialized, Events.Started, Events.Stopped, Events.Destroyed)));
+        assertThat(listener.events,
+            equalTo(
+                Arrays.asList(Events.Injected, Events.Initialized, Events.Started, Events.Stopped, Events.Destroyed)
+            )
+        );
     }
     
     
-    @Test(expected=AssertionError.class)
+    @Test(expected = AssertionError.class)
     public void assertionErrorInPostConstruct() {
         TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName()) {
             @PostConstruct
@@ -189,6 +197,7 @@ public class JSR250ModuleTest {
     public static class Listener2 implements LifecycleListener {
         boolean wasStarted;
         boolean wasStopped;
+
         @Override
         public void onStarted() {
             LOGGER.info("starting listener2");

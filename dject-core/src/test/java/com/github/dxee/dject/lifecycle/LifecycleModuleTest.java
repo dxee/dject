@@ -128,7 +128,13 @@ public class LifecycleModuleTest {
         } catch (Exception e) {
             fail("expected TestRuntimeException starting injector but got " + e);
         } finally {
-            assertThat(listener.events, equalTo(Arrays.asList(Events.Injected, Events.Started, Events.Stopped, Events.Error)));
+            assertThat(listener.events,
+                equalTo(
+                    Arrays.asList(
+                        Events.Injected, Events.Started, Events.Stopped, Events.Error
+                    )
+                )
+            );
         }
     }
 
@@ -148,7 +154,7 @@ public class LifecycleModuleTest {
             assertThat(listener.events, equalTo(Arrays.asList(Events.Injected, Events.Started, Events.Stopped)));
         }
     }
-    
+
 
     @Test
     public void assertionErrorInInject() {
@@ -169,7 +175,7 @@ public class LifecycleModuleTest {
             assertThat(listener.events, equalTo(Arrays.asList(Events.Injected)));
         }
     }
-    
+
     @Test
     public void assertionErrorInOnStarted() {
         TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName()) {
@@ -183,15 +189,14 @@ public class LifecycleModuleTest {
         try {
             TestSupport.inject(listener);
         } catch (TestRuntimeException e) {
-          // expected
+            // expected
         } finally {
             assertThat(listener.events, equalTo(
-                Arrays.asList(Events.Injected, Events.Started, Events.Stopped, Events.Error)));
+                    Arrays.asList(Events.Injected, Events.Started, Events.Stopped, Events.Error)));
         }
     }
 
-    
-    
+
     @Test(expected = AssertionError.class)
     public void assertionErrorInOnStopped() {
         TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName()) {
@@ -204,14 +209,14 @@ public class LifecycleModuleTest {
 
         TestSupport.inject(listener).shutdown();
     }
-    
+
     public static class Listener1 implements LifecycleListener {
         boolean wasStarted;
         boolean wasStopped;
-        
+
         @Inject
         Provider<Listener2> nestedListener;
-        
+
         @Override
         public void onStarted() {
             LOGGER.info("starting listener1");
@@ -227,10 +232,11 @@ public class LifecycleModuleTest {
 
         }
     }
-    
+
     public static class Listener2 implements LifecycleListener {
         boolean wasStarted;
         boolean wasStopped;
+
         @Override
         public void onStarted() {
             LOGGER.info("starting listener2");
@@ -242,7 +248,7 @@ public class LifecycleModuleTest {
             LOGGER.info("stopped listener2");
             wasStopped = true;
         }
-        
+
     }
 
     @Test

@@ -124,7 +124,7 @@ public class PostConstructTest {
     @Test
     public void testLifecycleShutdownInheritance3() {
         final PostConstructChild3 postConstructChild = Mockito.spy(new PostConstructChild3());
-        InOrder inOrder = Mockito.inOrder(postConstructChild);
+        final InOrder inOrder = Mockito.inOrder(postConstructChild);
 
         Dject injector = TestSupport.inject(postConstructChild);
         Assert.assertNotNull(injector.getInstance(postConstructChild.getClass()));
