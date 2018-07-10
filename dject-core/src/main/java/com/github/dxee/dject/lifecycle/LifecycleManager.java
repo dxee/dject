@@ -97,9 +97,10 @@ public final class LifecycleManager {
     public synchronized void notifyStarted() {
         if (state.compareAndSet(State.Starting, State.Started)) {
             LOGGER.info("Started '{}'", this);
-            for (LifecycleListener listener : new ArrayList<>(listeners)) {
+
+            listeners.forEach((listener) -> {
                 listener.onStarted();
-            }
+            });
         }
     }
 

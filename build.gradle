@@ -18,6 +18,9 @@ subprojects {
     apply plugin: "com.vanniktech.maven.publish"
     apply from: rootProject.file('gradle/checkstyle.gradle')
 
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
     repositories {
         mavenLocal()
         jcenter()
