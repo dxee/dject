@@ -17,5 +17,5 @@ public interface LifecycleAction {
      * @param obj
      * @throws Exception
      */
-    public void call(Object obj) throws Exception;
+    void call(Object obj) throws Exception;
 }

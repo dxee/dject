@@ -163,7 +163,7 @@ public class LifecycleModuleTest {
             @Override
             public void injected(Injector injector) {
                 super.injected(injector);
-                throw new TestRuntimeException("injected exception");
+                fail("injected exception");
             }
         };
 
@@ -182,17 +182,17 @@ public class LifecycleModuleTest {
             @Override
             public void onStarted() {
                 super.onStarted();
-                throw new TestRuntimeException("onStarted exception");
+                fail("onStarted exception");
             }
         };
 
         try {
             TestSupport.inject(listener);
-        } catch (TestRuntimeException e) {
+        } catch (AssertionError e) {
             // expected
         } finally {
             assertThat(listener.events, equalTo(
-                    Arrays.asList(Events.Injected, Events.Started, Events.Stopped, Events.Error)));
+                    Arrays.asList(Events.Injected, Events.Started)));
         }
     }
 

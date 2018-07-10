@@ -133,7 +133,7 @@ public class JSR250ModuleTest {
     }
     
     
-    @Test(expected = AssertionError.class)
+    @Test
     public void assertionErrorInPostConstruct() {
         TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName()) {
             @PostConstruct
@@ -144,14 +144,17 @@ public class JSR250ModuleTest {
             }
         };
         try {
-            TestSupport.inject(listener);
+            TestSupport.inject(listener).shutdown();
+        } catch (AssertionError e) {
+            e.printStackTrace();
+            // expected
         } finally {
             assertThat(listener.events, equalTo(
-                Arrays.asList(Events.Injected, Events.Initialized, Events.Stopped, Events.Error)));
+                Arrays.asList(Events.Injected, Events.Initialized)));
         }
     }
     
-    @Test(expected = AssertionError.class)
+    @Test
     public void assertionErrorInPreDestroy() {
         TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName()) {
             @PreDestroy
@@ -163,6 +166,8 @@ public class JSR250ModuleTest {
         };
         try {
             TestSupport.inject(listener).shutdown();
+        } catch (AssertionError e) {
+            // expected
         } finally {
             assertThat(listener.events, equalTo(
                 Arrays.asList(Events.Injected, Events.Initialized, Events.Started, Events.Stopped, Events.Destroyed)));

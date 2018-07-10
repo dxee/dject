@@ -36,8 +36,8 @@ public class SimpleLifecycleAction implements LifecycleAction {
         } catch (IllegalAccessException e) {
             // that's ok we'll use reflected method.invoke()
         }
-        this.description = String.format("%s@%d[%s.%s()]", annotationClass.getSimpleName(),
-                System.identityHashCode(this), method.getDeclaringClass().getSimpleName(), method.getName());
+        this.description = String.format("%s@%d[%s.%s()]", annotationClass.getName(),
+                System.identityHashCode(this), method.getDeclaringClass().getName(), method.getName());
     }
 
     private void validateAnnotationUsage(Class<? extends Annotation> annotationClass, Method method) {
@@ -51,7 +51,7 @@ public class SimpleLifecycleAction implements LifecycleAction {
             for (Class<?> e : method.getExceptionTypes()) {
                 if (!RuntimeException.class.isAssignableFrom(e)) {
                     throw new IllegalArgumentException(
-                            "method must must not throw checked exception: " + e.getSimpleName());
+                            "method must must not throw checked exception: " + e.getName());
                 }
             }
         } else {
@@ -63,7 +63,7 @@ public class SimpleLifecycleAction implements LifecycleAction {
             }
             if (annotationCount > 1) {
                 throw new IllegalArgumentException(
-                        "declaring class must not contain multiple @" + annotationClass.getSimpleName() + " methods");
+                        "declaring class must not contain multiple @" + annotationClass.getName() + " methods");
             }
         }
     }
