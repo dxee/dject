@@ -15,11 +15,12 @@ import java.util.function.Supplier;
 public abstract class OneAnnotationLifecycleFeature implements LifecycleFeature {
     protected Class<? extends Annotation> annotationClazz;
 
+    public OneAnnotationLifecycleFeature() {
+        this.annotationClazz = annotationClazz();
+    }
+
     @Override
     public List<LifecycleAction> getActionsForType(final Class<?> type) {
-        if (null == annotationClazz) {
-            annotationClazz = annotationClazz();
-        }
         return TypeInspector.accept(type, visitor());
     }
 

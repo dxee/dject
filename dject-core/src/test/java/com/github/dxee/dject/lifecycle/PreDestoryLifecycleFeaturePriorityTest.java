@@ -40,21 +40,24 @@ public class PreDestoryLifecycleFeaturePriorityTest {
     @Test
     public void confirmPreDestroyOrder() {
         final TestPriority testPriority1 = Mockito.spy(new TestPriority());
-        InOrder inOrder = Mockito.inOrder(testPriority1);
+        final InOrder inOrder = Mockito.inOrder(testPriority1);
 
         TestPriority testPriority = null;
 
         Dject injector = Dject.builder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
-                Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class).addBinding().toInstance(new PreDestroyLifecycleFeature1() {
-                    @Override
-                    public Class<? extends Annotation> annotationClazz() {
-                        return PreDestroy1.class;
-                    }
+                Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class)
+                        .addBinding().toInstance(
+                        new PreDestroyLifecycleFeature1() {
+                            @Override
+                            public Class<? extends Annotation> annotationClazz() {
+                                return PreDestroy1.class;
+                            }
 
-                });
-                Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class).addBinding().toInstance(new PreDestroyLifecycleFeature1() {
+                        });
+                Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class)
+                        .addBinding().toInstance(new PreDestroyLifecycleFeature1() {
                     @Override
                     public Class<? extends Annotation> annotationClazz() {
                         return PreDestroy2.class;
@@ -65,7 +68,8 @@ public class PreDestoryLifecycleFeaturePriorityTest {
                         return 2;
                     }
                 });
-                Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class).addBinding().toInstance(new PreDestroyLifecycleFeature1() {
+                Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class)
+                        .addBinding().toInstance(new PreDestroyLifecycleFeature1() {
                     @Override
                     public Class<? extends Annotation> annotationClazz() {
                         return PreDestroy3.class;
@@ -95,25 +99,27 @@ public class PreDestoryLifecycleFeaturePriorityTest {
     @Test
     public void confirmPreDestroyOrderWithOverrideParentMethod() {
         final TestPriorityChild testPriorityChild1 = Mockito.spy(new TestPriorityChild());
-        InOrder inOrder = Mockito.inOrder(testPriorityChild1);
+        final InOrder inOrder = Mockito.inOrder(testPriorityChild1);
 
         TestPriorityChild testPriorityChild = null;
 
         Dject injector = Dject.builder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
-                Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class).addBinding().toInstance(new PreDestroyLifecycleFeature1() {
-                    @Override
-                    public Class<? extends Annotation> annotationClazz() {
-                        return PreDestroy1.class;
-                    }
+                Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class).addBinding()
+                        .toInstance(new PreDestroyLifecycleFeature1() {
+                            @Override
+                            public Class<? extends Annotation> annotationClazz() {
+                                return PreDestroy1.class;
+                            }
 
-                    @Override
-                    public int priority() {
-                        return 3;
-                    }
-                });
-                Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class).addBinding().toInstance(new PreDestroyLifecycleFeature1() {
+                            @Override
+                            public int priority() {
+                                return 3;
+                            }
+                        });
+                Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class)
+                        .addBinding().toInstance(new PreDestroyLifecycleFeature1() {
                     @Override
                     public Class<? extends Annotation> annotationClazz() {
                         return PreDestroy2.class;
@@ -124,7 +130,8 @@ public class PreDestoryLifecycleFeaturePriorityTest {
                         return 2;
                     }
                 });
-                Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class).addBinding().toInstance(new PreDestroyLifecycleFeature1() {
+                Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class)
+                        .addBinding().toInstance(new PreDestroyLifecycleFeature1() {
                     @Override
                     public Class<? extends Annotation> annotationClazz() {
                         return PreDestroy3.class;
@@ -146,7 +153,9 @@ public class PreDestoryLifecycleFeaturePriorityTest {
         inOrder.verify(testPriorityChild, Mockito.times(1)).p3();
     }
 
-    private static abstract class PreDestroyLifecycleFeature1 extends OneAnnotationLifecycleFeature implements PreDestroyLifecycleFeature {
+    private abstract static class PreDestroyLifecycleFeature1
+            extends OneAnnotationLifecycleFeature
+            implements PreDestroyLifecycleFeature {
 
         @Override
         public PreDestroyTypeVisitor visitor() {
@@ -166,7 +175,10 @@ public class PreDestoryLifecycleFeaturePriorityTest {
 
         @Override
         public String toString() {
-            return new StringBuilder().append("Predestroy @").append(this.annotationClazz == null ? "null" : this.annotationClazz.getSimpleName())
+            return new StringBuilder().append("Predestroy @")
+                    .append(
+                            this.annotationClazz == null ? "null" : this.annotationClazz.getSimpleName()
+                    )
                     .append(" with priority ").append(priority()).toString();
         }
     }

@@ -22,7 +22,8 @@ public class LoggingProvisionModuleTest {
                 .withLoggingProvision()
                 .withStage(Stage.PRODUCTION)
                 .build();
-        LoggingProvisionMetricsLifecycleListener loggingProvisionMetricsLifecycleListener = injector.getInstance(LoggingProvisionMetricsLifecycleListener.class);
+        LoggingProvisionMetricsLifecycleListener loggingProvisionMetricsLifecycleListener
+                = injector.getInstance(LoggingProvisionMetricsLifecycleListener.class);
         Assert.assertNotNull(loggingProvisionMetricsLifecycleListener);
 
     }

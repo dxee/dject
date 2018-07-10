@@ -293,8 +293,8 @@ public class PreDestroyMonitor implements AutoCloseable {
                 for (Object[] r : delegates) {
                     try {
                         ((Callable<Void>) r[0]).call();
-                    } catch (Exception e) {
-                        LOGGER.error("PreDestroy call failed for " + r, e);
+                    } catch (Throwable t) {
+                        LOGGER.error("PreDestroy call failed for " + r, t);
                     }
                 }
                 delegates.clear();

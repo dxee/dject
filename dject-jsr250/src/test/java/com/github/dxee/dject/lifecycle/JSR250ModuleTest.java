@@ -71,7 +71,6 @@ public class JSR250ModuleTest {
         public void onStopped(Throwable t) {
             events.add(Events.Stopped);
             if (t != null) {
-                t.printStackTrace();
                 events.add(Events.Error);
             }
         }
@@ -105,7 +104,11 @@ public class JSR250ModuleTest {
         } catch (Exception e) {
             fail("expected CreationException starting injector but got " + e);
         } finally {
-            assertThat(listener.events, equalTo(Arrays.asList(Events.Injected, Events.Initialized, Events.Stopped, Events.Error)));
+            assertThat(listener.events,
+                equalTo(
+                    Arrays.asList(Events.Injected, Events.Initialized, Events.Stopped, Events.Error)
+                )
+            );
         }
     }
 
@@ -121,11 +124,77 @@ public class JSR250ModuleTest {
         };
 
         TestSupport.inject(listener).shutdown();
-        assertThat(listener.events, equalTo(Arrays.asList(Events.Injected, Events.Initialized, Events.Started, Events.Stopped, Events.Destroyed)));
+        assertThat(listener.events,
+            equalTo(
+                Arrays.asList(Events.Injected, Events.Initialized, Events.Started, Events.Stopped, Events.Destroyed)
+            )
+        );
+    }
+
+    @Test
+    public void confirmTwoLifecycleListenerEventsForRTExceptionPreDestroy() {
+        final TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName());
+
+        final TrackingLifecycleListener listener1 = new TrackingLifecycleListener(name.getMethodName() + "1") {
+            @PreDestroy
+            @Override
+            public void destroyed() {
+                throw new TestRuntimeException("destroyed rt exception");
+            }
+        };
+
+        TestSupport.inject(listener, listener1).shutdown();
+
+        assertThat(listener.events,
+            equalTo(
+                Arrays.asList(Events.Injected, Events.Initialized,
+                    Events.Started, Events.Stopped, Events.Destroyed)
+            )
+        );
+
+        assertThat(listener1.events,
+            equalTo(
+                Arrays.asList(Events.Injected, Events.Initialized,
+                    Events.Started, Events.Stopped)
+            )
+        );
+    }
+
+    @Test
+    public void confirmTwoLifecycleListenerEventsForErrorPreDestroy() {
+        final TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName());
+
+        final TrackingLifecycleListener listener1 = new TrackingLifecycleListener(name.getMethodName() + "1") {
+            @PreDestroy
+            @Override
+            public void destroyed() {
+                fail("destroyed error exception");
+            }
+        };
+
+        try {
+            TestSupport.inject(listener, listener1).shutdown();
+        } catch (AssertionError e) {
+            // expected
+        }
+
+        assertThat(listener.events,
+            equalTo(
+                Arrays.asList(Events.Injected, Events.Initialized,
+                    Events.Started, Events.Stopped, Events.Destroyed)
+            )
+        );
+
+        assertThat(listener1.events,
+            equalTo(
+                Arrays.asList(Events.Injected, Events.Initialized,
+                    Events.Started, Events.Stopped)
+            )
+        );
     }
     
     
-    @Test(expected=AssertionError.class)
+    @Test
     public void assertionErrorInPostConstruct() {
         TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName()) {
             @PostConstruct
@@ -136,14 +205,16 @@ public class JSR250ModuleTest {
             }
         };
         try {
-            TestSupport.inject(listener);
+            TestSupport.inject(listener).shutdown();
+        } catch (AssertionError e) {
+            // expected
         } finally {
             assertThat(listener.events, equalTo(
-                Arrays.asList(Events.Injected, Events.Initialized, Events.Stopped, Events.Error)));
+                Arrays.asList(Events.Injected, Events.Initialized)));
         }
     }
     
-    @Test(expected = AssertionError.class)
+    @Test
     public void assertionErrorInPreDestroy() {
         TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName()) {
             @PreDestroy
@@ -155,6 +226,8 @@ public class JSR250ModuleTest {
         };
         try {
             TestSupport.inject(listener).shutdown();
+        } catch (AssertionError e) {
+            // expected
         } finally {
             assertThat(listener.events, equalTo(
                 Arrays.asList(Events.Injected, Events.Initialized, Events.Started, Events.Stopped, Events.Destroyed)));
@@ -189,6 +262,7 @@ public class JSR250ModuleTest {
     public static class Listener2 implements LifecycleListener {
         boolean wasStarted;
         boolean wasStopped;
+
         @Override
         public void onStarted() {
             LOGGER.info("starting listener2");

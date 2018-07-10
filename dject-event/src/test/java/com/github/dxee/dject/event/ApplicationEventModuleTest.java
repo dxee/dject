@@ -105,7 +105,7 @@ public class ApplicationEventModuleTest {
         assertEquals(0, notTestEventCounter.get());
         assertEquals(1, allEventCounter.get());
     }
-    
+
     @Test
     public void testInjectorDiscoveredApplicationEventListeners() throws Exception {
         ApplicationEventDispatcher dispatcher = injector.getInstance(ApplicationEventDispatcher.class);
@@ -116,32 +116,37 @@ public class ApplicationEventModuleTest {
         dispatcher.publishEvent(new NotTestEvent());
         assertEquals(1, listener.invocationCount.get());
     }
-    
+
     @Test
     public void testUnregisterApplicationEventListener() throws Exception {
         ApplicationEventDispatcher dispatcher = injector.getInstance(ApplicationEventDispatcher.class);
         final AtomicInteger testEventCounter = new AtomicInteger();
 
-        ApplicationEventRegistration registration = dispatcher.registerListener(new ApplicationEventListener<TestEvent>() {
-            public void onEvent(TestEvent event) {
-                testEventCounter.incrementAndGet();
-            }
-        });
-        
+        ApplicationEventRegistration registration = dispatcher.registerListener(
+                new ApplicationEventListener<TestEvent>() {
+                    public void onEvent(TestEvent event) {
+                        testEventCounter.incrementAndGet();
+                    }
+                }
+        );
+
         dispatcher.publishEvent(new TestEvent());
         assertEquals(1, testEventCounter.get());
         registration.unregister();
-        assertEquals(1, testEventCounter.get());        
+        assertEquals(1, testEventCounter.get());
     }
-    
-    @Test(expected=CreationException.class)
+
+    @Test(expected = CreationException.class)
     public void testEventListenerWithInvalidArgumentsFailsFast() {
-        injector = Dject.builder().withModules(new GuavaApplicationEventModule(), new AbstractModule() {
-            @Override
-            protected void configure() {
-                bind(TestFailFastEventListener.class).toInstance(new TestFailFastEventListener());
-            }
-        }).build();
+        injector = Dject.builder().withModules(
+                new GuavaApplicationEventModule(),
+                new AbstractModule() {
+                    @Override
+                    protected void configure() {
+                        bind(TestFailFastEventListener.class).toInstance(new TestFailFastEventListener());
+                    }
+                }
+        ).build();
     }
 
     private class TestAnnotatedListener {
@@ -152,14 +157,14 @@ public class ApplicationEventModuleTest {
             invocationCount.incrementAndGet();
         }
     }
-    
+
     private class TestFailFastEventListener {
         @EventListener
         public void doNothing(String invalidArgumentType) {
             fail("This should never be called");
         }
     }
-    
+
     private class TestListenerInterface implements ApplicationEventListener<TestEvent> {
         AtomicInteger invocationCount = new AtomicInteger();
 

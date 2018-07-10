@@ -124,7 +124,7 @@ public class PostConstructTest {
     @Test
     public void testLifecycleShutdownInheritance3() {
         final PostConstructChild3 postConstructChild = Mockito.spy(new PostConstructChild3());
-        InOrder inOrder = Mockito.inOrder(postConstructChild);
+        final InOrder inOrder = Mockito.inOrder(postConstructChild);
 
         Dject injector = TestSupport.inject(postConstructChild);
         Assert.assertNotNull(injector.getInstance(postConstructChild.getClass()));
@@ -153,17 +153,6 @@ public class PostConstructTest {
 
     @Test
     public void testLifecycleInitWithInvalidPostConstructs() {
-        InvalidPostConstructs mockInstance = Mockito.mock(InvalidPostConstructs.class);
-        Dject injector = new TestSupport()
-                .withSingleton(mockInstance)
-                .inject();
-        Assert.assertNotNull(injector.getInstance(InvalidPostConstructs.class));
-        Mockito.verify(mockInstance, Mockito.never()).initWithParameters(Mockito.anyString());
-        Mockito.verify(mockInstance, Mockito.never()).initWithReturnValue();
-    }
-
-    @Test
-    public void testLifecycleInitWithPostConstructException() {
         InvalidPostConstructs mockInstance = Mockito.mock(InvalidPostConstructs.class);
         Dject injector = new TestSupport()
                 .withSingleton(mockInstance)

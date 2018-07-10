@@ -230,7 +230,7 @@ public class PreDestroyTest {
     @Test
     public void testLifecycleShutdownInheritance1() {
         final PreDestroyChild1 preDestroyChild = Mockito.spy(new PreDestroyChild1());
-        InOrder inOrder = Mockito.inOrder(preDestroyChild);
+        final InOrder inOrder = Mockito.inOrder(preDestroyChild);
 
         Dject injector = TestSupport.inject(preDestroyChild);
         Assert.assertNotNull(injector.getInstance(preDestroyChild.getClass()));
@@ -243,7 +243,7 @@ public class PreDestroyTest {
     @Test
     public void testLifecycleShutdownInheritance2() {
         final PreDestroyChild2 preDestroyChild = Mockito.spy(new PreDestroyChild2());
-        InOrder inOrder = Mockito.inOrder(preDestroyChild);
+        final InOrder inOrder = Mockito.inOrder(preDestroyChild);
 
         Dject injector = TestSupport.inject(preDestroyChild);
         Assert.assertNotNull(injector.getInstance(preDestroyChild.getClass()));
@@ -257,7 +257,7 @@ public class PreDestroyTest {
     @Test
     public void testLifecycleShutdownInheritance3() {
         final PreDestroyChild3 preDestroyChild = Mockito.spy(new PreDestroyChild3());
-        InOrder inOrder = Mockito.inOrder(preDestroyChild);
+        final InOrder inOrder = Mockito.inOrder(preDestroyChild);
 
         Dject injector = TestSupport.inject(preDestroyChild);
         Assert.assertNotNull(injector.getInstance(preDestroyChild.getClass()));
@@ -286,7 +286,7 @@ public class PreDestroyTest {
     @Test
     public void testLifecycleDeclaredInterfaceMethod() {
         final RunnableType runnableInstance = Mockito.mock(RunnableType.class);
-        InOrder inOrder = Mockito.inOrder(runnableInstance);
+        final InOrder inOrder = Mockito.inOrder(runnableInstance);
 
         Dject injector = TestSupport.inject(runnableInstance);
         Assert.assertNotNull(injector.getInstance(RunnableType.class));
@@ -298,7 +298,7 @@ public class PreDestroyTest {
     @Test
     public void testLifecycleAnnotatedInterfaceMethod() {
         final PreDestroyImpl impl = Mockito.mock(PreDestroyImpl.class);
-        InOrder inOrder = Mockito.inOrder(impl);
+        final InOrder inOrder = Mockito.inOrder(impl);
 
         Dject injector = TestSupport.inject(impl);
         Assert.assertNotNull(injector.getInstance(RunnableType.class));
@@ -384,12 +384,13 @@ public class PreDestroyTest {
     public void testLifecycleShutdownWithAnnotatedExplicitScope() throws Exception {
         final ThreadLocalScope threadLocalScope = new ThreadLocalScope();
 
-        Dject.Builder builder = TestSupport.fromModules(new AbstractModule() {
-                                                            @Override
-                                                            protected void configure() {
-                                                                binder().bind(Key.get(AnnotatedFoo.class));
-                                                            }
-                                                        },
+        Dject.Builder builder = TestSupport.fromModules(
+                new AbstractModule() {
+                    @Override
+                    protected void configure() {
+                        binder().bind(Key.get(AnnotatedFoo.class));
+                    }
+                },
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -397,10 +398,9 @@ public class PreDestroyTest {
                     }
                 });
 
-        AnnotatedFoo managedFoo = null;
         Dject injector = builder.build();
         threadLocalScope.enter();
-        managedFoo = injector.getInstance(AnnotatedFoo.class);
+        final AnnotatedFoo managedFoo = injector.getInstance(AnnotatedFoo.class);
         Assert.assertNotNull(managedFoo);
         Assert.assertFalse(managedFoo.shutdown);
         threadLocalScope.exit();
@@ -437,15 +437,13 @@ public class PreDestroyTest {
             }
         });
 
-        AnnotatedFoo managedFoo1 = null;
-        AnnotatedFoo managedFoo2 = null;
         Dject injector = builder.build();
         scope.enter();
-        managedFoo1 = injector.getInstance(Key.get(AnnotatedFoo.class, Names.named("afoo1")));
+        final AnnotatedFoo managedFoo1 = injector.getInstance(Key.get(AnnotatedFoo.class, Names.named("afoo1")));
         Assert.assertNotNull(managedFoo1);
         Assert.assertFalse(managedFoo1.isShutdown());
 
-        managedFoo2 = injector.getInstance(Key.get(AnnotatedFoo.class, Names.named("afoo2")));
+        final AnnotatedFoo managedFoo2 = injector.getInstance(Key.get(AnnotatedFoo.class, Names.named("afoo2")));
         Assert.assertNotNull(managedFoo2);
         Assert.assertFalse(managedFoo2.isShutdown());
 

@@ -66,7 +66,7 @@ public final class Dject extends DelegatingInjector {
                     module
             );
             manager.notifyStarted();
-            LOGGER.info("Injector created successfully ");
+            LOGGER.info("Injector created successfully");
             return injector;
         } catch (Exception e) {
             LOGGER.error("Failed to create injector - {}@{}",

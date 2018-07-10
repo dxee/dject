@@ -26,7 +26,7 @@ public final class ApplicationEventModule extends AbstractModule {
     private static class ApplicationEventSubscribingTypeListener implements TypeListener {
         private final Provider<ApplicationEventDispatcher> dispatcherProvider;
 
-        public ApplicationEventSubscribingTypeListener(Provider<ApplicationEventDispatcher> dispatcherProvider) {
+        ApplicationEventSubscribingTypeListener(Provider<ApplicationEventDispatcher> dispatcherProvider) {
             this.dispatcherProvider = dispatcherProvider;
         }
 
@@ -71,14 +71,14 @@ public final class ApplicationEventModule extends AbstractModule {
 
         private final Provider<ApplicationEventDispatcher> dispatcherProvider;
 
-        public ApplicationEventSubscribingProvisionListener(Provider<ApplicationEventDispatcher> dispatcherProvider) {
+        ApplicationEventSubscribingProvisionListener(Provider<ApplicationEventDispatcher> dispatcherProvider) {
             this.dispatcherProvider = dispatcherProvider;
         }
 
         @Override
         public <T> void onProvision(ProvisionInvocation<T> provision) {
             T provisioned = provision.provision();
-            if (provisioned != null && provisioned instanceof ApplicationEventListener) {
+            if (provisioned instanceof ApplicationEventListener) {
                 dispatcherProvider.get().registerListener((ApplicationEventListener) provisioned);
             }
         }
