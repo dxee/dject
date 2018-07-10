@@ -8,6 +8,8 @@ import com.google.inject.multibindings.Multibinder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import static org.junit.Assert.fail;
  * 2018-07-02 14:06
  */
 public class ShutdownHookModuleTest {
+    private static Logger LOGGER = LoggerFactory.getLogger(ShutdownHookModuleTest.class);
     @Rule
     public final TestName name = new TestName();
 
@@ -58,7 +61,7 @@ public class ShutdownHookModuleTest {
             }
 
             events.forEach((evt) -> {
-                System.out.println(name + "------------>" + evt.name());
+                LOGGER.info(name + "------------>" + evt.name());
             });
         }
 
@@ -97,7 +100,7 @@ public class ShutdownHookModuleTest {
     @Test
     public void confirmMultiLifecycleListenerShutdown() {
         final TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName());
-        final TrackingLifecycleListener listener1 = new TrackingLifecycleListener(name.getMethodName()+"1");
+        final TrackingLifecycleListener listener1 = new TrackingLifecycleListener(name.getMethodName() + "1");
 
         Dject.builder().withModules(new ShutdownHookModule(),
                 new AbstractModule() {
@@ -114,11 +117,11 @@ public class ShutdownHookModuleTest {
     @Test
     public void confirmMultiLifecycleListenerShutdownWithOneStopRTException() {
         final TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName());
-        final TrackingLifecycleListener listener1 = new TrackingLifecycleListener(name.getMethodName()+"1") {
+        final TrackingLifecycleListener listener1 = new TrackingLifecycleListener(name.getMethodName() + "1") {
           @Override
           public void onStopped(Throwable t) {
               events.forEach((evt) -> {
-                  System.out.println(name + "------------>" + evt.name());
+                  LOGGER.info(name + "------------>" + evt.name());
               });
 
               throw new TestRuntimeException("RT at onStopped.");
@@ -150,11 +153,11 @@ public class ShutdownHookModuleTest {
     @Test
     public void confirmMultiLifecycleListenerShutdownWithOneStopError() {
         final TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName());
-        final TrackingLifecycleListener listener1 = new TrackingLifecycleListener(name.getMethodName()+"1") {
+        final TrackingLifecycleListener listener1 = new TrackingLifecycleListener(name.getMethodName() + "1") {
             @Override
             public void onStopped(Throwable t) {
                 events.forEach((evt) -> {
-                    System.out.println(name + "------------>" + evt.name());
+                    LOGGER.info(name + "------------>" + evt.name());
                 });
                 fail("ERROR at onStopped.");
             }
@@ -196,7 +199,7 @@ public class ShutdownHookModuleTest {
                 throw new TestRuntimeException("RT at onStarted.");
             }
         };
-        final TrackingLifecycleListener listener1 = new TrackingLifecycleListener(name.getMethodName()+"1");
+        final TrackingLifecycleListener listener1 = new TrackingLifecycleListener(name.getMethodName() + "1");
 
         try {
             Dject.builder().withModules(new ShutdownHookModule(),
@@ -226,8 +229,6 @@ public class ShutdownHookModuleTest {
      * If listener is called before listener1 in the LifecycleManager,  listener throws Error in
      * onStarted, then LifecycleManager will stop to call listener1.onStarted() and alse not call to onStop，
      * but will call onStopped through ShutdownHookModule.
-     * @param
-     * @return
      */
     @Test
     public void confirmMultiLifecycleListenerStartedWithOneStartError() {
@@ -237,7 +238,7 @@ public class ShutdownHookModuleTest {
                 fail("ERROR at onStarted.");
             }
         };
-        final TrackingLifecycleListener listener1 = new TrackingLifecycleListener(name.getMethodName()+"1");
+        final TrackingLifecycleListener listener1 = new TrackingLifecycleListener(name.getMethodName() + "1");
         try {
             Dject.builder().withModules(new ShutdownHookModule(),
                     new AbstractModule() {

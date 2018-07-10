@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class ShutdownHookModule extends AbstractModule {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShutdownHookModule.class);
+
     @Singleton
     public static class SystemShutdownHook extends Thread {
         @Inject
@@ -29,9 +30,9 @@ public final class ShutdownHookModule extends AbstractModule {
                 try {
                     LOGGER.info("Runtime Lifecycle shutdown hook begain running");
                     shutdown.shutdown();
-                } catch (Throwable e) {
-                    LOGGER.info("Runtime Lifecycle shutdown hook result in error ", e);
-                    throw e;
+                } catch (Throwable t) {
+                    LOGGER.info("Runtime Lifecycle shutdown hook result in error ", t);
+                    throw t;
                 }
                 LOGGER.info("Runtime Lifecycle shutdown hook finished running");
             }));

@@ -163,17 +163,6 @@ public class PostConstructTest {
     }
 
     @Test
-    public void testLifecycleInitWithPostConstructException() {
-        InvalidPostConstructs mockInstance = Mockito.mock(InvalidPostConstructs.class);
-        Dject injector = new TestSupport()
-                .withSingleton(mockInstance)
-                .inject();
-        Assert.assertNotNull(injector.getInstance(InvalidPostConstructs.class));
-        Mockito.verify(mockInstance, Mockito.never()).initWithParameters(Mockito.anyString());
-        Mockito.verify(mockInstance, Mockito.never()).initWithReturnValue();
-    }
-
-    @Test
     public void testLifecycleInit() {
         SimplePostConstruct mockInstance = Mockito.mock(SimplePostConstruct.class);
         Dject injector = TestSupport.inject(mockInstance);

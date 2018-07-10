@@ -174,11 +174,7 @@ public class PreDestroyMonitor implements AutoCloseable {
             LOGGER.info("closing PreDestroyMonitor...");
 
             for (Callable<Void> action : cleanupActions) {
-                try {
-                    action.call();
-                } catch (Exception e) {
-                    LOGGER.error("fail to destory action {}", action, e);
-                }
+                action.call();
             }
             cleanupActions.clear();
             scopeBindings.clear();
@@ -297,8 +293,8 @@ public class PreDestroyMonitor implements AutoCloseable {
                 for (Object[] r : delegates) {
                     try {
                         ((Callable<Void>) r[0]).call();
-                    } catch (Exception e) {
-                        LOGGER.error("PreDestroy call failed for " + r, e);
+                    } catch (Throwable t) {
+                        LOGGER.error("PreDestroy call failed for " + r, t);
                     }
                 }
                 delegates.clear();
