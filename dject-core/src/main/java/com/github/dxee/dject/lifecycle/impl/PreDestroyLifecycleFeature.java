@@ -46,15 +46,7 @@ public final class PreDestroyLifecycleFeature implements LifecycleFeature {
 
         @Override
         public boolean visit(final Class<?> clazz) {
-            boolean continueVisit = !clazz.isInterface();
-            if (continueVisit && AutoCloseable.class.isAssignableFrom(clazz)) {
-                AutoCloseableLifecycleAction closeableAction = new AutoCloseableLifecycleAction(
-                        clazz.asSubclass(AutoCloseable.class));
-                LOGGER.debug("adding action {}", closeableAction);
-                typeActions.add(closeableAction);
-                continueVisit = false;
-            }
-            return continueVisit;
+            return !clazz.isInterface();
         }
 
         @Override
@@ -92,28 +84,4 @@ public final class PreDestroyLifecycleFeature implements LifecycleFeature {
             return Collections.unmodifiableList(typeActions);
         }
     }
-
-
-    private static final class AutoCloseableLifecycleAction implements LifecycleAction {
-        private final String description;
-
-        private AutoCloseableLifecycleAction(Class<? extends AutoCloseable> clazz) {
-            this.description = new StringBuilder().append("AutoCloseable@")
-                    .append(System.identityHashCode(this))
-                    .append("[").append(clazz.getName()).append(".").append("close()").append("]")
-                    .toString();
-        }
-
-        @Override
-        public void call(Object obj) throws Exception {
-            LOGGER.info("calling action {}", description);
-            AutoCloseable.class.cast(obj).close();
-        }
-
-        @Override
-        public String toString() {
-            return description;
-        }
-    }
-
 }
