@@ -1,4 +1,4 @@
-package com.github.dxee.dject.lifecycle.impl;
+package com.github.dxee.dject.internal;
 
 import com.github.dxee.dject.lifecycle.LifecycleAction;
 import org.slf4j.Logger;
@@ -7,25 +7,30 @@ import org.slf4j.LoggerFactory;
 import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-/**
- * A simple LifecycleAction
- * @author bing.fan
- * 2018-06-08 20:55
- */
-public class SimpleLifecycleAction implements LifecycleAction {
-    private static final MethodHandles.Lookup METHOD_HANDLE_LOOKUP = MethodHandles.lookup();
+public class JSR250LifecycleAction implements LifecycleAction {
+    private static final Lookup METHOD_HANDLE_LOOKUP = MethodHandles.lookup();
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleLifecycleAction.class);
+    public enum ValidationMode {
+        STRICT, LAX
+    }
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JSR250LifecycleAction.class);
     private final Method method;
     private final String description;
     private MethodHandle mh;
 
-    public SimpleLifecycleAction(Class<? extends Annotation> annotationClass, Method method) {
-        validateAnnotationUsage(annotationClass, method);
+    public JSR250LifecycleAction(Class<? extends Annotation> annotationClass, Method method) {
+        this(annotationClass, method, ValidationMode.STRICT);
+    }
+
+    public JSR250LifecycleAction(Class<? extends Annotation> annotationClass, Method method,
+                                 ValidationMode validationMode) {
+        validateAnnotationUsage(annotationClass, method, validationMode);
 
         if (!method.isAccessible()) {
             method.setAccessible(true);
@@ -35,23 +40,26 @@ public class SimpleLifecycleAction implements LifecycleAction {
             this.mh = METHOD_HANDLE_LOOKUP.unreflect(method);
         } catch (IllegalAccessException e) {
             // that's ok we'll use reflected method.invoke()
+
         }
-        this.description = String.format("%s@%d[%s.%s()]", annotationClass.getName(),
-                System.identityHashCode(this), method.getDeclaringClass().getName(), method.getName());
+        this.description = String.format("%s@%d[%s.%s()]", annotationClass.getSimpleName(),
+                System.identityHashCode(this), method.getDeclaringClass().getSimpleName(), method.getName());
     }
 
-    private void validateAnnotationUsage(Class<? extends Annotation> annotationClass, Method method) {
+    private void validateAnnotationUsage(Class<? extends Annotation> annotationClass,
+                                         Method method, ValidationMode validationMode) {
+        LOGGER.debug("method validationMode is " + validationMode);
         if (Modifier.isStatic(method.getModifiers())) {
             throw new IllegalArgumentException("method must not be static");
         } else if (method.getParameterCount() > 0) {
             throw new IllegalArgumentException("method parameter count must be zero");
-        } else if (Void.TYPE != method.getReturnType()) {
+        } else if (Void.TYPE != method.getReturnType() && validationMode == ValidationMode.STRICT) {
             throw new IllegalArgumentException("method must have void return type");
-        } else if (method.getExceptionTypes().length > 0) {
+        } else if (method.getExceptionTypes().length > 0 && validationMode == ValidationMode.STRICT) {
             for (Class<?> e : method.getExceptionTypes()) {
                 if (!RuntimeException.class.isAssignableFrom(e)) {
                     throw new IllegalArgumentException(
-                            "method must must not throw checked exception: " + e.getName());
+                            "method must must not throw checked exception: " + e.getSimpleName());
                 }
             }
         } else {
@@ -61,9 +69,9 @@ public class SimpleLifecycleAction implements LifecycleAction {
                     annotationCount++;
                 }
             }
-            if (annotationCount > 1) {
+            if (annotationCount > 1 && validationMode == ValidationMode.STRICT) {
                 throw new IllegalArgumentException(
-                        "declaring class must not contain multiple @" + annotationClass.getName() + " methods");
+                        "declaring class must not contain multiple @" + annotationClass.getSimpleName() + " methods");
             }
         }
     }

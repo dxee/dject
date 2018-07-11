@@ -1,10 +1,10 @@
 package com.github.dxee.dject.lifecycle;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Singleton;
-
 import com.github.dxee.dject.Dject;
 import com.github.dxee.dject.TestSupport;
+import com.github.dxee.dject.feature.DjectFeatures;
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -13,8 +13,8 @@ import org.junit.rules.TestName;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
+import javax.annotation.PostConstruct;
+import javax.inject.Singleton;
 
 public class PostConstructTest {
     private static class SimplePostConstruct {
@@ -139,12 +139,12 @@ public class PostConstructTest {
     public void testLifecycleMultipleAnnotations() {
         final MultiplePostConstructs multiplePostConstructs = Mockito.spy(new MultiplePostConstructs());
         Dject injector = new TestSupport()
+                .withFeature(DjectFeatures.STRICT_JSR250_VALIDATION, true)
                 .withSingleton(multiplePostConstructs)
                 .inject();
         Assert.assertNotNull(injector.getInstance(multiplePostConstructs.getClass()));
         Mockito.verify(multiplePostConstructs, Mockito.never()).init1();
         Mockito.verify(multiplePostConstructs, Mockito.never()).init2();
-        injector.shutdown();
         // never, multiple annotations should be ignored
         Mockito.verify(multiplePostConstructs, Mockito.never()).init1();
         Mockito.verify(multiplePostConstructs, Mockito.never()).init2();
@@ -155,6 +155,7 @@ public class PostConstructTest {
     public void testLifecycleInitWithInvalidPostConstructs() {
         InvalidPostConstructs mockInstance = Mockito.mock(InvalidPostConstructs.class);
         Dject injector = new TestSupport()
+                .withFeature(DjectFeatures.STRICT_JSR250_VALIDATION, true)
                 .withSingleton(mockInstance)
                 .inject();
         Assert.assertNotNull(injector.getInstance(InvalidPostConstructs.class));
@@ -174,7 +175,7 @@ public class PostConstructTest {
     public void testLifecycleInitWithAtProvides() {
         final SimplePostConstruct simplePostConstruct = Mockito.mock(SimplePostConstruct.class);
 
-        Dject.Builder builder = TestSupport.fromModules(new AbstractModule() {
+        Dject injector = Dject.builder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
             }
@@ -184,8 +185,8 @@ public class PostConstructTest {
             SimplePostConstruct getSimplePostConstruct() {
                 return simplePostConstruct;
             }
-        });
-        Dject injector = builder.build();
+        }).build();
+
         Mockito.verify(injector.getInstance(SimplePostConstruct.class), Mockito.times(1)).init();
     }
 

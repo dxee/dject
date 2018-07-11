@@ -12,15 +12,13 @@ public class ThreadLocalScope implements Scope {
     private final ThreadLocal<Map<Key<?>, Object>> content = new ThreadLocal<Map<Key<?>, Object>>();
 
     public void enter() {
-        checkState(content.get() == null, "ThreadLocalScope already exists in thread " + Thread.currentThread().getId()
-        );
+        checkState(content.get() == null,
+                "ThreadLocalScope already exists in thread " + Thread.currentThread().getId());
         content.set(Maps.<Key<?>, Object>newHashMap());
     }
 
     public void exit() {
-        checkState(content.get() != null,
-                "No ThreadLocalScope found in thread " + Thread.currentThread().getId()
-        );
+        checkState(content.get() != null, "No ThreadLocalScope found in thread " + Thread.currentThread().getId());
         content.remove();
     }
 
@@ -30,8 +28,7 @@ public class ThreadLocalScope implements Scope {
                 Map<Key<?>, Object> scopedObjects = content.get();
                 if (scopedObjects == null) {
                     throw new OutOfScopeException(
-                            "No ThreadLocalScope found in thread "
-                                    + Thread.currentThread().getId()
+                            "No ThreadLocalScope found in thread " + Thread.currentThread().getId()
                     );
                 }
 

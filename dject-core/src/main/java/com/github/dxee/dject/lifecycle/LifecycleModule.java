@@ -9,9 +9,14 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import com.github.dxee.dject.annotations.SuppressLifecycleUninitialized;
+import com.github.dxee.dject.feature.DjectFeatureContainer;
+import com.github.dxee.dject.feature.DjectFeatures;
+import com.github.dxee.dject.internal.JSR250LifecycleAction;
 import com.github.dxee.dject.internal.PreDestroyMonitor;
 import com.github.dxee.dject.lifecycle.impl.AbstractLifecycleListener;
-import com.google.common.collect.Ordering;
+import com.github.dxee.dject.lifecycle.impl.PostConstructLifecycleFeature;
+import com.github.dxee.dject.lifecycle.impl.PreDestroyLifecycleFeature;
+import com.github.dxee.dject.spi.LifecycleFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,13 +32,13 @@ import com.google.inject.spi.ProvisionListener;
  *
  * <code>
  * public class MyService {
- *      {@literal @}PostConstruct
- *      public void init() {
- *      }
+ * {@literal @}PostConstruct
+ * public void init() {
+ * }
  * <p>
- *      {@literal @}PreDestroy
-*       public void shutdown() {
- *      }
+ * {@literal @}PreDestroy
+ * public void shutdown() {
+ * }
  * }
  * </code>
  */
@@ -54,42 +59,59 @@ public final class LifecycleModule extends AbstractModule {
     @SuppressLifecycleUninitialized
     static class LifecycleProvisionListener extends AbstractLifecycleListener implements ProvisionListener {
         private final ConcurrentMap<Class<?>, TypeLifecycleActions> cache = new ConcurrentHashMap<>(4096);
-        private List<PostConstructLifecycleFeature> postConstructLifecycleFeatures;
-        private List<PreDestroyLifecycleFeature> preDestoryLifecycleFeatures;
+        private Set<LifecycleFeature> features;
         private final AtomicBoolean isShutdown = new AtomicBoolean();
+        private PostConstructLifecycleFeature postConstructFeature;
+        private PreDestroyLifecycleFeature preDestroyFeature;
         private PreDestroyMonitor preDestroyMonitor;
         private boolean shutdownOnFailure = true;
+
+        @SuppressLifecycleUninitialized
+        @Singleton
+        static class OptionalArgs {
+            @com.google.inject.Inject(optional = true)
+            DjectFeatureContainer governatorFeatures;
+
+            boolean hasShutdownOnFailure() {
+                return governatorFeatures == null ? true : governatorFeatures.get(DjectFeatures.SHUTDOWN_ON_ERROR);
+            }
+
+            JSR250LifecycleAction.ValidationMode getJsr250ValidationMode() {
+                return governatorFeatures == null ? JSR250LifecycleAction.ValidationMode.LAX :
+                    governatorFeatures.get(DjectFeatures.STRICT_JSR250_VALIDATION)
+                            ? JSR250LifecycleAction.ValidationMode.STRICT : JSR250LifecycleAction.ValidationMode.LAX;
+            }
+        }
 
         @Inject
         public static void initialize(
                 final Injector injector,
+                OptionalArgs args,
                 LifecycleProvisionListener provisionListener,
-                Set<PostConstructLifecycleFeature> postConstructLifecycleFeatures,
-                Set<PreDestroyLifecycleFeature> preDestoryLifecycleFeatures) {
-            // Order by feature priority
-            Ordering<LifecycleFeature> lifecycleFeatureOrdering = Ordering.from(
-                    Comparator.comparingInt(LifecycleFeature::priority)
-            );
-            provisionListener.postConstructLifecycleFeatures = lifecycleFeatureOrdering
-                    .sortedCopy(postConstructLifecycleFeatures);
-            provisionListener.preDestoryLifecycleFeatures = lifecycleFeatureOrdering
-                    .sortedCopy(preDestoryLifecycleFeatures);
+                Set<LifecycleFeature> features) {
+            provisionListener.features = features;
+            provisionListener.shutdownOnFailure = args.hasShutdownOnFailure();
+            JSR250LifecycleAction.ValidationMode validationMode = args.getJsr250ValidationMode();
+            provisionListener.postConstructFeature = new PostConstructLifecycleFeature(validationMode);
+            provisionListener.preDestroyFeature = new PreDestroyLifecycleFeature(validationMode);
             provisionListener.preDestroyMonitor = new PreDestroyMonitor(injector.getScopeBindings());
-            LOGGER.debug("LifecycleProvisionListener initialized with postConstructLifecycleFeatures {}",
-                    postConstructLifecycleFeatures);
+            LOGGER.debug("LifecycleProvisionListener initialized with features {}", features);
         }
 
-        public TypeLifecycleActions createActions(Class<?> type) {
+        public TypeLifecycleActions getOrCreateActions(Class<?> type) {
             TypeLifecycleActions actions = cache.get(type);
             if (actions == null) {
                 actions = new TypeLifecycleActions();
-                for (LifecycleFeature feature : postConstructLifecycleFeatures) {
+                // Ordered set of actions to perform before PostConstruct
+                for (LifecycleFeature feature : features) {
                     actions.postConstructActions.addAll(feature.getActionsForType(type));
                 }
 
-                for (LifecycleFeature feature : preDestoryLifecycleFeatures) {
-                    actions.preDestroyActions.addAll(feature.getActionsForType(type));
-                }
+                // Finally, add @PostConstruct methods
+                actions.postConstructActions.addAll(postConstructFeature.getActionsForType(type));
+
+                // Determine @PreDestroy methods
+                actions.preDestroyActions.addAll(preDestroyFeature.getActionsForType(type));
 
                 TypeLifecycleActions existing = cache.putIfAbsent(type, actions);
                 if (existing != null) {
@@ -126,7 +148,7 @@ public final class LifecycleModule extends AbstractModule {
             if (injectee == null) {
                 return;
             }
-            if (postConstructLifecycleFeatures == null) {
+            if (features == null) {
                 if (!injectee.getClass().isAnnotationPresent(SuppressLifecycleUninitialized.class)) {
                     LOGGER.debug("LifecycleProvisionListener not initialized yet : {}", injectee.getClass());
                 }
@@ -141,7 +163,7 @@ public final class LifecycleModule extends AbstractModule {
                 return;
             }
 
-            final TypeLifecycleActions actions = createActions(injectee.getClass());
+            final TypeLifecycleActions actions = getOrCreateActions(injectee.getClass());
 
             // Call all postConstructActions for this injectee
             if (!actions.postConstructActions.isEmpty()) {
@@ -154,13 +176,11 @@ public final class LifecycleModule extends AbstractModule {
 
             // Add any PreDestroy methods to the shutdown list of actions
             if (!actions.preDestroyActions.isEmpty()) {
-                if (isShutdown.get() == false) {
+                if (!isShutdown.get()) {
                     preDestroyMonitor.register(injectee, provision.getBinding(), actions.preDestroyActions);
                 } else {
                     LOGGER.warn("Already shutting down.  Shutdown methods {} on {} will not be invoked",
-                            actions.preDestroyActions,
-                            injectee.getClass().getName()
-                    );
+                            actions.preDestroyActions, injectee.getClass().getName());
                 }
             }
         }
@@ -171,8 +191,7 @@ public final class LifecycleModule extends AbstractModule {
         requestStaticInjection(LifecycleProvisionListener.class);
         bind(LifecycleProvisionListener.class).toInstance(provisionListener);
         bindListener(Matchers.any(), provisionListener);
-        Multibinder.newSetBinder(binder(), PostConstructLifecycleFeature.class);
-        Multibinder.newSetBinder(binder(), PreDestroyLifecycleFeature.class);
+        Multibinder.newSetBinder(binder(), LifecycleFeature.class);
     }
 
     @Override

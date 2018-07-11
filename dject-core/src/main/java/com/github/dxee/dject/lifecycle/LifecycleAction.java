@@ -1,5 +1,7 @@
 package com.github.dxee.dject.lifecycle;
 
+import com.github.dxee.dject.spi.LifecycleFeature;
+
 /**
  * Generic interface for actions to be invoked as part of lifecycle 
  * management.  This includes actions such as PostConstruct, PreDestroy

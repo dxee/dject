@@ -164,7 +164,7 @@ public class ShutdownHookModuleTest {
         };
 
         try {
-            Dject.builder().withModules(new ShutdownHookModule(),
+            Dject.builder().withModules(
                     new AbstractModule() {
                         @Override
                         protected void configure() {

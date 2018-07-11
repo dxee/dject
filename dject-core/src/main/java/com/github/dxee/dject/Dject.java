@@ -1,10 +1,15 @@
 package com.github.dxee.dject;
 
+import com.github.dxee.dject.annotations.SuppressLifecycleUninitialized;
+import com.github.dxee.dject.feature.DjectFeature;
+import com.github.dxee.dject.feature.DjectFeatureContainer;
 import com.github.dxee.dject.lifecycle.*;
 import com.github.dxee.dject.metrics.ProvisionMetricsModule;
 import com.github.dxee.dject.metrics.impl.LoggingProvisionModule;
+import com.github.dxee.dject.spi.PropertySource;
 import com.github.dxee.dject.trace.TracingProvisionListener;
 import com.github.dxee.dject.visitors.*;
+import com.google.common.base.Preconditions;
 import com.google.inject.*;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.Element;
@@ -28,6 +33,7 @@ public final class Dject extends DelegatingInjector {
     private final LifecycleManager manager = new LifecycleManager();
     private final Stage stage;
     private final Module module;
+    private final IdentityHashMap<DjectFeature<?>, Object> features;
 
     // From guice
     @Inject
@@ -37,10 +43,32 @@ public final class Dject extends DelegatingInjector {
     public Dject(Builder builder) {
         this.stage = builder.stage;
         this.module = builder.module;
-
+        this.features = builder.features;
         // create guice injector here
         this.injector = createInjector();
         this.injector.injectMembers(this);
+    }
+
+    @Singleton
+    @SuppressLifecycleUninitialized
+    class DjectFeatureContainerImpl implements DjectFeatureContainer {
+        private final IdentityHashMap<DjectFeature<?>, Object> featureOverrides;
+
+        @Inject
+        private PropertySource properties;
+
+        @Inject
+        public DjectFeatureContainerImpl(IdentityHashMap<DjectFeature<?>, Object> featureOverrides) {
+            this.featureOverrides = featureOverrides;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public <T> T get(DjectFeature<T> feature) {
+            return featureOverrides.containsKey(feature)
+                    ? (T) featureOverrides.get(feature)
+                    : (T) properties.get(feature.getKey(), feature.getType(), feature.getDefaultValue());
+        }
     }
 
     /**
@@ -50,6 +78,8 @@ public final class Dject extends DelegatingInjector {
     private Injector createInjector() {
         // Construct the injector using our override structure
         try {
+            final DjectFeatureContainerImpl djectFeatureContainer = new DjectFeatureContainerImpl(features);
+
             Injector injector = Guice.createInjector(
                     stage,
                     // This has to be first to make sure @PostConstruct support is added as early
@@ -60,6 +90,7 @@ public final class Dject extends DelegatingInjector {
                     new AbstractModule() {
                         @Override
                         protected void configure() {
+                            bind(DjectFeatureContainer.class).toInstance(djectFeatureContainer);
                             bind(LifecycleManager.class).toInstance(manager);
                         }
                     },
@@ -105,6 +136,7 @@ public final class Dject extends DelegatingInjector {
     public static class Builder {
         private Stage stage = Stage.DEVELOPMENT;
         private Module module;
+        private IdentityHashMap<DjectFeature<?>, Object> features = new IdentityHashMap<>();
 
         public Builder withStage(Stage stage) {
             this.stage = stage;
@@ -112,35 +144,63 @@ public final class Dject extends DelegatingInjector {
         }
 
         public Builder withModule(Module module) {
+            Preconditions.checkArgument(module != null, "module may not be null");
+
             this.module = module;
             return this;
         }
 
         public Builder withModules(Module... modules) {
+            Preconditions.checkArgument(modules != null, "modules may not be null");
+
             this.module = Modules.combine(modules);
             return this;
         }
 
         public Builder withModules(List<Module> modules) {
+            Preconditions.checkArgument(modules != null, "modules may not be null");
+
             this.module = Modules.combine(modules);
             return this;
         }
 
         public Builder withOverrideModules(Module... modules) {
+            Preconditions.checkArgument(modules != null, "modules may not be null");
+
             this.module = Modules.override(module).with(modules);
             return this;
         }
 
         public Builder withOverrideModules(Collection<Module> modules) {
+            Preconditions.checkArgument(modules != null, "modules may not be null");
+
             this.module = Modules.override(module).with(modules);
             return this;
         }
 
         public Builder withCombineModules(Module... modules) {
+            Preconditions.checkArgument(modules != null, "modules may not be null");
+
             List<Module> m = new ArrayList<>();
             m.add(module);
             m.addAll(Arrays.asList(modules));
             this.module = Modules.combine(m);
+            return this;
+        }
+
+        public Builder withFeatures(IdentityHashMap<DjectFeature<?>, Object> features) {
+            Preconditions.checkArgument(features != null, "features may not be null");
+            features.putAll(features);
+            features.forEach((feature, value) -> {
+                this.features.put(feature, value);
+            });
+            this.features = features;
+            return this;
+        }
+
+        public <T> Builder withFeature(DjectFeature<T> feature, T value) {
+            Preconditions.checkArgument(feature != null, "feature may not be null");
+            this.features.put(feature, value);
             return this;
         }
 

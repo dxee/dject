@@ -10,7 +10,6 @@
 rootProject.name = 'dject'
 
 include 'dject-core'
-include 'dject-jsr250'
 include 'dject-event'
 include 'dject-grapher'
 
