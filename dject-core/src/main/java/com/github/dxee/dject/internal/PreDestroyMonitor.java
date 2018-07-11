@@ -87,8 +87,8 @@ public class PreDestroyMonitor implements AutoCloseable {
         public boolean close() throws Exception {
             boolean rv = running.compareAndSet(true, false);
             if (rv) {
-                reqQueueExecutor.shutdown(); // executor to stop
-                // process any remaining scoped cleanup actions
+                // executor to stop process any remaining scoped cleanup actions
+                reqQueueExecutor.shutdown();
                 List<ScopeCleanupAction> values = new ArrayList<>(scopedCleanupActions.values());
                 scopedCleanupActions.clear();
                 Collections.sort(values);
@@ -135,7 +135,7 @@ public class PreDestroyMonitor implements AutoCloseable {
     private Deque<Callable<Void>> cleanupActions = new ConcurrentLinkedDeque<>();
     private ScopeCleaner scopeCleaner = new ScopeCleaner();
 
-    Map<Class<? extends Annotation>, Scope> scopeBindings;
+    private Map<Class<? extends Annotation>, Scope> scopeBindings;
 
     public PreDestroyMonitor(Map<Class<? extends Annotation>, Scope> scopeBindings) {
         this.scopeBindings = new HashMap<>(scopeBindings);
@@ -174,7 +174,11 @@ public class PreDestroyMonitor implements AutoCloseable {
             LOGGER.info("closing PreDestroyMonitor...");
 
             for (Callable<Void> action : cleanupActions) {
-                action.call();
+                try {
+                    action.call();
+                } catch (Exception e) {
+                    LOGGER.error("PreDestroy call failed for " + action, e);
+                }
             }
             cleanupActions.clear();
             scopeBindings.clear();
@@ -252,8 +256,10 @@ public class PreDestroyMonitor implements AutoCloseable {
          */
         @Override
         public Boolean visitNoScoping() {
+            LOGGER.debug(injectee.getClass().getName() + " will injected with no scope");
             cleanupActions.addFirst(
-                    new ManagedInstanceAction(new SoftReference<Object>(injectee), context, lifecycleActions));
+                    new ManagedInstanceAction(new SoftReference<Object>(injectee), context, lifecycleActions)
+            );
             return true;
         }
     }

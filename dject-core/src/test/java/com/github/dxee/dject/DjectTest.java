@@ -1,6 +1,8 @@
 package com.github.dxee.dject;
 
+import com.github.dxee.dject.extend.ShutdownHookModule;
 import com.google.inject.AbstractModule;
+import com.google.inject.Scopes;
 import com.google.inject.spi.DefaultElementVisitor;
 import com.google.inject.spi.Element;
 import org.junit.Assert;
@@ -8,8 +10,12 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.mockito.Mockito;
 
+import javax.annotation.PreDestroy;
 import java.util.List;
+
+import static com.google.inject.name.Names.named;
 
 public class DjectTest {
     @Test
@@ -117,6 +123,95 @@ public class DjectTest {
         Dject.builder().withModule(new ModuleA())
                 .withTracingProvision()
                 .build();
+    }
+
+    @Test
+    public void testSingletonScopInstanceAutoCloseable() {
+        Dject inject = Dject.builder().withModules(
+                new AbstractModule() {
+                    @Override
+                    protected void configure() {
+                        bind(A.class).in(Scopes.SINGLETON);
+                        bind(C.class).in(Scopes.SINGLETON);
+                    }
+                })
+                .build();
+
+        A a = inject.getInstance(A.class);
+        C c = inject.getInstance(C.class);
+
+        inject.getInstance(A.class);
+        inject.getInstance(C.class);
+
+        inject.shutdown();
+
+        Assert.assertEquals(1, a.count);
+        Assert.assertEquals(1, c.count);
+
+    }
+
+    @Test
+    public void testNoScopInstanceAutoCloseable() {
+        Dject inject = Dject.builder().withModules(
+                new AbstractModule() {
+                    @Override
+                    protected void configure() {
+                        bind(A.class);
+                        bind(C.class);
+                    }
+                })
+                .build();
+
+        A a = inject.getInstance(A.class);
+        C c = inject.getInstance(C.class);
+
+        inject.getInstance(A.class);
+        inject.getInstance(C.class);
+
+        inject.shutdown();
+
+        Assert.assertEquals(1, c.count);
+        Assert.assertEquals(1, a.count);
+    }
+
+    @Test
+    public void testClassLoaderShutdownInTheRightWay() {
+        Dject inject = Dject.builder().withModules(new ShutdownHookModule(),
+                new AbstractModule() {
+                    @Override
+                    protected void configure() {
+                        bind(ClassLoader.class).toInstance(getDefaultClassLoader());
+                        bind(A.class).in(Scopes.SINGLETON);
+                        bind(C.class).in(Scopes.SINGLETON);
+                    }
+                })
+                .build();
+        inject.getInstance(A.class);
+        inject.getInstance(C.class);
+    }
+
+    private ClassLoader getDefaultClassLoader() {
+        return getClass().getClassLoader();
+    }
+
+    private static class A implements AutoCloseable {
+        public int count = 0;
+        @Override
+        @PreDestroy
+        public void close() {
+            count++;
+            throw new RuntimeException("A tst");
+        }
+    }
+
+    private static class C implements AutoCloseable {
+        public int count = 0;
+        @Override
+        @PreDestroy
+        public void close() {
+            count++;
+            throw new RuntimeException("C tst");
+        }
     }
 
     @Before
