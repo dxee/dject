@@ -137,8 +137,8 @@ public class DjectTest {
                 })
                 .build();
 
-        A a = inject.getInstance(A.class);
-        C c = inject.getInstance(C.class);
+        final A a = inject.getInstance(A.class);
+        final C c = inject.getInstance(C.class);
 
         inject.getInstance(A.class);
         inject.getInstance(C.class);
@@ -162,8 +162,8 @@ public class DjectTest {
                 })
                 .build();
 
-        A a = inject.getInstance(A.class);
-        C c = inject.getInstance(C.class);
+        final A a = inject.getInstance(A.class);
+        final C c = inject.getInstance(C.class);
 
         inject.getInstance(A.class);
         inject.getInstance(C.class);
@@ -196,6 +196,7 @@ public class DjectTest {
 
     private static class A implements AutoCloseable {
         public int count = 0;
+
         @Override
         @PreDestroy
         public void close() {
@@ -206,6 +207,7 @@ public class DjectTest {
 
     private static class C implements AutoCloseable {
         public int count = 0;
+
         @Override
         @PreDestroy
         public void close() {
