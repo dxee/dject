@@ -2,6 +2,7 @@ package com.github.dxee.dject;
 
 import com.github.dxee.dject.extend.ShutdownHookModule;
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.google.inject.spi.DefaultElementVisitor;
 import com.google.inject.spi.Element;
@@ -174,6 +175,26 @@ public class DjectTest {
         Assert.assertEquals(1, a.count);
     }
 
+    // With error:
+    // Caused by: java.lang.ClassNotFoundException: org.apache.log4j.spi.ThrowableInformation
+    @Test
+    public void testClassLoaderShutdownInTheWrongWay() {
+        Dject inject = Dject.builder().withModules(new ShutdownHookModule(),
+                new AbstractModule() {
+                    @Override
+                    protected void configure() {
+                        bind(ClassLoader.class).toInstance(getDefaultClassLoader());
+                        bind(A.class);
+                        bind(C.class);
+                    }
+                })
+                .build();
+        inject.getInstance(A.class);
+        inject.getInstance(C.class);
+    }
+
+    // Without error:
+    // Caused by: java.lang.ClassNotFoundException: org.apache.log4j.spi.ThrowableInformation
     @Test
     public void testClassLoaderShutdownInTheRightWay() {
         Dject inject = Dject.builder().withModules(new ShutdownHookModule(),
@@ -183,6 +204,28 @@ public class DjectTest {
                         bind(ClassLoader.class).toInstance(getDefaultClassLoader());
                         bind(A.class).in(Scopes.SINGLETON);
                         bind(C.class).in(Scopes.SINGLETON);
+                    }
+                })
+                .build();
+        inject.getInstance(A.class);
+        inject.getInstance(C.class);
+    }
+
+    // Without error:
+    // Caused by: java.lang.ClassNotFoundException: org.apache.log4j.spi.ThrowableInformation
+    @Test
+    public void testClassLoaderShutdownInTheRightWay2() {
+        Dject inject = Dject.builder().withModules(new ShutdownHookModule(),
+                new AbstractModule() {
+                    @Override
+                    protected void configure() {
+                        bind(A.class).in(Scopes.SINGLETON);
+                        bind(C.class).in(Scopes.SINGLETON);
+                    }
+
+                    @Provides
+                    public ClassLoader classLoader() {
+                        return getDefaultClassLoader();
                     }
                 })
                 .build();
