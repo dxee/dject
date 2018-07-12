@@ -36,4 +36,13 @@ public final class ManagedInstanceAction implements Callable<Void> {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "ManagedInstanceAction{"
+                + "target=" + target
+                + ", targetReference=" + targetReference
+                + ", actions=" + actions
+                + '}';
+    }
 }

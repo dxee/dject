@@ -3,35 +3,21 @@ package com.github.dxee.dject.internal;
 import com.github.dxee.dject.lifecycle.LifecycleAction;
 import com.github.dxee.dject.lifecycle.ManagedInstanceAction;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.google.inject.Binding;
-import com.google.inject.Key;
-import com.google.inject.Provider;
-import com.google.inject.Scope;
-import com.google.inject.Scopes;
+import com.google.inject.*;
 import com.google.inject.spi.BindingScopingVisitor;
 import com.google.inject.util.Providers;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.PrintStream;
 import java.lang.annotation.Annotation;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -177,7 +163,7 @@ public class PreDestroyMonitor implements AutoCloseable {
                 try {
                     action.call();
                 } catch (Exception e) {
-                    LOGGER.error("PreDestroy call failed for " + action, e);
+                    logActionCallError("PreDestroy call failed for " + action, e);
                 }
             }
             cleanupActions.clear();
@@ -185,6 +171,33 @@ public class PreDestroyMonitor implements AutoCloseable {
             scopeBindings = Collections.emptyMap();
         } else {
             LOGGER.warn("PreDestroyMonitor.close() invoked but instance is not running");
+        }
+    }
+
+    private static void logActionCallError(String str, Exception e) {
+        try {
+            LOGGER.error(str, e);
+        } catch (Throwable t) {
+            // Some times when ClassLoader is closed
+            // LOGGER will miss spi classes and throw error.
+            PrintStream stream = System.out;
+
+            String threadName = Thread.currentThread().getName();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
+
+            String prefix = df.format(new Date()) + " [" + threadName + "] ERROR ";
+
+            if (LOGGER.isDebugEnabled()) {
+                stream.println(prefix);
+                // Log Throwable first.
+                t.printStackTrace(stream);
+
+                // Log action call error
+                stream.println("[action call error] " + str);
+                e.printStackTrace(stream);
+            } else {
+                stream.println(prefix + str);
+            }
         }
     }
 
@@ -300,7 +313,7 @@ public class PreDestroyMonitor implements AutoCloseable {
                     try {
                         ((Callable<Void>) r[0]).call();
                     } catch (Exception e) {
-                        LOGGER.error("PreDestroy call failed for " + r, e);
+                        logActionCallError("PreDestroy call failed for " + r, e);
                     }
                 }
                 delegates.clear();
