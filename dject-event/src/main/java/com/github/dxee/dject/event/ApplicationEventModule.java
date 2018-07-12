@@ -31,6 +31,7 @@ public final class ApplicationEventModule extends AbstractModule {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
             final Class<?> clazz = type.getRawType();
             final List<Method> handlerMethods = getAllDeclaredHandlerMethods(clazz);
@@ -76,6 +77,7 @@ public final class ApplicationEventModule extends AbstractModule {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public <T> void onProvision(ProvisionInvocation<T> provision) {
             T provisioned = provision.provision();
             if (provisioned instanceof ApplicationEventListener) {
