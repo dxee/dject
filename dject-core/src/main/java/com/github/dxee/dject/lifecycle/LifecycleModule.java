@@ -51,7 +51,7 @@ public final class LifecycleModule extends AbstractModule {
      * Holder of actions for a specific type.
      */
     static class TypeLifecycleActions {
-        final List<LifecycleAction> postConstructActions = new ArrayList<LifecycleAction>();
+        final List<LifecycleAction> postConstructActions = new ArrayList<>();
         final List<LifecycleAction> preDestroyActions = new ArrayList<>();
     }
 
@@ -77,15 +77,20 @@ public final class LifecycleModule extends AbstractModule {
                         djectFeatures.get(DjectFeatures.SHUTDOWN_ON_ERROR);
             }
 
-            boolean preDestroyAutoCloseable() {
+            boolean supportJsr250() {
                 return djectFeatures == null ? true :
-                        djectFeatures.get(DjectFeatures.PREDESTROY_AUTOCLOSEABLE);
+                        djectFeatures.get(DjectFeatures.JSR250_SUPPORT);
             }
 
             JSR250LifecycleAction.ValidationMode getJsr250ValidationMode() {
                 return djectFeatures == null ? JSR250LifecycleAction.ValidationMode.LAX :
                     djectFeatures.get(DjectFeatures.STRICT_JSR250_VALIDATION)
                             ? JSR250LifecycleAction.ValidationMode.STRICT : JSR250LifecycleAction.ValidationMode.LAX;
+            }
+
+            boolean preDestroyAutoCloseable() {
+                return djectFeatures == null ? true :
+                        djectFeatures.get(DjectFeatures.PREDESTROY_AUTOCLOSEABLE);
             }
         }
 
@@ -98,14 +103,18 @@ public final class LifecycleModule extends AbstractModule {
             provisionListener.features = features;
             provisionListener.shutdownOnFailure = args.hasShutdownOnFailure();
             JSR250LifecycleAction.ValidationMode validationMode = args.getJsr250ValidationMode();
-            provisionListener.postConstructFeature = new PostConstructLifecycleFeature(validationMode);
-            provisionListener.preDestroyFeature = new PreDestroyLifecycleFeature(validationMode,
-                    args.preDestroyAutoCloseable());
+
+            // add jsr250 support
+            if (args.supportJsr250()) {
+                provisionListener.postConstructFeature = new PostConstructLifecycleFeature(validationMode);
+                provisionListener.preDestroyFeature = new PreDestroyLifecycleFeature(validationMode,
+                        args.preDestroyAutoCloseable());
+            }
             provisionListener.preDestroyMonitor = new PreDestroyMonitor(injector.getScopeBindings());
             LOGGER.debug("LifecycleProvisionListener initialized with features {}", features);
         }
 
-        public TypeLifecycleActions getOrCreateActions(Class<?> type) {
+        private TypeLifecycleActions getOrCreateActions(Class<?> type) {
             TypeLifecycleActions actions = cache.get(type);
             if (actions == null) {
                 actions = new TypeLifecycleActions();
@@ -114,11 +123,15 @@ public final class LifecycleModule extends AbstractModule {
                     actions.postConstructActions.addAll(feature.getActionsForType(type));
                 }
 
-                // Finally, add @PostConstruct methods
-                actions.postConstructActions.addAll(postConstructFeature.getActionsForType(type));
+                if (null != postConstructFeature) {
+                    // Finally, add @PostConstruct methods
+                    actions.postConstructActions.addAll(postConstructFeature.getActionsForType(type));
+                }
 
-                // Determine @PreDestroy methods
-                actions.preDestroyActions.addAll(preDestroyFeature.getActionsForType(type));
+                if (null != preDestroyFeature) {
+                    // Determine @PreDestroy methods
+                    actions.preDestroyActions.addAll(preDestroyFeature.getActionsForType(type));
+                }
 
                 TypeLifecycleActions existing = cache.putIfAbsent(type, actions);
                 if (existing != null) {

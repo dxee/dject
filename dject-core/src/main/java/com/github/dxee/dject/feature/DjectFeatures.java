@@ -13,6 +13,12 @@ public final class DjectFeatures {
             DjectFeature.create("dject.features.shutdownOnError", true);
 
     /**
+     * Enables @PostConstruct / @PreDestroy support
+     */
+    public static final DjectFeature<Boolean> JSR250_SUPPORT =
+            DjectFeature.create("dject.features.jsr250support", true);
+
+    /**
      * Enables strict validation of @PostConstruct / @PreDestroy annotations at runtime; default is false
      */
     public static final DjectFeature<Boolean> STRICT_JSR250_VALIDATION =

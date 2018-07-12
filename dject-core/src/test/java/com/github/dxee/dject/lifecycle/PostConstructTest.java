@@ -172,6 +172,17 @@ public class PostConstructTest {
     }
 
     @Test
+    public void testLifecycleFeatureTurnOff() {
+        SimplePostConstruct mockInstance = Mockito.mock(SimplePostConstruct.class);
+        Dject injector = new TestSupport()
+                .withFeature(DjectFeatures.JSR250_SUPPORT, false)
+                .withSingleton(mockInstance)
+                .inject();
+        Assert.assertNotNull(injector.getInstance(SimplePostConstruct.class));
+        Mockito.verify(mockInstance, Mockito.times(0)).init();
+    }
+
+    @Test
     public void testLifecycleInitWithAtProvides() {
         final SimplePostConstruct simplePostConstruct = Mockito.mock(SimplePostConstruct.class);
 
