@@ -70,15 +70,21 @@ public final class LifecycleModule extends AbstractModule {
         @Singleton
         static class OptionalArgs {
             @com.google.inject.Inject(optional = true)
-            DjectFeatureContainer governatorFeatures;
+            DjectFeatureContainer djectFeatures;
 
             boolean hasShutdownOnFailure() {
-                return governatorFeatures == null ? true : governatorFeatures.get(DjectFeatures.SHUTDOWN_ON_ERROR);
+                return djectFeatures == null ? true :
+                        djectFeatures.get(DjectFeatures.SHUTDOWN_ON_ERROR);
+            }
+
+            boolean preDestroyAutoCloseable() {
+                return djectFeatures == null ? true :
+                        djectFeatures.get(DjectFeatures.PREDESTROY_AUTOCLOSEABLE);
             }
 
             JSR250LifecycleAction.ValidationMode getJsr250ValidationMode() {
-                return governatorFeatures == null ? JSR250LifecycleAction.ValidationMode.LAX :
-                    governatorFeatures.get(DjectFeatures.STRICT_JSR250_VALIDATION)
+                return djectFeatures == null ? JSR250LifecycleAction.ValidationMode.LAX :
+                    djectFeatures.get(DjectFeatures.STRICT_JSR250_VALIDATION)
                             ? JSR250LifecycleAction.ValidationMode.STRICT : JSR250LifecycleAction.ValidationMode.LAX;
             }
         }
@@ -93,7 +99,8 @@ public final class LifecycleModule extends AbstractModule {
             provisionListener.shutdownOnFailure = args.hasShutdownOnFailure();
             JSR250LifecycleAction.ValidationMode validationMode = args.getJsr250ValidationMode();
             provisionListener.postConstructFeature = new PostConstructLifecycleFeature(validationMode);
-            provisionListener.preDestroyFeature = new PreDestroyLifecycleFeature(validationMode);
+            provisionListener.preDestroyFeature = new PreDestroyLifecycleFeature(validationMode,
+                    args.preDestroyAutoCloseable());
             provisionListener.preDestroyMonitor = new PreDestroyMonitor(injector.getScopeBindings());
             LOGGER.debug("LifecycleProvisionListener initialized with features {}", features);
         }

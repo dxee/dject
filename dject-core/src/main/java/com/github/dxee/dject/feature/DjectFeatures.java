@@ -17,5 +17,11 @@ public final class DjectFeatures {
      */
     public static final DjectFeature<Boolean> STRICT_JSR250_VALIDATION =
             DjectFeature.create("dject.features.strictJsr250Validation", false);
+
+    /**
+     * Enables predestroy autocloseable
+     */
+    public static final DjectFeature<Boolean> PREDESTROY_AUTOCLOSEABLE =
+            DjectFeature.create("dject.features.predestroyautocloseable", true);
     
 }

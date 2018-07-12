@@ -331,7 +331,7 @@ public class PreDestroyTest {
 
     @Test
     public void testLifecycleCloseable() {
-        /*final CloseableType closeableType = Mockito.mock(CloseableType.class);
+        final CloseableType closeableType = Mockito.mock(CloseableType.class);
         try {
             Mockito.doThrow(new IOException("boom")).when(closeableType).close();
         } catch (IOException e1) {
@@ -344,7 +344,7 @@ public class PreDestroyTest {
             Mockito.verify(closeableType, Mockito.never()).close();
         } catch (IOException e) {
             // close() called before shutdown and failed
-            Assert.fail("close() called before shutdown and  failed");
+            Assert.fail("close() called before shutdown and failed");
         }
 
         injector.shutdown();
@@ -353,8 +353,40 @@ public class PreDestroyTest {
             Mockito.verify(closeableType, Mockito.never()).shutdown();
         } catch (IOException e) {
             // close() called before shutdown and failed
-            Assert.fail("close() called after shutdown and  failed");
-        }*/
+            Assert.fail("close() called after shutdown and failed");
+        }
+    }
+
+    @Test
+    public void testLifecycleCloseableFeatureClose() {
+        final CloseableType closeableType = Mockito.mock(CloseableType.class);
+        try {
+            Mockito.doThrow(new IOException("boom")).when(closeableType).close();
+        } catch (IOException e1) {
+            // ignore, mock only
+        }
+
+        Dject injector = new TestSupport()
+                .withFeature(DjectFeatures.PREDESTROY_AUTOCLOSEABLE, false)
+                .withSingleton(closeableType)
+                .inject();
+
+        Assert.assertNotNull(injector.getInstance(closeableType.getClass()));
+        try {
+            Mockito.verify(closeableType, Mockito.never()).close();
+        } catch (IOException e) {
+            // close() called before shutdown and failed
+            Assert.fail("close() called before shutdown and failed");
+        }
+
+        injector.shutdown();
+        try {
+            Mockito.verify(closeableType, Mockito.times(0)).close();
+            Mockito.verify(closeableType, Mockito.times(1)).shutdown();
+        } catch (IOException e) {
+            // close() called before shutdown and failed
+            Assert.fail("close() called after shutdown and failed");
+        }
     }
 
     @Test

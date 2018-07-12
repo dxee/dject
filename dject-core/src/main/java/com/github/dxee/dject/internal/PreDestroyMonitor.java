@@ -196,7 +196,8 @@ public class PreDestroyMonitor implements AutoCloseable {
                 stream.println("[action call error] " + str);
                 e.printStackTrace(stream);
             } else {
-                stream.println(prefix + str);
+                stream.println(prefix + str
+                        + ", error message is " + e.getMessage());
             }
         }
     }

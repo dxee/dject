@@ -25,9 +25,12 @@ import java.util.*;
 public final class PreDestroyLifecycleFeature implements LifecycleFeature {
     private static final Logger LOGGER = LoggerFactory.getLogger(PreDestroyLifecycleFeature.class);
     private final JSR250LifecycleAction.ValidationMode validationMode;
+    private final boolean preDestroyAutoCloseable;
 
-    public PreDestroyLifecycleFeature(JSR250LifecycleAction.ValidationMode validationMode) {
+    public PreDestroyLifecycleFeature(JSR250LifecycleAction.ValidationMode validationMode,
+                                      boolean preDestroyAutoCloseable) {
         this.validationMode = validationMode;
+        this.preDestroyAutoCloseable = preDestroyAutoCloseable;
     }
 
     @Override
@@ -47,7 +50,7 @@ public final class PreDestroyLifecycleFeature implements LifecycleFeature {
         @Override
         public boolean visit(final Class<?> clazz) {
             boolean continueVisit = !clazz.isInterface();
-            if (continueVisit && AutoCloseable.class.isAssignableFrom(clazz)) {
+            if (preDestroyAutoCloseable && continueVisit && AutoCloseable.class.isAssignableFrom(clazz)) {
                 AutoCloseableLifecycleAction closeableAction = new AutoCloseableLifecycleAction(
                         clazz.asSubclass(AutoCloseable.class));
                 LOGGER.debug("adding action {}", closeableAction);
