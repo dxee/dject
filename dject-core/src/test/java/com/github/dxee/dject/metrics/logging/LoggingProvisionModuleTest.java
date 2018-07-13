@@ -1,14 +1,10 @@
-package com.github.dxee.dject.metrics.impl;
+package com.github.dxee.dject.metrics.logging;
 
 import com.github.dxee.dject.Dject;
 import com.google.inject.AbstractModule;
 import com.google.inject.Stage;
 import org.junit.Assert;
 import org.junit.Test;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.concurrent.TimeUnit;
 
 public class LoggingProvisionModuleTest {
     @Test

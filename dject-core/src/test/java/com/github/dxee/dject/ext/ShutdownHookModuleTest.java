@@ -1,4 +1,4 @@
-package com.github.dxee.dject.extend;
+package com.github.dxee.dject.ext;
 
 import com.github.dxee.dject.Dject;
 import com.github.dxee.dject.lifecycle.LifecycleListener;

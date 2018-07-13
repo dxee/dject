@@ -1,4 +1,4 @@
-package com.github.dxee.dject.extend;
+package com.github.dxee.dject.internal;
 
 import com.github.dxee.dject.spi.PropertySource;
 

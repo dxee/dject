@@ -1,7 +1,6 @@
 package com.github.dxee.dject.internal;
 
 import com.github.dxee.dject.annotations.SuppressLifecycleUninitialized;
-import com.github.dxee.dject.extend.AbstractPropertySource;
 
 import javax.inject.Singleton;
 

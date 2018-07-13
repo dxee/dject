@@ -1,4 +1,4 @@
-package com.github.dxee.dject.metrics.impl;
+package com.github.dxee.dject.metrics.logging;
 
 import com.github.dxee.dject.lifecycle.LifecycleManager;
 import com.github.dxee.dject.lifecycle.impl.AbstractLifecycleListener;

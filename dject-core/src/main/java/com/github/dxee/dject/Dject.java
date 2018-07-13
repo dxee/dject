@@ -5,7 +5,7 @@ import com.github.dxee.dject.feature.DjectFeature;
 import com.github.dxee.dject.feature.DjectFeatureContainer;
 import com.github.dxee.dject.lifecycle.*;
 import com.github.dxee.dject.metrics.ProvisionMetricsModule;
-import com.github.dxee.dject.metrics.impl.LoggingProvisionModule;
+import com.github.dxee.dject.metrics.logging.LoggingProvisionModule;
 import com.github.dxee.dject.spi.PropertySource;
 import com.github.dxee.dject.trace.TracingProvisionListener;
 import com.github.dxee.dject.visitors.*;

@@ -1,6 +1,6 @@
 package com.github.dxee.dject;
 
-import com.github.dxee.dject.extend.ShutdownHookModule;
+import com.github.dxee.dject.ext.ShutdownHookModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
@@ -11,12 +11,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.mockito.Mockito;
 
 import javax.annotation.PreDestroy;
 import java.util.List;
-
-import static com.google.inject.name.Names.named;
 
 public class DjectTest {
     @Test

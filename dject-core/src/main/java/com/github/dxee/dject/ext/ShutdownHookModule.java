@@ -1,4 +1,4 @@
-package com.github.dxee.dject.extend;
+package com.github.dxee.dject.ext;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
