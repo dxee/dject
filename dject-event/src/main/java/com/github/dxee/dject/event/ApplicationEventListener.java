@@ -7,6 +7,6 @@ package com.github.dxee.dject.event;
  * */
 public interface ApplicationEventListener<T extends ApplicationEvent> {
 
-    public void onEvent(T event);
+    void onEvent(T event);
 
 }
