@@ -36,12 +36,12 @@ public class TestSupport {
     }
 
     public Dject inject() {
-        return Dject.builder().withFeatures(features)
+        return Dject.newBuilder().withFeatures(features)
                 .withStage(Stage.PRODUCTION).withModules(module).build();
     }
 
     public static Dject inject(final Object... instances) {
-        return Dject.builder().withModule(new InstancesModule(instances)).build();
+        return Dject.newBuilder().withModule(new InstancesModule(instances)).build();
     }
 
     public TestSupport withSingleton(final Object... instances) {

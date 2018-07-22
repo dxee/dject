@@ -88,7 +88,7 @@ public class ShutdownHookModuleTest {
     public void confirmLifecycleListenerShutdown() {
         final TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName());
 
-        Dject.builder().withModules(new ShutdownHookModule(),
+        Dject.newBuilder().withModules(new ShutdownHookModule(),
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -102,7 +102,7 @@ public class ShutdownHookModuleTest {
         final TrackingLifecycleListener listener = new TrackingLifecycleListener(name.getMethodName());
         final TrackingLifecycleListener listener1 = new TrackingLifecycleListener(name.getMethodName() + "1");
 
-        Dject.builder().withModules(new ShutdownHookModule(),
+        Dject.newBuilder().withModules(new ShutdownHookModule(),
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -128,7 +128,7 @@ public class ShutdownHookModuleTest {
           }
         };
 
-        Dject.builder().withModules(new ShutdownHookModule(),
+        Dject.newBuilder().withModules(new ShutdownHookModule(),
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -164,7 +164,7 @@ public class ShutdownHookModuleTest {
         };
 
         try {
-            Dject.builder().withModules(
+            Dject.newBuilder().withModules(
                     new AbstractModule() {
                         @Override
                         protected void configure() {
@@ -202,7 +202,7 @@ public class ShutdownHookModuleTest {
         final TrackingLifecycleListener listener1 = new TrackingLifecycleListener(name.getMethodName() + "1");
 
         try {
-            Dject.builder().withModules(new ShutdownHookModule(),
+            Dject.newBuilder().withModules(new ShutdownHookModule(),
                     new AbstractModule() {
                         @Override
                         protected void configure() {
@@ -240,7 +240,7 @@ public class ShutdownHookModuleTest {
         };
         final TrackingLifecycleListener listener1 = new TrackingLifecycleListener(name.getMethodName() + "1");
         try {
-            Dject.builder().withModules(new ShutdownHookModule(),
+            Dject.newBuilder().withModules(new ShutdownHookModule(),
                     new AbstractModule() {
                         @Override
                         protected void configure() {

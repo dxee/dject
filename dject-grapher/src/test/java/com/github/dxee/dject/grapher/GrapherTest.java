@@ -19,7 +19,7 @@ public class GrapherTest {
         final AtomicBoolean injectCalled = new AtomicBoolean(false);
         final AtomicBoolean afterInjectorCalled = new AtomicBoolean(false);
 
-        Dject.builder().withModules(new AbstractModule() {
+        Dject.newBuilder().withModules(new AbstractModule() {
             @Override
             protected void configure() {
                 bind(F1.class);
@@ -42,7 +42,7 @@ public class GrapherTest {
         final AtomicBoolean injectCalled = new AtomicBoolean(false);
         final AtomicBoolean afterInjectorCalled = new AtomicBoolean(false);
 
-        Dject injector = Dject.builder().withModules(new AbstractModule() {
+        Dject injector = Dject.newBuilder().withModules(new AbstractModule() {
             @Override
             protected void configure() {
                 bind(F1.class);

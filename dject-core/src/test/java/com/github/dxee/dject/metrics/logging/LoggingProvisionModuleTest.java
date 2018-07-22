@@ -9,7 +9,7 @@ import org.junit.Test;
 public class LoggingProvisionModuleTest {
     @Test
     public void confirmListenerExists() {
-        Dject injector = Dject.builder()
+        Dject injector = Dject.newBuilder()
                 .withModule(new AbstractModule() {
                     @Override
                     protected void configure() {

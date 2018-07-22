@@ -186,7 +186,7 @@ public class PostConstructTest {
     public void testLifecycleInitWithAtProvides() {
         final SimplePostConstruct simplePostConstruct = Mockito.mock(SimplePostConstruct.class);
 
-        Dject injector = Dject.builder().withModule(new AbstractModule() {
+        Dject injector = Dject.newBuilder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
             }

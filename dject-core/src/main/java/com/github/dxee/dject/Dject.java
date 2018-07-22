@@ -129,7 +129,7 @@ public final class Dject extends DelegatingInjector {
         lifecycleShutdown.awaitShutdown();
     }
 
-    public static Builder builder() {
+    public static Builder newBuilder() {
         return new Builder();
     }
 

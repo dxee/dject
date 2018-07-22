@@ -9,7 +9,7 @@ import org.junit.Test;
 public class TracingProvisionListenerTest {
     @Test
     public void testDefault() {
-       Dject.builder().withModule(
+       Dject.newBuilder().withModule(
                 new AbstractModule() {
                     @Override
                     protected void configure() {

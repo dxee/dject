@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class ProvisionMetricsModuleTest {
     @Test
     public void disableMetrics() {
-        Dject injector = Dject.builder().withModule(
+        Dject injector = Dject.newBuilder().withModule(
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -29,7 +29,7 @@ public class ProvisionMetricsModuleTest {
 
     @Test
     public void confirmDedupWorksWithOverride() {
-        Dject injector = Dject.builder().withModule(
+        Dject injector = Dject.newBuilder().withModule(
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -78,7 +78,7 @@ public class ProvisionMetricsModuleTest {
 
     @Test
     public void confirmMetricsIncludePostConstruct() {
-        Dject injector = Dject.builder().withModules(
+        Dject injector = Dject.newBuilder().withModules(
                 new AbstractModule() {
                     @Override
                     protected void configure() {

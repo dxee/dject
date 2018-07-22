@@ -210,7 +210,7 @@ public class PreDestroyTest {
 
     @Test
     public void testEagerSingletonShutdown() {
-        Dject injector = Dject.builder().withModule(new AbstractModule() {
+        Dject injector = Dject.newBuilder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
                 bind(EagerBean.class).asEagerSingleton();
@@ -401,7 +401,7 @@ public class PreDestroyTest {
 
     @Test
     public void testLifecycleShutdownWithAtProvides() {
-        Dject injector = Dject.builder().withModule(new AbstractModule() {
+        Dject injector = Dject.newBuilder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
             }
@@ -422,7 +422,7 @@ public class PreDestroyTest {
     public void testLifecycleShutdownWithExplicitScope() throws Exception {
         final ThreadLocalScope threadLocalScope = new ThreadLocalScope();
 
-        Dject injector = Dject.builder().withModule(new AbstractModule() {
+        Dject injector = Dject.newBuilder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
                 binder().bind(Foo.class).in(threadLocalScope);
@@ -444,7 +444,7 @@ public class PreDestroyTest {
     public void testLifecycleShutdownWithAnnotatedExplicitScope() throws Exception {
         final ThreadLocalScope threadLocalScope = new ThreadLocalScope();
 
-        Dject injector = Dject.builder().withModules(new AbstractModule() {
+        Dject injector = Dject.newBuilder().withModules(new AbstractModule() {
                                                          @Override
                                                          protected void configure() {
                                                              binder().bind(Key.get(AnnotatedFoo.class));
@@ -474,7 +474,7 @@ public class PreDestroyTest {
     @Test
     public void testLifecycleShutdownWithMultipleInScope() throws Exception {
         final ThreadLocalScope scope = new ThreadLocalScope();
-        Dject injector = Dject.builder().withModule(new AbstractModule() {
+        Dject injector = Dject.newBuilder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
                 binder().bindScope(ThreadLocalScoped.class, scope);
@@ -515,7 +515,7 @@ public class PreDestroyTest {
 
     @Test
     public void testLifecycleShutdownWithSingletonScope() throws Exception {
-        Dject injector = Dject.builder().withModule(new AbstractModule() {
+        Dject injector = Dject.newBuilder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
                 binder().bind(Foo.class).in(Scopes.SINGLETON);

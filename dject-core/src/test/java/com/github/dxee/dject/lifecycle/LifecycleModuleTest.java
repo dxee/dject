@@ -16,7 +16,6 @@ import javax.inject.Provider;
 import com.github.dxee.dject.Dject;
 import com.github.dxee.dject.TestSupport;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -363,7 +362,7 @@ public class LifecycleModuleTest {
     public void testNestedLifecycleListeners() {
         Listener1 listener1;
         Listener2 listener2;
-        Dject injector = Dject.builder().withModule(new AbstractModule() {
+        Dject injector = Dject.newBuilder().withModule(new AbstractModule() {
             @Override
             protected void configure() {
                 bind(Listener1.class).asEagerSingleton();

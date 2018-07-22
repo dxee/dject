@@ -18,7 +18,7 @@ public class ApplicationEventModuleTest {
 
     @Before
     public void setup() {
-        injector = Dject.builder().withModules(new GuavaApplicationEventModule(), new AbstractModule() {
+        injector = Dject.newBuilder().withModules(new GuavaApplicationEventModule(), new AbstractModule() {
             @Override
             protected void configure() {
                 bind(TestAnnotatedListener.class).toInstance(new TestAnnotatedListener());
@@ -138,7 +138,7 @@ public class ApplicationEventModuleTest {
 
     @Test(expected = CreationException.class)
     public void testEventListenerWithInvalidArgumentsFailsFast() {
-        injector = Dject.builder().withModules(
+        injector = Dject.newBuilder().withModules(
                 new GuavaApplicationEventModule(),
                 new AbstractModule() {
                     @Override

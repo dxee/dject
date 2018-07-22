@@ -18,7 +18,7 @@ import java.util.List;
 public class DjectTest {
     @Test
     public void testBindingTracing() {
-        Dject.builder().withModule(
+        Dject.newBuilder().withModule(
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -34,7 +34,7 @@ public class DjectTest {
 
     @Test
     public void testKeyTracing() {
-        Dject li = Dject.builder().withModule(
+        Dject li = Dject.newBuilder().withModule(
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -48,7 +48,7 @@ public class DjectTest {
 
     @Test
     public void testWarnOnStaticInjection() {
-        List<Element> elements = Dject.builder().withModule(
+        List<Element> elements = Dject.newBuilder().withModule(
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -63,7 +63,7 @@ public class DjectTest {
 
     @Test
     public void testStripStaticInjection() {
-        List<Element> elements = Dject.builder().withModule(
+        List<Element> elements = Dject.newBuilder().withModule(
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -111,21 +111,21 @@ public class DjectTest {
 
     @Test
     public void testTraceModules() {
-        Dject.builder().withModule(new ModuleA())
+        Dject.newBuilder().withModule(new ModuleA())
                 .withTraceEachModuleSource()
                 .build();
     }
 
     @Test
     public void testTracingProvision() {
-        Dject.builder().withModule(new ModuleA())
+        Dject.newBuilder().withModule(new ModuleA())
                 .withTracingProvision()
                 .build();
     }
 
     @Test
     public void testSingletonScopInstanceAutoCloseable() {
-        Dject inject = Dject.builder().withModules(
+        Dject inject = Dject.newBuilder().withModules(
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -150,7 +150,7 @@ public class DjectTest {
 
     @Test
     public void testNoScopInstanceAutoCloseable() {
-        Dject inject = Dject.builder().withModules(
+        Dject inject = Dject.newBuilder().withModules(
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -176,7 +176,7 @@ public class DjectTest {
     // Caused by: java.lang.ClassNotFoundException: org.apache.log4j.spi.ThrowableInformation
     @Test
     public void testClassLoaderShutdownInTheWrongWay() {
-        Dject inject = Dject.builder().withModules(new ShutdownHookModule(),
+        Dject inject = Dject.newBuilder().withModules(new ShutdownHookModule(),
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -194,7 +194,7 @@ public class DjectTest {
     // Caused by: java.lang.ClassNotFoundException: org.apache.log4j.spi.ThrowableInformation
     @Test
     public void testClassLoaderShutdownInTheRightWay() {
-        Dject inject = Dject.builder().withModules(new ShutdownHookModule(),
+        Dject inject = Dject.newBuilder().withModules(new ShutdownHookModule(),
                 new AbstractModule() {
                     @Override
                     protected void configure() {
@@ -212,7 +212,7 @@ public class DjectTest {
     // Caused by: java.lang.ClassNotFoundException: org.apache.log4j.spi.ThrowableInformation
     @Test
     public void testClassLoaderShutdownInTheRightWay2() {
-        Dject inject = Dject.builder().withModules(new ShutdownHookModule(),
+        Dject inject = Dject.newBuilder().withModules(new ShutdownHookModule(),
                 new AbstractModule() {
                     @Override
                     protected void configure() {

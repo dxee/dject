@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  * 
  * <pre>
  * {@code
- *    Dject.builder().withModule(new ShutdownHookModule());
+ *    Dject.newBuilder().withModule(new ShutdownHookModule());
  * }
  * </pre>
  */
