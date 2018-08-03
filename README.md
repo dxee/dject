@@ -1,4 +1,4 @@
-# Dject
+# Dject  &middot; [![Build Status](https://travis-ci.org/dxee/dject.svg?branch=master)](https://travis-ci.org/dxee/dject)
 Guice extensions, help to improve the developer experience of guice. 
 
 ## Design Principles
