@@ -16,5 +16,7 @@ task checkStyle(type: Checkstyle) {
 
 // check code style after project evaluation
 afterEvaluate {
-    project -> getTasksByName('checkStyle', false)[0].execute()
+    if(project.tasks.findByName('check')) {
+        check.dependsOn('checkStyle')
+    }
 }
